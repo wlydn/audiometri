@@ -210,6 +210,12 @@ class Audiometri extends CI_Controller
 	 */
 	public function delete($id = null)
 	{
+		if ($this->input->method(TRUE) !== 'POST') {
+			$this->output->set_header('Allow: POST');
+			show_error('Method not allowed', 405);
+			return;
+		}
+
 		try {
 			if (!$id || !is_numeric($id)) {
 				$response = ['status' => false, 'message' => 'ID tidak valid'];
@@ -420,8 +426,8 @@ class Audiometri extends CI_Controller
 		];
 
 		foreach ($required_fields as $field => $label) {
-			$value = trim($this->input->post($field));
-			if (empty($value)) {
+			$value = $this->input->post($field);
+			if (!is_scalar($value) || trim((string) $value) === '') {
 				$errors[] = "{$label} wajib diisi";
 			}
 		}
@@ -429,7 +435,7 @@ class Audiometri extends CI_Controller
 		// Additional validations
 		$umur = $this->input->post('umur');
 		if (!empty($umur)) {
-			if (!is_numeric($umur) || $umur < 1 || $umur > 150) {
+			if (!is_scalar($umur) || !preg_match('/^[0-9]+$/D', (string) $umur) || $umur < 1 || $umur > 150) {
 				$errors[] = "Umur harus berupa angka antara 1-150";
 			}
 		}
@@ -493,7 +499,7 @@ class Audiometri extends CI_Controller
 						$value = $this->input->post($field);
 
 						// Handle empty/null values
-						if (empty($value) || $value === '') {
+						if ($value === null || $value === '') {
 							$data[$field] = null;
 						} else {
 							// Validate numeric and range
@@ -539,8 +545,8 @@ class Audiometri extends CI_Controller
 	 */
 	private function _validate_date_format($date)
 	{
-		if (empty($date)) {
-			return ['status' => false, 'message' => 'Tanggal tes wajib diisi'];
+		if (!is_string($date) || trim($date) === '') {
+			return ['status' => false, 'message' => 'Tanggal tes wajib diisi dalam format YYYY-MM-DD'];
 		}
 
 		$d = DateTime::createFromFormat('Y-m-d', $date);
@@ -606,7 +612,7 @@ class Audiometri extends CI_Controller
 		if ($current_page > 1) {
 			$prev_page = $current_page - 1;
 			$pagination .= '<li class="page-item">';
-			$pagination .= '<a class="page-link" href="' . $base_url . '?page=' . $prev_page . $query_string . '">&laquo;</a>';
+			$pagination .= '<a class="page-link" href="' . html_escape($base_url . '?page=' . $prev_page . $query_string) . '">&laquo;</a>';
 			$pagination .= '</li>';
 		}
 		
@@ -621,7 +627,7 @@ class Audiometri extends CI_Controller
 				$pagination .= '</li>';
 			} else {
 				$pagination .= '<li class="page-item">';
-				$pagination .= '<a class="page-link" href="' . $base_url . '?page=' . $i . $query_string . '">' . $i . '</a>';
+				$pagination .= '<a class="page-link" href="' . html_escape($base_url . '?page=' . $i . $query_string) . '">' . $i . '</a>';
 				$pagination .= '</li>';
 			}
 		}
@@ -630,7 +636,7 @@ class Audiometri extends CI_Controller
 		if ($current_page < $total_pages) {
 			$next_page = $current_page + 1;
 			$pagination .= '<li class="page-item">';
-			$pagination .= '<a class="page-link" href="' . $base_url . '?page=' . $next_page . $query_string . '">&raquo;</a>';
+			$pagination .= '<a class="page-link" href="' . html_escape($base_url . '?page=' . $next_page . $query_string) . '">&raquo;</a>';
 			$pagination .= '</li>';
 		}
 		

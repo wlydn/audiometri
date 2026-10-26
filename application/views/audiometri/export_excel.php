@@ -37,42 +37,42 @@ header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
         </tr>
     </thead>
     <tbody>
-        <?php 
+        <?php
         $no = 1;
         foreach($audiometri_data as $data): ?>
         <tr>
-            <td><?= $no++ ?></td>
-            <td><?= date('d/m/Y', strtotime($data['tanggal_tes'])) ?></td>
-            <td><?= $data['no_rm'] ?></td>
-            <td><?= $data['nama'] ?></td>
-            <td><?= $data['umur'] ?></td>
-            <td><?= $data['jenis_kelamin'] ?></td>
-            <td><?= $data['perusahaan'] ?></td>
-            <td><?= $data['jabatan'] ?></td>
+            <td><?= html_escape($no++) ?></td>
+            <td><?= html_escape(date('d/m/Y', strtotime($data['tanggal_tes']))) ?></td>
+            <td><?= html_escape($data['no_rm']) ?></td>
+            <td><?= html_escape($data['nama']) ?></td>
+            <td><?= html_escape($data['umur']) ?></td>
+            <td><?= html_escape($data['jenis_kelamin']) ?></td>
+            <td><?= html_escape($data['perusahaan']) ?></td>
+            <td><?= html_escape($data['jabatan']) ?></td>
             <!-- Telinga Kanan AC -->
-            <td><?= $data['right_ac_250'] ?></td>
-            <td><?= $data['right_ac_500'] ?></td>
-            <td><?= $data['right_ac_1000'] ?></td>
-            <td><?= $data['right_ac_2000'] ?></td>
-            <td><?= $data['right_ac_3000'] ?></td>
-            <td><?= $data['right_ac_4000'] ?></td>
-            <td><?= $data['right_ac_6000'] ?></td>
+            <td><?= html_escape($data['right_ac_250']) ?></td>
+            <td><?= html_escape($data['right_ac_500']) ?></td>
+            <td><?= html_escape($data['right_ac_1000']) ?></td>
+            <td><?= html_escape($data['right_ac_2000']) ?></td>
+            <td><?= html_escape($data['right_ac_3000']) ?></td>
+            <td><?= html_escape($data['right_ac_4000']) ?></td>
+            <td><?= html_escape($data['right_ac_6000']) ?></td>
             <!-- Telinga Kiri AC -->
-            <td><?= $data['left_ac_250'] ?></td>
-            <td><?= $data['left_ac_500'] ?></td>
-            <td><?= $data['left_ac_1000'] ?></td>
-            <td><?= $data['left_ac_2000'] ?></td>
-            <td><?= $data['left_ac_3000'] ?></td>
-            <td><?= $data['left_ac_4000'] ?></td>
-            <td><?= $data['left_ac_6000'] ?></td>
-            <td><?= $data['impression'] ?></td>
+            <td><?= html_escape($data['left_ac_250']) ?></td>
+            <td><?= html_escape($data['left_ac_500']) ?></td>
+            <td><?= html_escape($data['left_ac_1000']) ?></td>
+            <td><?= html_escape($data['left_ac_2000']) ?></td>
+            <td><?= html_escape($data['left_ac_3000']) ?></td>
+            <td><?= html_escape($data['left_ac_4000']) ?></td>
+            <td><?= html_escape($data['left_ac_6000']) ?></td>
+            <td><?= html_escape($data['impression']) ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>
     <tfoot>
         <tr>
             <td colspan="23">
-                <strong>Diekspor pada: </strong><?= date('d/m/Y H:i:s') ?>
+                <strong>Diekspor pada: </strong><?= html_escape(date('d/m/Y H:i:s')) ?>
             </td>
         </tr>
     </tfoot>

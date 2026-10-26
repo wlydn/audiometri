@@ -75,10 +75,12 @@ $query_builder = TRUE;
 
 $db['default'] = array(
     'dsn'	=> '',
-    'hostname' => 'localhost',
-    'username' => 'root',
-    'password' => '',
-    'database' => 'audiometri_db',
+    // Credentials come from the environment so they are never committed.
+    // Create a least-privilege MySQL user (SELECT/INSERT/UPDATE/DELETE only).
+    'hostname' => getenv('DB_HOSTNAME') ?: 'localhost',
+    'username' => getenv('DB_USERNAME') ?: 'audiometri_app',
+    'password' => getenv('DB_PASSWORD') ?: '',
+    'database' => getenv('DB_DATABASE') ?: 'audiometri_db',
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,

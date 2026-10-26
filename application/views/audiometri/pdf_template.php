@@ -556,7 +556,7 @@
 			<div class="clinic-logo">
 				<!-- Logo akan ditampilkan di sini -->
 				<?php if (isset($logo_base64) && $logo_base64): ?>
-					<img src="<?= $logo_base64 ?>" alt="Medisina Logo" width="80" height="80">
+					<img src="<?= html_escape($logo_base64) ?>" alt="Medisina Logo" width="80" height="80">
 				<?php else: ?>
 					<div style="width: 80px; height: 80px; background: #f0f0f0; border: 2px dashed #ccc; display: flex; align-items: center; justify-content: center; font-size: 10px;">
 						Logo Medissina
@@ -585,25 +585,25 @@
 		<table class="patient-info">
 			<tr>
 				<td class="label">Perusahaan</td>
-				<td class="value"><?= htmlspecialchars($test_data['perusahaan']) ?></td>
+				<td class="value"><?= html_escape($test_data['perusahaan']) ?></td>
 				<td class="label">Nama Lengkap</td>
-				<td class="value"><?= htmlspecialchars($test_data['nama']) ?></td>
+				<td class="value"><?= html_escape($test_data['nama']) ?></td>
 			</tr>
 			<tr>
 				<td class="label">Jabatan</td>
-				<td class="value"><?= htmlspecialchars($test_data['jabatan']) ?></td>
+				<td class="value"><?= html_escape($test_data['jabatan']) ?></td>
 				<td class="label">Usia</td>
-				<td class="value"><?= $test_data['umur'] ?> Tahun</td>
+				<td class="value"><?= html_escape($test_data['umur']) ?> Tahun</td>
 			</tr>
 			<tr>
 				<td class="label">Tanggal Tes</td>
-				<td class="value"><?= date('d F Y', strtotime($test_data['tanggal_tes'])) ?></td>
+				<td class="value"><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></td>
 				<td class="label">Jenis Kelamin</td>
-				<td class="value"><?= $test_data['jenis_kelamin'] ?></td>
+				<td class="value"><?= html_escape($test_data['jenis_kelamin']) ?></td>
 			</tr>
 			<tr>
 				<td class="label">No. Rekam Medis</td>
-				<td class="value"><?= htmlspecialchars($test_data['no_rm']) ?></td>
+				<td class="value"><?= html_escape($test_data['no_rm']) ?></td>
 				<td class="label">Status</td>
 				<td class="value">Completed</td>
 			</tr>
@@ -645,10 +645,10 @@
 									$value = $test_data['right_ac_' . $freq];
 									if ($value !== null) $right_ac_values[] = $value;
 								?>
-									<td><?= $value !== null ? number_format($value, 0) : '-' ?></td>
+									<td><?= html_escape($value !== null ? number_format($value, 0) : '-') ?></td>
 								<?php endforeach; ?>
 								<td class="average-cell">
-									<?= !empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '-' ?>
+									<?= html_escape(!empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '-') ?>
 								</td>
 							</tr>
 							<tr>
@@ -659,10 +659,10 @@
 									$value = $test_data['right_bc_' . $freq];
 									if ($value !== null) $right_bc_values[] = $value;
 								?>
-									<td><?= $value !== null ? number_format($value, 0) : '-' ?></td>
+									<td><?= html_escape($value !== null ? number_format($value, 0) : '-') ?></td>
 								<?php endforeach; ?>
 								<td class="average-cell">
-									<?= !empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '-' ?>
+									<?= html_escape(!empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '-') ?>
 								</td>
 							</tr>
 						</table>
@@ -700,10 +700,10 @@
 									$value = $test_data['left_ac_' . $freq];
 									if ($value !== null) $left_ac_values[] = $value;
 								?>
-									<td><?= $value !== null ? number_format($value, 0) : '-' ?></td>
+									<td><?= html_escape($value !== null ? number_format($value, 0) : '-') ?></td>
 								<?php endforeach; ?>
 								<td class="average-cell">
-									<?= !empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '-' ?>
+									<?= html_escape(!empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '-') ?>
 								</td>
 							</tr>
 							<tr>
@@ -714,10 +714,10 @@
 									$value = $test_data['left_bc_' . $freq];
 									if ($value !== null) $left_bc_values[] = $value;
 								?>
-									<td><?= $value !== null ? number_format($value, 0) : '-' ?></td>
+									<td><?= html_escape($value !== null ? number_format($value, 0) : '-') ?></td>
 								<?php endforeach; ?>
 								<td class="average-cell">
-									<?= !empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '-' ?>
+									<?= html_escape(!empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '-') ?>
 								</td>
 							</tr>
 						</table>
@@ -730,7 +730,7 @@
 	<!-- Impression -->
 	<div class="impression">
 		<h3>🩺 Clinical Impression</h3>
-		<p style="padding-left: 25px; font-size: 14px;" ><?= htmlspecialchars($test_data['impression']) ?></p>
+		<p style="padding-left: 25px; font-size: 14px;" ><?= html_escape($test_data['impression']) ?></p>
 	</div>
 
 	<!-- Legend -->
@@ -772,7 +772,7 @@
 
 	<!-- Footer -->
 	<div class="footer">
-		<p>📄 Dokumen ini dibuat otomatis oleh Sistem Audiometri Digital - Klinik Utama Medisina • Dicetak pada: <?= date('d F Y • H:i') ?> WIB</p>
+		<p>📄 Dokumen ini dibuat otomatis oleh Sistem Audiometri Digital - Klinik Utama Medisina • Dicetak pada: <?= html_escape(date('d F Y • H:i')) ?> WIB</p>
 	</div>
 </body>
 

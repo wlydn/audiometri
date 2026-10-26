@@ -2,25 +2,26 @@
 <div class="container-fluid">
 	<div class="audiometri-container">
 		<div class="header">
-			<h1><?= $action == 'edit' ? 'EDIT' : 'INPUT' ?> TES AUDIOMETRI</h1>
-			<p><?= $action == 'edit' ? 'Edit data hasil tes audiometri' : 'Input data hasil tes audiometri baru' ?></p>
+			<h1><?= html_escape($action == 'edit' ? 'EDIT' : 'INPUT') ?> TES AUDIOMETRI</h1>
+			<p><?= html_escape($action == 'edit' ? 'Edit data hasil tes audiometri' : 'Input data hasil tes audiometri baru') ?></p>
 		</div>
 
 		<?php if ($this->session->flashdata('error')): ?>
 			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<?= $this->session->flashdata('error') ?>
+				<?= html_escape($this->session->flashdata('error')) ?>
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		<?php endif; ?>
 
 		<?php if ($this->session->flashdata('success')): ?>
 			<div class="alert alert-success alert-dismissible fade show" role="alert">
-				<?= $this->session->flashdata('success') ?>
+				<?= html_escape($this->session->flashdata('success')) ?>
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		<?php endif; ?>
 
-		<form id="audiometri-form" method="post" action="<?= current_url() ?>">
+		<form id="audiometri-form" method="post" action="<?= html_escape(current_url()) ?>">
+			<input type="hidden" name="<?= html_escape($this->security->get_csrf_token_name()) ?>" value="<?= html_escape($this->security->get_csrf_hash()) ?>">
 			<div class="patient-info">
 				<div class="info-group">
 					<label for="perusahaan">Perusahaan: <span class="text-danger">*</span></label>
@@ -103,8 +104,8 @@
 								foreach ($frequencies as $freq):
 								?>
 									<div class="freq-input-group">
-										<label><?= $freq ?> Hz</label>
-										<input type="number" id="right-ac-<?= $freq ?>" name="right_ac_<?= $freq ?>"
+										<label><?= html_escape($freq) ?> Hz</label>
+										<input type="number" id="right-ac-<?= html_escape($freq) ?>" name="right_ac_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('right_ac_' . $freq, $test_data['right_ac_' . $freq] ?? '') ?>">
 									</div>
@@ -119,7 +120,7 @@
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<input type="number" id="right-bc-<?= $freq ?>" name="right_bc_<?= $freq ?>"
+										<input type="number" id="right-bc-<?= html_escape($freq) ?>" name="right_bc_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('right_bc_' . $freq, $test_data['right_bc_' . $freq] ?? '') ?>">
 									</div>
@@ -147,8 +148,8 @@
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<label><?= $freq ?> Hz</label>
-										<input type="number" id="left-ac-<?= $freq ?>" name="left_ac_<?= $freq ?>"
+										<label><?= html_escape($freq) ?> Hz</label>
+										<input type="number" id="left-ac-<?= html_escape($freq) ?>" name="left_ac_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('left_ac_' . $freq, $test_data['left_ac_' . $freq] ?? '') ?>">
 									</div>
@@ -163,7 +164,7 @@
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<input type="number" id="left-bc-<?= $freq ?>" name="left_bc_<?= $freq ?>"
+										<input type="number" id="left-bc-<?= html_escape($freq) ?>" name="left_bc_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('left_bc_' . $freq, $test_data['left_bc_' . $freq] ?? '') ?>">
 									</div>
@@ -215,10 +216,10 @@
 					<button type="button" class="btn btn-primary" onclick="updateCharts()">Update Grafik</button>
 					<button type="button" class="btn btn-secondary" onclick="clearAudiometricData()">Clear Data Audiometri</button>
 					<button type="button" class="btn btn-success" onclick="showSimpanModal()">
-						<i class="fas fa-save"></i> <?= $action == 'edit' ? 'Update' : 'Simpan' ?> Data
+						<i class="fas fa-save"></i> <?= html_escape($action == 'edit' ? 'Update' : 'Simpan') ?> Data
 					</button>
 					<?php if ($action == 'edit'): ?>
-						<a href="<?= base_url('audiometri/export_pdf/' . $test_data['id']) ?>" class="btn btn-info" target="_blank">
+						<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>" class="btn btn-info" target="_blank">
 							<i class="fas fa-file-pdf"></i> Export PDF
 						</a>
 					<?php endif; ?>
@@ -242,7 +243,7 @@
 				isValid = false;
 				input.style.borderColor = '#dc3545';
 				if (!firstInvalidField) firstInvalidField = input;
-				
+
 				// Get field label for better error message
 				const label = document.querySelector(`label[for="${field}"]`);
 				const fieldName = label ? label.textContent.replace(':', '').replace('*', '').trim() : field;
@@ -512,7 +513,7 @@
 	// function updateImpressionAjax() {
 	//     const formData = new FormData(document.getElementById('audiometri-form'));
 
-	//     fetch('<?= base_url('audiometri/update_chart') ?>', {
+	//     fetch(<?= json_encode(base_url('audiometri/update_chart'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
 	//         method: 'POST',
 	//         body: formData,
 	//         headers: {
@@ -559,28 +560,31 @@
 		document.getElementById('modal-no-rm').textContent = noRM;
 		$('#rmHistoryModal').modal('show');
 
-		fetch('<?= base_url('audiometri/search_by_no_rm') ?>', {
+		fetch(<?= json_encode(base_url('audiometri/search_by_no_rm'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 					'X-Requested-With': 'XMLHttpRequest'
 				},
-				body: 'no_rm=' + encodeURIComponent(noRM)
+				body: withCsrf(new URLSearchParams({ no_rm: noRM })).toString()
 			})
 			.then(response => response.json())
 			.then(data => {
-				let content = '';
+				const escapeHistoryHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({
+                    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+                }[character]));
+                let content = '';
 				if (data.status && data.count > 0) {
 					content = '<div class="table-responsive"><table class="table table-striped">';
 					content += '<thead><tr><th>Tanggal</th><th>Nama</th><th>Perusahaan</th><th>Aksi</th></tr></thead><tbody>';
 
 					data.data.forEach(test => {
 						content += `<tr>
-                    <td>${test.tanggal_tes}</td>
-                    <td>${test.nama}</td>
-                    <td>${test.perusahaan}</td>
+                    <td>${escapeHistoryHtml(test.tanggal_tes)}</td>
+                    <td>${escapeHistoryHtml(test.nama)}</td>
+                    <td>${escapeHistoryHtml(test.perusahaan)}</td>
                     <td>
-                        <a href="<?= base_url('audiometri/view/') ?>${test.id}" class="btn btn-sm btn-primary" target="_blank">
+                        <a href="${escapeHistoryHtml(<?= json_encode(base_url('audiometri/view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + encodeURIComponent(test.id))}" class="btn btn-sm btn-primary" target="_blank">
                             Lihat Detail
                         </a>
                     </td>
@@ -625,10 +629,10 @@
 
 		const form = document.getElementById('audiometri-form');
 		isFormSubmitting = true;
-		
+
 		// Submit form using AJAX to handle response with SweetAlert
 		const formData = new FormData(form);
-		
+
 		fetch(form.action, {
 			method: 'POST',
 			body: formData,
@@ -649,12 +653,12 @@
 				}).then(() => {
 					// Redirect based on action
 					<?php if ($action == 'edit'): ?>
-						window.location.href = '<?= base_url('audiometri/view/' . ($test_data['id'] ?? '')) ?>';
+						window.location.href = <?= json_encode(base_url('audiometri/view/' . ($test_data['id'] ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 					<?php else: ?>
 						if (data.id) {
-							window.location.href = '<?= base_url('audiometri/view/') ?>' + data.id;
+							window.location.href = <?= json_encode(base_url('audiometri/view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + data.id;
 						} else {
-							window.location.href = '<?= base_url('audiometri/list_tests') ?>';
+							window.location.href = <?= json_encode(base_url('audiometri/list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 						}
 					<?php endif; ?>
 				});

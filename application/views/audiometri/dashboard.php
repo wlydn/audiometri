@@ -2,24 +2,25 @@
 // File: application/views/audiometri/dashboard.php
 ?>
 <div class="container-fluid p-4">
-    <div class="row mb-4">
-        <div class="col-12">
-           <h1 class="h1 text-center mb-4">
-                <i class="fas fa-chart-line text-primary me-3"></i>
-                Dashboard Audiometri
-            </h1>
-            <p class="text-center text-muted">Sistem Manajemen Tes Audiometri Perusahaan</p>
+    <div class="page-heading">
+        <div>
+            <span class="eyebrow">Ruang pemeriksaan</span>
+            <h1>Ringkasan audiometri</h1>
+            <p>Pantau pemeriksaan terbaru dan kelola hasil tes pasien.</p>
         </div>
+        <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary">
+            <i class="fas fa-plus me-2" aria-hidden="true"></i> Pemeriksaan baru
+        </a>
     </div>
 
     <!-- Statistics Cards -->
     <div class="row mb-4">
         <div class="col-md-3 mb-3">
-            <div class="card bg-primary text-white h-100">
+            <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($stats['total_tests']) ?></h4>
+                            <h4 class="card-title"><?= html_escape(number_format($stats['total_tests'])) ?></h4>
                             <p class="card-text">Total Tes</p>
                         </div>
                         <div class="align-self-center">
@@ -32,33 +33,33 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
-            <div class="card bg-success text-white h-100">
+            <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($stats['tests_this_month']) ?></h4>
+                            <h4 class="card-title"><?= html_escape(number_format($stats['tests_this_month'])) ?></h4>
                             <p class="card-text">Tes Bulan Ini</p>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-calendar-month fa-2x"></i>
+                            <i class="fas fa-calendar-days fa-2x"></i>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer bg-success border-0">
-                    <small><?= date('F Y') ?></small>
+                    <small><?= html_escape(date('F Y')) ?></small>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
-            <div class="card bg-info text-white h-100">
+            <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= count($stats['top_companies']) ?></h4>
-                            <p class="card-text">Perusahaan</p>
+                            <h4 class="card-title"><?= html_escape(count($stats['top_companies'])) ?></h4>
+                            <p class="card-text">Perusahaan teratas</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-building fa-2x"></i>
@@ -66,27 +67,24 @@
                     </div>
                 </div>
                 <div class="card-footer bg-info border-0">
-                    <small>Terdaftar aktif</small>
+                    <small>Maksimal lima perusahaan teratas</small>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
-            <div class="card bg-warning text-white h-100">
+            <div class="card stat-card h-100">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <h4 class="card-title">v2.0</h4>
-                            <p class="card-text">Versi Sistem</p>
+                            <span class="stat-label">Tindak lanjut</span>
+                            <h4 class="card-title"><?= html_escape(count(array_filter($recent_tests, function ($test) { return empty($test['impression']); }))) ?></h4>
+                            <p class="card-text">Menunggu review dokter</p>
                         </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-code-branch fa-2x"></i>
-                        </div>
+                        <span class="stat-icon"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span>
                     </div>
                 </div>
-                <div class="card-footer bg-warning border-0">
-                    <small>CodeIgniter 3</small>
-                </div>
+                <div class="card-footer border-0"><small>Dari <?= html_escape(count($recent_tests)) ?> pemeriksaan terbaru</small></div>
             </div>
         </div>
     </div>
@@ -117,9 +115,9 @@
                                 <tbody>
                                     <?php foreach ($recent_tests as $test): ?>
                                     <tr>
-                                        <td><?= date('d/m/Y', strtotime($test['tanggal_tes'])) ?></td>
-                                        <td><?= $test['nama'] ?></td>
-                                        <td><?= $test['perusahaan'] ?></td>
+                                        <td><?= html_escape(date('d/m/Y', strtotime($test['tanggal_tes']))) ?></td>
+                                        <td><?= html_escape($test['nama']) ?></td>
+                                        <td><?= html_escape($test['perusahaan']) ?></td>
                                         <td>
                                             <?php
                                             $impression = $test['impression'];
@@ -132,15 +130,15 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="<?= base_url('audiometri/view/'.$test['id']) ?>" 
+                                                <a href="<?= html_escape(base_url('audiometri/view/'.$test['id'])) ?>"
                                                    class="btn btn-outline-primary" title="Lihat Detail">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="<?= base_url('audiometri/edit/'.$test['id']) ?>" 
+                                                <a href="<?= html_escape(base_url('audiometri/edit/'.$test['id'])) ?>"
                                                    class="btn btn-outline-secondary" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="<?= base_url('audiometri/export_pdf/'.$test['id']) ?>" 
+                                                <a href="<?= html_escape(base_url('audiometri/export_pdf/'.$test['id'])) ?>"
                                                    class="btn btn-outline-info" title="Export PDF" target="_blank">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
@@ -152,7 +150,7 @@
                             </table>
                         </div>
                         <div class="text-center mt-3">
-                            <a href="<?= base_url('audiometri/list_tests') ?>" class="btn btn-primary">
+                            <a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-primary">
                                 Lihat Semua Tes <i class="fas fa-arrow-right ms-1"></i>
                             </a>
                         </div>
@@ -160,7 +158,7 @@
                         <div class="text-center py-4">
                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                             <p class="text-muted">Belum ada tes yang dilakukan</p>
-                            <a href="<?= base_url('audiometri/create') ?>" class="btn btn-primary">
+                            <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary">
                                 Buat Tes Pertama
                             </a>
                         </div>
@@ -183,14 +181,14 @@
                         <?php foreach ($stats['top_companies'] as $company): ?>
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div>
-                                <h6 class="mb-0"><?= $company['perusahaan'] ?></h6>
-                                <small class="text-muted"><?= $company['count'] ?> tes</small>
+                                <h6 class="mb-0"><?= html_escape($company['perusahaan']) ?></h6>
+                                <small class="text-muted"><?= html_escape($company['count']) ?> tes</small>
                             </div>
                             <div class="progress" style="width: 60px; height: 20px;">
-                                <?php 
+                                <?php
                                 $percentage = ($company['count'] / $stats['total_tests']) * 100;
                                 ?>
-                                <div class="progress-bar bg-primary" style="width: <?= $percentage ?>%"></div>
+                                <div class="progress-bar bg-primary" style="width: <?= html_escape(max(0, min(100, (float) $percentage))) ?>%"></div>
                             </div>
                         </div>
                         <?php endforeach; ?>
@@ -203,7 +201,7 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="row mt-4">
+    <div class="row mt-4 quick-actions">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-light">
@@ -215,13 +213,13 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3 mb-3">
-                            <a href="<?= base_url('audiometri/create') ?>" class="btn btn-lg btn-primary w-100">
+                            <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-lg btn-primary w-100">
                                 <i class="fas fa-plus fa-2x mb-2"></i><br>
                                 Tes Baru
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <a href="<?= base_url('audiometri/list_tests') ?>" class="btn btn-lg btn-secondary w-100">
+                            <a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-lg btn-secondary w-100">
                                 <i class="fas fa-list fa-2x mb-2"></i><br>
                                 Daftar Tes
                             </a>
@@ -254,15 +252,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= base_url('audiometri/list_tests') ?>" method="get">
+                <form action="<?= html_escape(base_url('audiometri/list_tests')) ?>" method="get">
                     <div class="mb-3">
                         <label for="search_nama" class="form-label">Nama Pasien</label>
-                        <input type="text" class="form-control" id="search_nama" name="nama" 
+                        <input type="text" class="form-control" id="search_nama" name="nama"
                                placeholder="Masukkan nama pasien">
                     </div>
                     <div class="mb-3">
                         <label for="search_perusahaan" class="form-label">Perusahaan</label>
-                        <input type="text" class="form-control" id="search_perusahaan" name="perusahaan" 
+                        <input type="text" class="form-control" id="search_perusahaan" name="perusahaan"
                                placeholder="Masukkan nama perusahaan">
                     </div>
                     <div class="text-center">

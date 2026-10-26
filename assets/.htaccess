@@ -1,0 +1,14 @@
+# Static assets only: never execute server-side scripts from here.
+Options -Indexes -ExecCGI
+<FilesMatch "\.(?i:php[0-9]?|phtml|pht|phar|cgi|pl|py|sh|asp|aspx|jsp)$">
+    Require all denied
+</FilesMatch>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>

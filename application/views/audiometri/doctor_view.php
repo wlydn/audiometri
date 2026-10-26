@@ -21,11 +21,11 @@
 	<div class="card">
 		<div class="card-header bg-light d-flex justify-content-between align-items-center">
 			<h5 class="card-title mb-0">
-				Data Pasien Hari Ini (<?= date('d/m/Y') ?>) - <?= number_format(count($tests)) ?> pasien
+				Data Pasien Hari Ini (<?= html_escape(date('d/m/Y')) ?>) - <?= html_escape(number_format(count($tests))) ?> pasien
 			</h5>
 			<div class="text-muted">
 				<i class="fas fa-calendar-day me-1"></i>
-				<?= date('l, d F Y') ?>
+				<?= html_escape(date('l, d F Y')) ?>
 			</div>
 		</div>
 		<div class="card-body p-0">
@@ -51,16 +51,16 @@
 							foreach ($tests as $test):
 							?>
 								<tr>
-									<td><?= $no++ ?></td>
-									<td class="vertical-align: top"><?= date('d/m/Y', strtotime($test['tanggal_tes'])) ?></td>
-									<td><?= $test['no_rm'] ?></td>
+									<td><?= html_escape($no++) ?></td>
+									<td class="vertical-align: top"><?= html_escape(date('d/m/Y', strtotime($test['tanggal_tes']))) ?></td>
+									<td><?= html_escape($test['no_rm']) ?></td>
 									<td class="td-nama-pasien">
-										<strong><?= $test['nama'] ?></strong><br>
-										<small class="text-muted"><?= $test['jenis_kelamin'] ?></small>
+										<strong><?= html_escape($test['nama']) ?></strong><br>
+										<small class="text-muted"><?= html_escape($test['jenis_kelamin']) ?></small>
 									</td>
-									<td><?= $test['umur'] ?> tahun</td>
-									<td><?= $test['perusahaan'] ?></td>
-									<td><?= $test['jabatan'] ?></td>
+									<td><?= html_escape($test['umur']) ?> tahun</td>
+									<td><?= html_escape($test['perusahaan']) ?></td>
+									<td><?= html_escape($test['jabatan']) ?></td>
 									<td>
 										<?php
 										$impression = $test['impression'];
@@ -72,7 +72,7 @@
 										?>
 									</td>
 									<td>
-										<a href="<?= base_url('audiometri/review_dokter/' . $test['id']) ?>"
+										<a href="<?= html_escape(base_url('audiometri/review_dokter/' . $test['id'])) ?>"
 											class="btn btn-sm btn-outline-primary"
 											title="Review Data">
 											<i class="fas fa-edit"></i> Review

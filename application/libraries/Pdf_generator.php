@@ -87,11 +87,12 @@ class Pdf_generator {
      */
     private function _generate_html_fallback($html, $filename) {
         header('Content-Type: text/html; charset=UTF-8');
-        header('Content-Disposition: inline; filename="'.str_replace('.pdf', '.html', $filename).'"');
+        $download_name = preg_replace('/[^A-Za-z0-9_.-]/', '_', str_replace('.pdf', '.html', $filename));
+        header('Content-Disposition: inline; filename="'.$download_name.'"');
         
         echo '<!DOCTYPE html>';
         echo '<html><head>';
-        echo '<title>'.str_replace('.pdf', '', $filename).'</title>';
+        echo '<title>'.htmlspecialchars(str_replace('.pdf', '', $filename), ENT_QUOTES, 'UTF-8').'</title>';
         echo '<style>
             @media print {
                 .no-print { display: none; }

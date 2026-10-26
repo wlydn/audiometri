@@ -8,14 +8,14 @@
 
 		<?php if ($this->session->flashdata('error')): ?>
 			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<?= $this->session->flashdata('error') ?>
+				<?= html_escape($this->session->flashdata('error')) ?>
 				<button type="button" class="close" data-dismiss="alert">&times;</button>
 			</div>
 		<?php endif; ?>
 
 		<?php if ($this->session->flashdata('success')): ?>
 			<div class="alert alert-success d-flex align-items-center" role="alert">
-				<?= $this->session->flashdata('success') ?>
+				<?= html_escape($this->session->flashdata('success')) ?>
 				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
 					<use xlink:href="#check-circle-fill" />
 				</svg>
@@ -28,37 +28,37 @@
 		<div class="patient-info">
 			<div class="info-group">
 				<label for="perusahaan">Perusahaan:</label>
-				<span><?= htmlspecialchars($test_data['perusahaan'] ?? 'N/A') ?></span>
+				<span><?= html_escape($test_data['perusahaan'] ?? 'N/A') ?></span>
 			</div>
 
 			<div class="info-group">
 				<label for="jabatan">Jabatan:</label>
-				<span><?= htmlspecialchars($test_data['jabatan'] ?? 'N/A') ?></span>
+				<span><?= html_escape($test_data['jabatan'] ?? 'N/A') ?></span>
 			</div>
 
 			<div class="info-group">
 				<label for="nama">Nama:</label>
-				<span><?= htmlspecialchars($test_data['nama'] ?? 'N/A') ?></span>
+				<span><?= html_escape($test_data['nama'] ?? 'N/A') ?></span>
 			</div>
 
 			<div class="info-group">
 				<label for="umur">Umur:</label>
-				<span><?= htmlspecialchars($test_data['umur'] ?? 'N/A') ?> Tahun</span>
+				<span><?= html_escape($test_data['umur'] ?? 'N/A') ?> Tahun</span>
 			</div>
 
 			<div class="info-group">
 				<label for="tanggal_tes">Tanggal Tes:</label>
-				<span><?= date('d F Y', strtotime($test_data['tanggal_tes'])) ?></span>
+				<span><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></span>
 			</div>
 
 			<div class="info-group">
 				<label for="jenis_kelamin">Jenis Kelamin:</label>
-				<span><?= htmlspecialchars($test_data['jenis_kelamin'] ?? 'N/A') ?></span>
+				<span><?= html_escape($test_data['jenis_kelamin'] ?? 'N/A') ?></span>
 			</div>
 
 			<div class="info-group">
 				<label for="no_rm">No RM:</label>
-				<span><?= htmlspecialchars($test_data['no_rm'] ?? 'N/A') ?></span>
+				<span><?= html_escape($test_data['no_rm'] ?? 'N/A') ?></span>
 			</div>
 		</div>
 
@@ -98,13 +98,13 @@
 								?>
 								<tr class="ac-row">
 									<td><strong>AC (dB)</strong></td>
-									<td id="right-ac-250-display"><?= $test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-' ?></td>
-									<td id="right-ac-500-display"><?= $test_data['right_ac_500'] ?></td>
-									<td id="right-ac-1000-display"><?= $test_data['right_ac_1000'] ?></td>
-									<td id="right-ac-2000-display"><?= $test_data['right_ac_2000'] ?></td>
-									<td id="right-ac-3000-display"><?= $test_data['right_ac_3000'] ?></td>
-									<td id="right-ac-4000-display"><?= $test_data['right_ac_4000'] ?></td>
-									<td id="right-ac-6000-display"><?= $test_data['right_ac_6000'] ?></td>
+									<td id="right-ac-250-display"><?= html_escape($test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-') ?></td>
+									<td id="right-ac-500-display"><?= html_escape($test_data['right_ac_500']) ?></td>
+									<td id="right-ac-1000-display"><?= html_escape($test_data['right_ac_1000']) ?></td>
+									<td id="right-ac-2000-display"><?= html_escape($test_data['right_ac_2000']) ?></td>
+									<td id="right-ac-3000-display"><?= html_escape($test_data['right_ac_3000']) ?></td>
+									<td id="right-ac-4000-display"><?= html_escape($test_data['right_ac_4000']) ?></td>
+									<td id="right-ac-6000-display"><?= html_escape($test_data['right_ac_6000']) ?></td>
 									<?php
 									$right_ac_values = [];
 									foreach ($frequencies as $freq) {
@@ -112,17 +112,17 @@
 									}
 									$right_ac_average = array_sum($right_ac_values) / count($right_ac_values);
 									?>
-									<td id="right-ac-average" class="average-cell"><?= !empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '0.0' ?></td>
+									<td id="right-ac-average" class="average-cell"><?= html_escape(!empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '0.0') ?></td>
 								</tr>
 								<tr class="bc-row">
 									<td><strong>BC (dB)</strong></td>
-									<td id="right-bc-250-display"><?= $test_data['right_bc_250'] !== null ? $test_data['right_bc_250'] : '-' ?></td>
-									<td id="right-bc-500-display"><?= $test_data['right_bc_500'] ?></td>
-									<td id="right-bc-1000-display"><?= $test_data['right_bc_1000'] ?></td>
-									<td id="right-bc-2000-display"><?= $test_data['right_bc_2000'] ?></td>
-									<td id="right-bc-3000-display"><?= $test_data['right_bc_3000'] ?></td>
-									<td id="right-bc-4000-display"><?= $test_data['right_bc_4000'] ?></td>
-									<td id="right-bc-6000-display"><?= $test_data['right_bc_6000'] ?></td>
+									<td id="right-bc-250-display"><?= html_escape($test_data['right_bc_250'] !== null ? $test_data['right_bc_250'] : '-') ?></td>
+									<td id="right-bc-500-display"><?= html_escape($test_data['right_bc_500']) ?></td>
+									<td id="right-bc-1000-display"><?= html_escape($test_data['right_bc_1000']) ?></td>
+									<td id="right-bc-2000-display"><?= html_escape($test_data['right_bc_2000']) ?></td>
+									<td id="right-bc-3000-display"><?= html_escape($test_data['right_bc_3000']) ?></td>
+									<td id="right-bc-4000-display"><?= html_escape($test_data['right_bc_4000']) ?></td>
+									<td id="right-bc-6000-display"><?= html_escape($test_data['right_bc_6000']) ?></td>
 									<?php
 									$right_bc_values = [];
 									foreach ($frequencies as $freq) {
@@ -130,7 +130,7 @@
 										if ($value !== null) $right_bc_values[] = $value;
 									}
 									?>
-									<td id="right-bc-average" class="average-cell"><?= !empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '0.0' ?></td>
+									<td id="right-bc-average" class="average-cell"><?= html_escape(!empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '0.0') ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -170,13 +170,13 @@
 								?>
 								<tr class="ac-row">
 									<td><strong>AC (dB)</strong></td>
-									<td id="left-ac-250-display"><?= $test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-' ?></td>
-									<td id="left-ac-500-display"><?= $test_data['left_ac_500'] ?></td>
-									<td id="left-ac-1000-display"><?= $test_data['left_ac_1000'] ?></td>
-									<td id="left-ac-2000-display"><?= $test_data['left_ac_2000'] ?></td>
-									<td id="left-ac-3000-display"><?= $test_data['left_ac_3000'] ?></td>
-									<td id="left-ac-4000-display"><?= $test_data['left_ac_4000'] ?></td>
-									<td id="left-ac-6000-display"><?= $test_data['left_ac_6000'] ?></td>
+									<td id="left-ac-250-display"><?= html_escape($test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-') ?></td>
+									<td id="left-ac-500-display"><?= html_escape($test_data['left_ac_500']) ?></td>
+									<td id="left-ac-1000-display"><?= html_escape($test_data['left_ac_1000']) ?></td>
+									<td id="left-ac-2000-display"><?= html_escape($test_data['left_ac_2000']) ?></td>
+									<td id="left-ac-3000-display"><?= html_escape($test_data['left_ac_3000']) ?></td>
+									<td id="left-ac-4000-display"><?= html_escape($test_data['left_ac_4000']) ?></td>
+									<td id="left-ac-6000-display"><?= html_escape($test_data['left_ac_6000']) ?></td>
 									<?php
 									$left_ac_values = [];
 									foreach ($frequencies as $freq) {
@@ -184,17 +184,17 @@
 									}
 									$left_ac_average = array_sum($left_ac_values) / count($left_ac_values);
 									?>
-									<td id="left-ac-average" class="average-cell"><?= !empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '0.0' ?></td>
+									<td id="left-ac-average" class="average-cell"><?= html_escape(!empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '0.0') ?></td>
 								</tr>
 								<tr class="bc-row">
 									<td><strong>BC (dB)</strong></td>
-									<td id="left-bc-250-display"><?= $test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-' ?></td>
-									<td id="left-bc-500-display"><?= $test_data['left_bc_500'] ?></td>
-									<td id="left-bc-1000-display"><?= $test_data['left_bc_1000'] ?></td>
-									<td id="left-bc-2000-display"><?= $test_data['left_bc_2000'] ?></td>
-									<td id="left-bc-3000-display"><?= $test_data['left_bc_3000'] ?></td>
-									<td id="left-bc-4000-display"><?= $test_data['left_bc_4000'] ?></td>
-									<td id="left-bc-6000-display"><?= $test_data['left_bc_6000'] ?></td>
+									<td id="left-bc-250-display"><?= html_escape($test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-') ?></td>
+									<td id="left-bc-500-display"><?= html_escape($test_data['left_bc_500']) ?></td>
+									<td id="left-bc-1000-display"><?= html_escape($test_data['left_bc_1000']) ?></td>
+									<td id="left-bc-2000-display"><?= html_escape($test_data['left_bc_2000']) ?></td>
+									<td id="left-bc-3000-display"><?= html_escape($test_data['left_bc_3000']) ?></td>
+									<td id="left-bc-4000-display"><?= html_escape($test_data['left_bc_4000']) ?></td>
+									<td id="left-bc-6000-display"><?= html_escape($test_data['left_bc_6000']) ?></td>
 									<?php
 									$left_bc_values = [];
 									foreach ($frequencies as $freq) {
@@ -202,7 +202,7 @@
 										if ($value !== null) $left_bc_values[] = $value;
 									}
 									?>
-									<td id="left-bc-average" class="average-cell"><?= !empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '0.0' ?></td>
+									<td id="left-bc-average" class="average-cell"><?= html_escape(!empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '0.0') ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -307,7 +307,7 @@
 					showConfirmButton: false
 				}).then(() => {
 					// After 3 seconds, redirect to doctor_view
-					window.location.href = '<?= base_url('audiometri/doctor_view') ?>';
+					window.location.href = <?= json_encode(base_url('audiometri/doctor_view'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 				});
 			} else {
 				Swal.fire({
@@ -333,7 +333,7 @@
 
 <script>
 	// JavaScript untuk menampilkan audiogram
-	const testData = <?= json_encode($test_data) ?>;
+	const testData = <?= json_encode($test_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 
 	function initViewCharts() {
 		createViewChart('right-chart-view');

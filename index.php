@@ -55,7 +55,7 @@
  */
 	// define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
 	// Development
-define('ENVIRONMENT', 'development');
+define('ENVIRONMENT', getenv('CI_ENV') ?: 'production');
 
 // Production
 // define('ENVIRONMENT', 'production');

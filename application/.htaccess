@@ -1,16 +1,7 @@
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+# Application code is not web-accessible.
+<IfModule authz_core_module>
+    Require all denied
 </IfModule>
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteCond %{REQUEST_METHOD} OPTIONS
-    RewriteRule ^(.*)$ $1 [R=200,L]
-</IfModule>
-# Enable mod_headers if not already enabled
-<IfModule mod_headers.c>
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET, POST, DELETE, PUT, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type, X-Requested-With, Authorization"
+<IfModule !authz_core_module>
+    Deny from all
 </IfModule>

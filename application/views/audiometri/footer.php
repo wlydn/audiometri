@@ -1,13 +1,13 @@
 <?php
 // File: application/views/audiometri/footer.php
 ?>
-    </div> <!-- End Content Wrapper -->
+    </main> <!-- End Content Wrapper -->
 
     <!-- Footer -->
     <div class="footer-custom">
         <p class="mb-0">
-            Made with <i class="fas fa-heart text-danger"></i> by ArChiee | 
-            Copyright &copy; <?= date('Y') ?> All Rights Reserved.
+            Audiometri &middot; Manajemen pemeriksaan pendengaran
+            <span class="float-md-end">&copy; <?= html_escape(date('Y')) ?> ArChiee</span>
         </p>
     </div>
 
@@ -20,7 +20,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="reportForm" action="<?= base_url('audiometri/export_excel') ?>" method="get">
+                    <form id="reportForm" action="<?= html_escape(base_url('audiometri/export_excel')) ?>" method="get">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -37,7 +37,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="perusahaan_filter" class="form-label">Perusahaan (Opsional)</label>
-                            <input type="text" class="form-control" id="perusahaan_filter" name="perusahaan" 
+                            <input type="text" class="form-control" id="perusahaan_filter" name="perusahaan"
                                    placeholder="Masukkan nama perusahaan">
                         </div>
                     </form>
@@ -54,21 +54,21 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     <!-- Custom JS -->
     <script>
         function showReportModal() {
             new bootstrap.Modal(document.getElementById('reportModal')).show();
         }
-        
+
         // Auto-hide alerts after 5 seconds
         setTimeout(function() {
             $('.alert').fadeOut('slow');
         }, 5000);
-        
+
         // Confirm delete actions with SweetAlert
         function confirmDelete(url, message = 'Yakin ingin menghapus data ini?') {
             Swal.fire({
@@ -86,7 +86,7 @@
                 }
             });
         }
-        
+
         // AJAX delete function with SweetAlert
         function deleteRecord(id, redirectUrl = null) {
             Swal.fire({
@@ -112,9 +112,10 @@
                             Swal.showLoading();
                         }
                     });
-                    
-					fetch('<?= base_url('audiometri/delete/') ?>' + id, {
+
+					fetch(<?= json_encode(base_url('audiometri/delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
 						method: 'POST',
+						body: withCsrf(),
 						headers: {
 							'X-Requested-With': 'XMLHttpRequest'
 						}

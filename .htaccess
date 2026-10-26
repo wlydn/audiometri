@@ -1,9 +1,25 @@
+Options -Indexes
+
 RewriteEngine On
+
+# Internal directories and VCS data are never public.
+RewriteRule ^(application|system|\.git)(/|$) - [F,L,NC]
+# Hidden files (.env, .git*, .htpasswd, ...)
+RewriteRule (^|/)\.[^/]+ - [F,L]
+# Backups, dumps and logs
+RewriteRule \.(?:sql|env|ini|log|bak|old|dist)$ - [F,L,NC]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ index.php/$1 [L]
 
-# Security Headers
-Header always set X-Content-Type-Options nosniff
-Header always set X-Frame-Options DENY
-Header always set X-XSS-Protection "1; mode=block"
+<FilesMatch "^(composer\.(json|lock)|audiometri_db\.sql|license\.txt|readme\.rst)$">
+    Require all denied
+</FilesMatch>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

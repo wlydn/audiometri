@@ -12,21 +12,21 @@
 					</h1>
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="<?= base_url('audiometri') ?>">Dashboard</a></li>
-							<li class="breadcrumb-item"><a href="<?= base_url('audiometri/list_tests') ?>">Daftar Tes</a></li>
-							<li class="breadcrumb-item active"><?= $test_data['nama'] ?></li>
+							<li class="breadcrumb-item"><a href="<?= html_escape(base_url('audiometri')) ?>">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="<?= html_escape(base_url('audiometri/list_tests')) ?>">Daftar Tes</a></li>
+							<li class="breadcrumb-item active"><?= html_escape($test_data['nama']) ?></li>
 						</ol>
 					</nav>
 				</div>
 				<div class="btn-group">
-					<a href="<?= base_url('audiometri/edit/' . $test_data['id']) ?>" class="btn btn-warning">
+					<a href="<?= html_escape(base_url('audiometri/edit/' . $test_data['id'])) ?>" class="btn btn-warning">
 						<i class="fas fa-edit me-1"></i> Edit
 					</a>
-					<a href="<?= base_url('audiometri/export_pdf/' . $test_data['id']) ?>"
+					<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>"
 						class="btn btn-info" target="_blank">
 						<i class="fas fa-file-pdf me-1"></i> Export PDF
 					</a>
-					<button onclick="showDeleteModal(<?= $test_data['id'] ?>)"
+					<button onclick="showDeleteModal(<?= html_escape((int) $test_data['id']) ?>)"
 						class="btn btn-danger">
 						<i class="fas fa-trash me-1"></i> Hapus
 					</button>
@@ -49,19 +49,19 @@
 					<table class="table table-borderless">
 						<tr>
 							<td class="fw-bold">Nama:</td>
-							<td><?= $test_data['nama'] ?></td>
+							<td><?= html_escape($test_data['nama']) ?></td>
 						</tr>
 						<tr>
 							<td class="fw-bold">No RM:</td>
-							<td><?= $test_data['no_rm'] ?></td>
+							<td><?= html_escape($test_data['no_rm']) ?></td>
 						</tr>
 						<tr>
 							<td class="fw-bold">Umur:</td>
-							<td><?= $test_data['umur'] ?> tahun</td>
+							<td><?= html_escape($test_data['umur']) ?> tahun</td>
 						</tr>
 						<tr>
 							<td class="fw-bold">Jenis Kelamin:</td>
-							<td><?= $test_data['jenis_kelamin'] ?></td>
+							<td><?= html_escape($test_data['jenis_kelamin']) ?></td>
 						</tr>
 					</table>
 				</div>
@@ -69,19 +69,19 @@
 					<table class="table table-borderless">
 						<tr>
 							<td class="fw-bold">Perusahaan:</td>
-							<td><?= $test_data['perusahaan'] ?></td>
+							<td><?= html_escape($test_data['perusahaan']) ?></td>
 						</tr>
 						<tr>
 							<td class="fw-bold">Jabatan:</td>
-							<td><?= $test_data['jabatan'] ?></td>
+							<td><?= html_escape($test_data['jabatan']) ?></td>
 						</tr>
 						<tr>
 							<td class="fw-bold">Tanggal Tes:</td>
-							<td><?= date('d F Y', strtotime($test_data['tanggal_tes'])) ?></td>
+							<td><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></td>
 						</tr>
 						<tr>
 							<td class="fw-bold">Terakhir Update:</td>
-							<td><?= date('d F Y H:i', strtotime($test_data['updated_at'])) ?></td>
+							<td><?= html_escape(date('d F Y H:i', strtotime($test_data['updated_at']))) ?></td>
 						</tr>
 					</table>
 				</div>
@@ -135,13 +135,13 @@
 											?>
 											<tr>
 												<td style="font-weight: bold;">AC (dB)</td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-' ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_500'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_1000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_2000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_3000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_4000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_ac_6000'] ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-') ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_500']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_1000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_2000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_3000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_4000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_6000']) ?></td>
 												<?php
 												$right_ac_values = [];
 												foreach ($frequencies as $freq) {
@@ -149,17 +149,17 @@
 													if ($value !== null) $right_ac_values[] = $value;
 												}
 												?>
-												<td style="padding-left: 10px;"><?= !empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '-' ?></td>
+												<td style="padding-left: 10px;"><?= html_escape(!empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '-') ?></td>
 											</tr>
 											<tr>
 												<td style="font-weight: bold;">BC (dB)</td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_250'] !== null ? $test_data['left_bc_250'] : '-' ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_500'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_1000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_2000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_3000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_4000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['right_bc_6000'] ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_250'] !== null ? $test_data['right_bc_250'] : '-') ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_500']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_1000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_2000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_3000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_4000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_6000']) ?></td>
 												<?php
 												$right_bc_values = [];
 												foreach ($frequencies as $freq) {
@@ -167,7 +167,7 @@
 													if ($value !== null) $right_bc_values[] = $value;
 												}
 												?>
-												<td style="padding-left: 10px;"><?= !empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '-' ?></td>
+												<td style="padding-left: 10px;"><?= html_escape(!empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '-') ?></td>
 											</tr>
 										</tbody>
 									</table>
@@ -210,13 +210,13 @@
 										<tbody>
 											<tr>
 												<td style="font-weight: bold;">AC (dB)</td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-' ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_500'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_1000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_2000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_3000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_4000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_ac_6000'] ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-') ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_500']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_1000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_2000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_3000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_4000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_6000']) ?></td>
 												<?php
 												$left_ac_values = [];
 												foreach ($frequencies as $freq) {
@@ -224,17 +224,17 @@
 													if ($value !== null) $left_ac_values[] = $value;
 												}
 												?>
-												<td style="padding-left: 10px;"><?= !empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '-' ?></td>
+												<td style="padding-left: 10px;"><?= html_escape(!empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '-') ?></td>
 											</tr>
 											<tr>
 												<td style="font-weight: bold;">BC (dB)</td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-' ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_500'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_1000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_2000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_3000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_4000'] ?></td>
-												<td style="padding-left: 10px;"><?= $test_data['left_bc_6000'] ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-') ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_500']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_1000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_2000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_3000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_4000']) ?></td>
+												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_6000']) ?></td>
 												<?php
 												$left_bc_values = [];
 												foreach ($frequencies as $freq) {
@@ -242,7 +242,7 @@
 													if ($value !== null) $left_bc_values[] = $value;
 												}
 												?>
-												<td style="padding-left: 10px;"><?= !empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '-' ?></td>
+												<td style="padding-left: 10px;"><?= html_escape(!empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '-') ?></td>
 											</tr>
 										</tbody>
 									</table>
@@ -253,7 +253,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Legend -->
 		<div class="row mb-4">
 			<div class="legend-view">
@@ -291,7 +291,7 @@
 		<div class="card-body">
 			<div class="impression">
 				<p style="font-size: 24px;">
-					<?= empty($test_data['impression']) ? 'Belum direview oleh dokter' : htmlspecialchars($test_data['impression']) ?>
+					<?= empty($test_data['impression']) ? 'Belum direview oleh dokter' : html_escape($test_data['impression']) ?>
 				</p>
 			</div>
 		</div>
@@ -299,17 +299,17 @@
 
 	<!-- Action Buttons -->
 	<div class="text-center">
-		<a href="<?= base_url('audiometri/list_tests') ?>" class="btn btn-secondary me-2">
+		<a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-secondary me-2">
 			<i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
 		</a>
-		<a href="<?= base_url('audiometri/edit/' . $test_data['id']) ?>" class="btn btn-warning me-2">
+		<a href="<?= html_escape(base_url('audiometri/edit/' . $test_data['id'])) ?>" class="btn btn-warning me-2">
 			<i class="fas fa-edit me-1"></i> Edit Data
 		</a>
-		<a href="<?= base_url('audiometri/export_pdf/' . $test_data['id']) ?>"
+		<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>"
 			class="btn btn-info me-2" target="_blank">
 			<i class="fas fa-file-pdf me-1"></i> Export PDF
 		</a>
-		<a href="<?= base_url('audiometri/create') ?>" class="btn btn-success">
+		<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-success">
 			<i class="fas fa-plus me-1"></i> Tes Baru
 		</a>
 	</div>
@@ -317,7 +317,7 @@
 
 <!-- Hidden data for JavaScript -->
 <script type="application/json" id="test-data">
-	<?= json_encode($test_data) ?>
+	<?= json_encode($test_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>
 </script>
 
 
@@ -348,8 +348,9 @@
 				});
 
 				// Make AJAX request to delete
-				fetch('<?= base_url('audiometri/delete/') ?>' + id, {
+				fetch(<?= json_encode(base_url('audiometri/delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
 					method: 'POST',
+					body: withCsrf(),
 					headers: {
 						'X-Requested-With': 'XMLHttpRequest'
 					}
@@ -365,7 +366,7 @@
 							timerProgressBar: true,
 							showConfirmButton: false
 						}).then(() => {
-							window.location.href = '<?= base_url('audiometri/list_tests') ?>';
+							window.location.href = <?= json_encode(base_url('audiometri/list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 						});
 					} else {
 						Swal.fire({
