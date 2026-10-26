@@ -26,6 +26,16 @@ class Audiometri extends CI_Controller
 	{
 		parent::__construct();
 
+		// Canonicalize old controller-prefixed bookmarks without redirecting POST bodies.
+		if (in_array($this->input->method(TRUE), ['GET', 'HEAD'], true)
+			&& $this->uri->segment(1) === 'audiometri') {
+			$this->load->helper('url');
+			$path = implode('/', array_slice($this->uri->segment_array(), 1));
+			$query = $this->input->server('QUERY_STRING');
+			redirect(base_url($path) . ($query ? '?' . $query : ''), 'location', 301);
+			return;
+		}
+
 		// Enable error reporting untuk debugging
 		if (ENVIRONMENT !== 'production') {
 			error_reporting(E_ALL);
@@ -103,14 +113,14 @@ class Audiometri extends CI_Controller
 		try {
 			if (!$id || !is_numeric($id)) {
 				$this->session->set_flashdata('error', 'ID tidak valid');
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 				return;
 			}
 
 			$test_data = $this->Audiometri_model->get_test($id);
 			if (!$test_data) {
 				$this->session->set_flashdata('error', 'Data tes tidak ditemukan');
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 				return;
 			}
 
@@ -182,14 +192,14 @@ class Audiometri extends CI_Controller
 		try {
 			if (!$id || !is_numeric($id)) {
 				$this->session->set_flashdata('error', 'ID tidak valid');
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 				return;
 			}
 
 			$test_data = $this->Audiometri_model->get_test($id);
 			if (!$test_data) {
 				$this->session->set_flashdata('error', 'Data tes tidak ditemukan');
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 				return;
 			}
 
@@ -233,7 +243,7 @@ class Audiometri extends CI_Controller
 				} else {
 					$this->session->set_flashdata('error', $result['message']);
 				}
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 			}
 		} catch (Exception $e) {
 			log_message('error', 'Delete test error: ' . $e->getMessage());
@@ -333,9 +343,9 @@ class Audiometri extends CI_Controller
 
 				$this->session->set_flashdata('error', $validation_result['message']);
 				if ($id) {
-					redirect('audiometri/edit/' . $id);
+					redirect('edit/' . $id);
 				} else {
-					redirect('audiometri/create');
+					redirect('create');
 				}
 				return;
 			}
@@ -351,9 +361,9 @@ class Audiometri extends CI_Controller
 
 				$this->session->set_flashdata('error', $form_data_result['message']);
 				if ($id) {
-					redirect('audiometri/edit/' . $id);
+					redirect('edit/' . $id);
 				} else {
-					redirect('audiometri/create');
+					redirect('create');
 				}
 				return;
 			}
@@ -363,12 +373,12 @@ class Audiometri extends CI_Controller
 			// STEP 3: Save or update data
 			if ($id) {
 				$result = $this->Audiometri_model->update_test($id, $data);
-				$redirect_success = 'audiometri/view/' . $id;
-				$redirect_error = 'audiometri/edit/' . $id;
+				$redirect_success = 'view/' . $id;
+				$redirect_error = 'edit/' . $id;
 			} else {
 				$result = $this->Audiometri_model->save_test($data);
-				$redirect_success = isset($result['id']) ? 'audiometri/view/' . $result['id'] : 'audiometri/list_tests';
-				$redirect_error = 'audiometri/create';
+				$redirect_success = isset($result['id']) ? 'view/' . $result['id'] : 'list_tests';
+				$redirect_error = 'create';
 			}
 
 			// STEP 4: Handle response
@@ -399,9 +409,9 @@ class Audiometri extends CI_Controller
 			} else {
 				$this->session->set_flashdata('error', $error_message);
 				if ($id) {
-					redirect('audiometri/edit/' . $id);
+					redirect('edit/' . $id);
 				} else {
-					redirect('audiometri/create');
+					redirect('create');
 				}
 			}
 		}
@@ -581,7 +591,7 @@ class Audiometri extends CI_Controller
 		$current_page = max(1, min($current_page, $total_pages));
 		
 		// Build base URL with filters
-		$base_url = base_url('audiometri/list_tests');
+		$base_url = base_url('list_tests');
 		$query_params = [];
 		
 		if (!empty($filters['nama'])) {
@@ -709,7 +719,7 @@ class Audiometri extends CI_Controller
 			$data['logo_base64'] = $this->get_logo_for_pdf();
 			if (!$test_data) {
 				$this->session->set_flashdata('error', 'Data tes tidak ditemukan');
-				redirect('audiometri/list_tests');
+				redirect('list_tests');
 				return;
 			}
 
@@ -745,7 +755,7 @@ class Audiometri extends CI_Controller
 				show_error('PDF Export Error: ' . $e->getMessage());
 			} else {
 				$this->session->set_flashdata('error', 'Gagal mengexport PDF. Silakan coba lagi.');
-				redirect('audiometri/view/' . $id);
+				redirect('view/' . $id);
 			}
 		}
 	}
@@ -916,7 +926,7 @@ class Audiometri extends CI_Controller
 		} catch (Exception $e) {
 			log_message('error', 'Export Excel error: ' . $e->getMessage());
 			$this->session->set_flashdata('error', 'Gagal mengexport data ke Excel');
-			redirect('audiometri/list_tests');
+			redirect('list_tests');
 		}
 	}
 
@@ -1045,7 +1055,7 @@ class Audiometri extends CI_Controller
 						return;
 					}
 					$this->session->set_flashdata('error', 'Impression tidak boleh kosong');
-					redirect('audiometri/review_dokter/' . $id);
+					redirect('review_dokter/' . $id);
 					return;
 				}
 
@@ -1060,7 +1070,7 @@ class Audiometri extends CI_Controller
 						return;
 					}
 					$this->session->set_flashdata('error', 'Data tidak ditemukan');
-					redirect('audiometri/review_dokter/' . $id);
+					redirect('review_dokter/' . $id);
 					return;
 				}
 
@@ -1081,7 +1091,7 @@ class Audiometri extends CI_Controller
 				} else {
 					$this->session->set_flashdata('error', $result['message']);
 				}
-				redirect('audiometri/review_dokter/' . $id);
+				redirect('review_dokter/' . $id);
 
 			} catch (Exception $e) {
 				log_message('error', 'Review dokter update error: ' . $e->getMessage());
@@ -1093,7 +1103,7 @@ class Audiometri extends CI_Controller
 					return;
 				}
 				$this->session->set_flashdata('error', 'Terjadi kesalahan sistem');
-				redirect('audiometri/review_dokter/' . $id);
+				redirect('review_dokter/' . $id);
 			}
 		}
 

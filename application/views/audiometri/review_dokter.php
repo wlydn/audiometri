@@ -308,7 +308,7 @@
 					showConfirmButton: false
 				}).then(() => {
 					// After 3 seconds, redirect to doctor_view
-					window.location.href = <?= json_encode(base_url('audiometri/doctor_view'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+					window.location.href = <?= json_encode(base_url('doctor_view'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 				});
 			} else {
 				Swal.fire({

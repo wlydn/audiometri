@@ -35,7 +35,7 @@ $config['base_url'] = getenv('APP_BASE_URL') ?: 'http://localhost:8080/audiometr
 | variable so that it is blank.
 |
 */
-$config['index_page'] = 'index.php';
+$config['index_page'] = ''; // Apache mod_rewrite routes clean URLs through index.php.
 
 /*
 |--------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 <div class="container-fluid p-4">
 	<div class="page-heading">
 		<div><span class="eyebrow">Data pemeriksaan</span><h1>Semua pemeriksaan</h1><p>Temukan data pasien, pantau status review, dan akses hasil pemeriksaan.</p></div>
-		<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary"><i class="fas fa-plus me-2" aria-hidden="true"></i>Pemeriksaan baru</a>
+		<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary"><i class="fas fa-plus me-2" aria-hidden="true"></i>Pemeriksaan baru</a>
 	</div>
 
 	<!-- Filter Section -->
@@ -16,7 +16,7 @@
 			</h5>
 		</div>
 		<div class="card-body">
-			<form method="get" action="<?= html_escape(base_url('audiometri/list_tests')) ?>">
+			<form method="get" action="<?= html_escape(base_url('list_tests')) ?>">
 				<div class="row">
 					<div class="col-md-3 mb-3">
 						<label for="nama" class="form-label">Nama</label>
@@ -50,7 +50,7 @@
 				<?php if (!empty($filters)): ?>
 					<div class="row">
 						<div class="col-12">
-							<a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-outline-secondary btn-sm">
+							<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary btn-sm">
 								<i class="fas fa-times me-1"></i> Reset Filter
 							</a>
 						</div>
@@ -67,10 +67,10 @@
 				Hasil Pencarian (<?= html_escape(number_format($total_tests)) ?> data)
 			</h5>
 			<div class="btn-group">
-				<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary btn-sm">
+				<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary btn-sm">
 					<i class="fas fa-plus me-1"></i> Tes Baru
 				</a>
-				<a href="<?= html_escape(base_url('audiometri/export_excel')) ?>" class="btn btn-success btn-sm">
+				<a href="<?= html_escape(base_url('export_excel')) ?>" class="btn btn-success btn-sm">
 					<i class="fas fa-file-excel me-1"></i> Export Excel
 				</a>
 			</div>
@@ -120,15 +120,15 @@
 									</td>
 									<td>
 										<div class="btn-group btn-group-sm">
-											<a href="<?= html_escape(base_url('audiometri/view/' . $test['id'])) ?>"
+											<a href="<?= html_escape(base_url('view/' . $test['id'])) ?>"
 												class="btn btn-outline-primary" title="Lihat Detail">
 												<i class="fas fa-eye"></i>
 											</a>
-											<a href="<?= html_escape(base_url('audiometri/edit/' . $test['id'])) ?>"
+											<a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>"
 												class="btn btn-outline-secondary" title="Edit">
 												<i class="fas fa-edit"></i>
 											</a>
-											<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test['id'])) ?>"
+											<a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>"
 												class="btn btn-outline-info" title="Export PDF" target="_blank">
 												<i class="fas fa-file-pdf"></i>
 											</a>
@@ -160,7 +160,7 @@
 					<i class="fas fa-search fa-3x text-muted mb-3"></i>
 					<h5 class="text-muted">Tidak ada data yang ditemukan</h5>
 					<p class="text-muted">Coba ubah kriteria pencarian atau buat tes baru</p>
-					<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary">
+					<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
 						<i class="fas fa-plus me-1"></i> Buat Tes Baru
 					</a>
 				</div>

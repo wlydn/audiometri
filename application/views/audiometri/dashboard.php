@@ -8,7 +8,7 @@
             <h1>Ringkasan audiometri</h1>
             <p>Pantau pemeriksaan terbaru dan kelola hasil tes pasien.</p>
         </div>
-        <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary">
+        <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
             <i class="fas fa-plus me-2" aria-hidden="true"></i> Pemeriksaan baru
         </a>
     </div>
@@ -130,15 +130,15 @@
                                         </td>
                                         <td>
                                             <div class="btn-group btn-group-sm">
-                                                <a href="<?= html_escape(base_url('audiometri/view/'.$test['id'])) ?>"
+                                                <a href="<?= html_escape(base_url('view/'.$test['id'])) ?>"
                                                    class="btn btn-outline-primary" title="Lihat Detail">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <a href="<?= html_escape(base_url('audiometri/edit/'.$test['id'])) ?>"
+                                                <a href="<?= html_escape(base_url('edit/'.$test['id'])) ?>"
                                                    class="btn btn-outline-secondary" title="Edit">
                                                     <i class="fas fa-edit"></i>
                                                 </a>
-                                                <a href="<?= html_escape(base_url('audiometri/export_pdf/'.$test['id'])) ?>"
+                                                <a href="<?= html_escape(base_url('export_pdf/'.$test['id'])) ?>"
                                                    class="btn btn-outline-info" title="Export PDF" target="_blank">
                                                     <i class="fas fa-file-pdf"></i>
                                                 </a>
@@ -150,7 +150,7 @@
                             </table>
                         </div>
                         <div class="text-center mt-3">
-                            <a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-primary">
+                            <a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-primary">
                                 Lihat Semua Tes <i class="fas fa-arrow-right ms-1"></i>
                             </a>
                         </div>
@@ -158,7 +158,7 @@
                         <div class="text-center py-4">
                             <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                             <p class="text-muted">Belum ada tes yang dilakukan</p>
-                            <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary">
+                            <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
                                 Buat Tes Pertama
                             </a>
                         </div>
@@ -213,13 +213,13 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-md-3 mb-3">
-                            <a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-lg btn-primary w-100">
+                            <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-lg btn-primary w-100">
                                 <i class="fas fa-plus fa-2x mb-2"></i><br>
                                 Tes Baru
                             </a>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-lg btn-secondary w-100">
+                            <a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-lg btn-secondary w-100">
                                 <i class="fas fa-list fa-2x mb-2"></i><br>
                                 Daftar Tes
                             </a>
@@ -252,7 +252,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= html_escape(base_url('audiometri/list_tests')) ?>" method="get">
+                <form action="<?= html_escape(base_url('list_tests')) ?>" method="get">
                     <div class="mb-3">
                         <label for="search_nama" class="form-label">Nama Pasien</label>
                         <input type="text" class="form-control" id="search_nama" name="nama"

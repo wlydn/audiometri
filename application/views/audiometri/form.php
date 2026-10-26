@@ -220,7 +220,7 @@
 						<i class="fas fa-save"></i> <?= html_escape($action == 'edit' ? 'Update' : 'Simpan') ?> Data
 					</button>
 					<?php if ($action == 'edit'): ?>
-						<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>" class="btn btn-info" target="_blank">
+						<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-info" target="_blank">
 							<i class="fas fa-file-pdf"></i> Export PDF
 						</a>
 					<?php endif; ?>
@@ -514,7 +514,7 @@
 	// function updateImpressionAjax() {
 	//     const formData = new FormData(document.getElementById('audiometri-form'));
 
-	//     fetch(<?= json_encode(base_url('audiometri/update_chart'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
+	//     fetch(<?= json_encode(base_url('update_chart'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
 	//         method: 'POST',
 	//         body: formData,
 	//         headers: {
@@ -561,7 +561,7 @@
 		document.getElementById('modal-no-rm').textContent = noRM;
 		$('#rmHistoryModal').modal('show');
 
-		fetch(<?= json_encode(base_url('audiometri/search_by_no_rm'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
+		fetch(<?= json_encode(base_url('search_by_no_rm'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
@@ -585,7 +585,7 @@
                     <td>${escapeHistoryHtml(test.nama)}</td>
                     <td>${escapeHistoryHtml(test.perusahaan)}</td>
                     <td>
-                        <a href="${escapeHistoryHtml(<?= json_encode(base_url('audiometri/view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + encodeURIComponent(test.id))}" class="btn btn-sm btn-primary" target="_blank">
+                        <a href="${escapeHistoryHtml(<?= json_encode(base_url('view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + encodeURIComponent(test.id))}" class="btn btn-sm btn-primary" target="_blank">
                             Lihat Detail
                         </a>
                     </td>
@@ -654,12 +654,12 @@
 				}).then(() => {
 					// Redirect based on action
 					<?php if ($action == 'edit'): ?>
-						window.location.href = <?= json_encode(base_url('audiometri/view/' . ($test_data['id'] ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+						window.location.href = <?= json_encode(base_url('view/' . ($test_data['id'] ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 					<?php else: ?>
 						if (data.id) {
-							window.location.href = <?= json_encode(base_url('audiometri/view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + data.id;
+							window.location.href = <?= json_encode(base_url('view/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + data.id;
 						} else {
-							window.location.href = <?= json_encode(base_url('audiometri/list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+							window.location.href = <?= json_encode(base_url('list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 						}
 					<?php endif; ?>
 				});

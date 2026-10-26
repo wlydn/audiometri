@@ -68,7 +68,7 @@
 										?>
 									</td>
 									<td>
-										<a href="<?= html_escape(base_url('audiometri/review_dokter/' . $test['id'])) ?>"
+										<a href="<?= html_escape(base_url('review_dokter/' . $test['id'])) ?>"
 											class="btn btn-sm btn-outline-primary"
 											title="Review Data">
 											<i class="fas fa-edit"></i> Review

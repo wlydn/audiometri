@@ -6,6 +6,6 @@
         <?php if (ENVIRONMENT !== 'production' && !empty($error_message)): ?>
             <pre><?= html_escape($error_message) ?></pre>
         <?php endif; ?>
-        <a class="btn btn-primary" href="<?= html_escape(base_url('audiometri')) ?>">Kembali ke dashboard</a>
+        <a class="btn btn-primary" href="<?= html_escape(base_url()) ?>">Kembali ke dashboard</a>
     </div>
 </section>

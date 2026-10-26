@@ -20,7 +20,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="reportForm" action="<?= html_escape(base_url('audiometri/export_excel')) ?>" method="get">
+                    <form id="reportForm" action="<?= html_escape(base_url('export_excel')) ?>" method="get">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -113,7 +113,7 @@
                         }
                     });
 
-					fetch(<?= json_encode(base_url('audiometri/delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
+					fetch(<?= json_encode(base_url('delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
 						method: 'POST',
 						body: withCsrf(),
 						headers: {

@@ -42,14 +42,14 @@
     <?php
     $method = $this->router->method;
     $navigation = [
-        ['index', 'audiometri', 'fa-house', 'Dashboard', ['index']],
-        ['create', 'audiometri/create', 'fa-plus', 'Pemeriksaan baru', ['create']],
-        ['list_tests', 'audiometri/list_tests', 'fa-folder-open', 'Data pemeriksaan', ['list_tests', 'view', 'edit']],
-        ['doctor_view', 'audiometri/doctor_view', 'fa-user-doctor', 'Panel dokter', ['doctor_view', 'review_dokter']],
+        ['index', '', 'fa-house', 'Dashboard', ['index']],
+        ['create', 'create', 'fa-plus', 'Pemeriksaan baru', ['create']],
+        ['list_tests', 'list_tests', 'fa-folder-open', 'Data pemeriksaan', ['list_tests', 'view', 'edit']],
+        ['doctor_view', 'doctor_view', 'fa-user-doctor', 'Panel dokter', ['doctor_view', 'review_dokter']],
     ];
     ?>
     <aside class="app-sidebar" aria-label="Navigasi utama">
-        <a class="app-brand" href="<?= html_escape(base_url('audiometri')) ?>">
+        <a class="app-brand" href="<?= html_escape(base_url()) ?>">
             <span class="brand-mark"><i class="fas fa-headphones" aria-hidden="true"></i></span>
             <span>Audiometri<small class="brand-caption">Pemeriksaan pendengaran</small></span>
         </a>
@@ -64,7 +64,7 @@
             </nav>
             <div class="nav-section-label">Laporan</div>
             <nav class="app-nav" aria-label="Laporan">
-                <a href="<?= html_escape(base_url('audiometri/export_excel')) ?>"><i class="fas fa-file-excel" aria-hidden="true"></i> Ekspor Excel</a>
+                <a href="<?= html_escape(base_url('export_excel')) ?>"><i class="fas fa-file-excel" aria-hidden="true"></i> Ekspor Excel</a>
                 <a href="#" onclick="showReportModal(); return false;"><i class="fas fa-chart-pie" aria-hidden="true"></i> Laporan statistik</a>
             </nav>
         </div>

@@ -59,6 +59,23 @@ $route['translate_uri_dashes'] = FALSE;
 | -------------------------------------------------------------------------
 */
 
+// Canonical routes relative to APP_BASE_URL (which already includes /audiometri/).
+$route['dashboard'] = 'audiometri/index';
+$route['doctor_view'] = 'audiometri/doctor_view';
+$route['review_dokter/(:num)'] = 'audiometri/review_dokter/$1';
+$route['create'] = 'audiometri/create';
+$route['edit/(:num)'] = 'audiometri/edit/$1';
+$route['view/(:num)'] = 'audiometri/view/$1';
+$route['delete/(:num)'] = 'audiometri/delete/$1';
+$route['list'] = 'audiometri/list_tests';
+$route['list_tests'] = 'audiometri/list_tests';
+$route['search'] = 'audiometri/search_by_no_rm';
+$route['search_by_no_rm'] = 'audiometri/search_by_no_rm';
+$route['export_pdf/(:num)'] = 'audiometri/export_pdf/$1';
+$route['export_excel'] = 'audiometri/export_excel';
+$route['update_chart'] = 'audiometri/update_chart';
+
+// Legacy routes remain compatible with existing bookmarks and POST requests.
 // Main routes
 $route['audiometri'] = 'audiometri/index';
 $route['audiometri/dashboard'] = 'audiometri/index';

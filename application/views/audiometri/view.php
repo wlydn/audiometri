@@ -12,17 +12,17 @@
 					</h1>
 					<nav aria-label="breadcrumb">
 						<ol class="breadcrumb">
-							<li class="breadcrumb-item"><a href="<?= html_escape(base_url('audiometri')) ?>">Dashboard</a></li>
-							<li class="breadcrumb-item"><a href="<?= html_escape(base_url('audiometri/list_tests')) ?>">Daftar Tes</a></li>
+							<li class="breadcrumb-item"><a href="<?= html_escape(base_url()) ?>">Dashboard</a></li>
+							<li class="breadcrumb-item"><a href="<?= html_escape(base_url('list_tests')) ?>">Daftar Tes</a></li>
 							<li class="breadcrumb-item active"><?= html_escape($test_data['nama']) ?></li>
 						</ol>
 					</nav>
 				</div>
 				<div class="btn-group">
-					<a href="<?= html_escape(base_url('audiometri/edit/' . $test_data['id'])) ?>" class="btn btn-warning">
+					<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-warning">
 						<i class="fas fa-edit me-1"></i> Edit
 					</a>
-					<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>"
+					<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>"
 						class="btn btn-info" target="_blank">
 						<i class="fas fa-file-pdf me-1"></i> Export PDF
 					</a>
@@ -299,17 +299,17 @@
 
 	<!-- Action Buttons -->
 	<div class="text-center">
-		<a href="<?= html_escape(base_url('audiometri/list_tests')) ?>" class="btn btn-secondary me-2">
+		<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-secondary me-2">
 			<i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
 		</a>
-		<a href="<?= html_escape(base_url('audiometri/edit/' . $test_data['id'])) ?>" class="btn btn-warning me-2">
+		<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-warning me-2">
 			<i class="fas fa-edit me-1"></i> Edit Data
 		</a>
-		<a href="<?= html_escape(base_url('audiometri/export_pdf/' . $test_data['id'])) ?>"
+		<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>"
 			class="btn btn-info me-2" target="_blank">
 			<i class="fas fa-file-pdf me-1"></i> Export PDF
 		</a>
-		<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-success">
+		<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-success">
 			<i class="fas fa-plus me-1"></i> Tes Baru
 		</a>
 	</div>
@@ -348,7 +348,7 @@
 				});
 
 				// Make AJAX request to delete
-				fetch(<?= json_encode(base_url('audiometri/delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
+				fetch(<?= json_encode(base_url('delete/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?> + id, {
 					method: 'POST',
 					body: withCsrf(),
 					headers: {
@@ -366,7 +366,7 @@
 							timerProgressBar: true,
 							showConfirmButton: false
 						}).then(() => {
-							window.location.href = <?= json_encode(base_url('audiometri/list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+							window.location.href = <?= json_encode(base_url('list_tests'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
 						});
 					} else {
 						Swal.fire({
