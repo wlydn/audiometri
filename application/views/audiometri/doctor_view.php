@@ -2,13 +2,9 @@
 // File: application/views/audiometri/doctor_view.php
 ?>
 <div class="container-fluid p-4">
-	<div class="row mb-4">
-		<div class="col-12">
-			<h1 class="h3 mb-4">
-				<i class="fas fa-user-md text-primary me-3"></i>
-				Panel Dokter - Data Pasien Hari Ini
-			</h1>
-		</div>
+	<div class="page-heading">
+		<div><span class="eyebrow">Panel dokter</span><h1>Review pemeriksaan</h1><p>Tinjau audiogram dan lengkapi impression pasien yang diperiksa hari ini.</p></div>
+		<span class="badge bg-success"><?= html_escape(number_format(count($tests))) ?> pasien hari ini</span>
 	</div>
 
 	<!-- Info Section -->

@@ -2,13 +2,9 @@
 // File: application/views/audiometri/list.php
 ?>
 <div class="container-fluid p-4">
-	<div class="row mb-4">
-		<div class="col-12">
-			<h1 class="h2 mb-4">
-				<i class="fas fa-list text-primary me-3"></i>
-				Daftar Tes Audiometri
-			</h1>
-		</div>
+	<div class="page-heading">
+		<div><span class="eyebrow">Data pemeriksaan</span><h1>Semua pemeriksaan</h1><p>Temukan data pasien, pantau status review, dan akses hasil pemeriksaan.</p></div>
+		<a href="<?= html_escape(base_url('audiometri/create')) ?>" class="btn btn-primary"><i class="fas fa-plus me-2" aria-hidden="true"></i>Pemeriksaan baru</a>
 	</div>
 
 	<!-- Filter Section -->

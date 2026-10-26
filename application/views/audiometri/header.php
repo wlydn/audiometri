@@ -34,65 +34,48 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<link href="<?= html_escape(base_url('assets/css/workspace.css')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/css/workspace.css')) ?>" rel="stylesheet">
+    <link href="<?= html_escape(base_url('assets/css/workspace.css')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/css/workspace.css')) ?>" rel="stylesheet">
+    <link href="<?= html_escape(base_url('assets/css/calm.css')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/css/calm.css')) ?>" rel="stylesheet">
 </head>
 <body class="workspace">
     <a class="skip-link" href="#main-content">Lewati ke konten</a>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="<?= html_escape(base_url('audiometri')) ?>">
-                <span class="brand-mark"><i class="fas fa-headphones"></i></span>
-                <span>Audiometri<small class="brand-caption">Pemeriksaan pendengaran</small></span>
-            </a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Buka menu navigasi">
-                <i class="fas fa-bars" aria-hidden="true"></i>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link <?= html_escape(($this->router->method == 'index') ? 'active' : '') ?>"
-                           href="<?= html_escape(base_url('audiometri')) ?>">
-                            <i class="fas fa-home me-1"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= html_escape(($this->router->method == 'create') ? 'active' : '') ?>"
-                           href="<?= html_escape(base_url('audiometri/create')) ?>">
-                            <i class="fas fa-plus me-1"></i> Tes Baru
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= html_escape(($this->router->method == 'list_tests') ? 'active' : '') ?>"
-                           href="<?= html_escape(base_url('audiometri/list_tests')) ?>">
-                            <i class="fas fa-list me-1"></i> Daftar Tes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?= html_escape(($this->router->method == 'doctor_view') ? 'active' : '') ?>"
-                           href="<?= html_escape(base_url('audiometri/doctor_view')) ?>">
-                            <i class="fa-solid fa-user-doctor"></i> Panel Dokter
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-chart-bar me-1"></i> Laporan
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?= html_escape(base_url('audiometri/export_excel')) ?>">
-                                <i class="fas fa-file-excel me-1"></i> Export Excel
-                            </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="showReportModal()">
-                                <i class="fas fa-chart-pie me-1"></i> Laporan Statistik
-                            </a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
+    <?php
+    $method = $this->router->method;
+    $navigation = [
+        ['index', 'audiometri', 'fa-house', 'Dashboard', ['index']],
+        ['create', 'audiometri/create', 'fa-plus', 'Pemeriksaan baru', ['create']],
+        ['list_tests', 'audiometri/list_tests', 'fa-folder-open', 'Data pemeriksaan', ['list_tests', 'view', 'edit']],
+        ['doctor_view', 'audiometri/doctor_view', 'fa-user-doctor', 'Panel dokter', ['doctor_view', 'review_dokter']],
+    ];
+    ?>
+    <aside class="app-sidebar" aria-label="Navigasi utama">
+        <a class="app-brand" href="<?= html_escape(base_url('audiometri')) ?>">
+            <span class="brand-mark"><i class="fas fa-headphones" aria-hidden="true"></i></span>
+            <span>Audiometri<small class="brand-caption">Pemeriksaan pendengaran</small></span>
+        </a>
+        <div class="collapse d-lg-block" id="workspace-navigation">
+            <div class="nav-section-label">Ruang kerja</div>
+            <nav class="app-nav" aria-label="Pemeriksaan">
+                <?php foreach ($navigation as $item): $active = in_array($method, $item[4], true); ?>
+                    <a href="<?= html_escape(base_url($item[1])) ?>" class="<?= $active ? 'active' : '' ?>" <?= $active ? 'aria-current="page"' : '' ?>>
+                        <i class="fas <?= html_escape($item[2]) ?>" aria-hidden="true"></i><?= html_escape($item[3]) ?>
+                    </a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="nav-section-label">Laporan</div>
+            <nav class="app-nav" aria-label="Laporan">
+                <a href="<?= html_escape(base_url('audiometri/export_excel')) ?>"><i class="fas fa-file-excel" aria-hidden="true"></i> Ekspor Excel</a>
+                <a href="#" onclick="showReportModal(); return false;"><i class="fas fa-chart-pie" aria-hidden="true"></i> Laporan statistik</a>
+            </nav>
         </div>
-    </nav>
-
+        <div class="sidebar-note"><strong>Ruang untuk mendengar.</strong>Pencatatan pemeriksaan yang lebih teratur, dalam satu tempat.</div>
+    </aside>
+    <header class="app-topbar">
+        <div class="topbar-context">
+            <button class="btn btn-outline-secondary menu-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#workspace-navigation" aria-controls="workspace-navigation" aria-expanded="false" aria-label="Buka menu navigasi"><i class="fas fa-bars" aria-hidden="true"></i></button>
+            <div><small>Workspace / Audiometri</small><strong><?= html_escape($title ?? 'Pemeriksaan pendengaran') ?></strong></div>
+        </div>
+        <div class="topbar-date"><i class="far fa-calendar" aria-hidden="true"></i><time datetime="<?= date('Y-m-d') ?>"><?= date('d.m.Y') ?></time></div>
+    </header>
     <!-- Content Wrapper -->
     <main class="content-wrapper" id="main-content" tabindex="-1">

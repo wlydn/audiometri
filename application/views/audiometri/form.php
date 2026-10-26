@@ -2,8 +2,9 @@
 <div class="container-fluid">
 	<div class="audiometri-container">
 		<div class="header">
-			<h1><?= html_escape($action == 'edit' ? 'EDIT' : 'INPUT') ?> TES AUDIOMETRI</h1>
-			<p><?= html_escape($action == 'edit' ? 'Edit data hasil tes audiometri' : 'Input data hasil tes audiometri baru') ?></p>
+			<span class="eyebrow">Ruang pemeriksaan</span>
+			<h1><?= html_escape($action == 'edit' ? 'Edit pemeriksaan' : 'Pemeriksaan baru') ?></h1>
+			<p>Lengkapi identitas pasien, kemudian catat ambang pendengaran. Kolom bertanda * wajib diisi.</p>
 		</div>
 
 		<?php if ($this->session->flashdata('error')): ?>

@@ -2,8 +2,9 @@
 <div class="container-fluid">
 	<div class="audiometri-container">
 		<div class="header">
-			<h1>HASIL TES AUDIOMETRI</h1>
-			<p>data hasil tes audiometri</p>
+			<span class="eyebrow">Panel dokter / Review</span>
+			<h1>Review hasil audiometri</h1>
+			<p>Periksa identitas dan audiogram pasien sebelum menyimpan impression.</p>
 		</div>
 
 		<?php if ($this->session->flashdata('error')): ?>
