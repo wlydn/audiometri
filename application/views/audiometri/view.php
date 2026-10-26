@@ -1,72 +1,105 @@
 <?php
 // File: application/views/audiometri/view.php
 $is_reviewed = !empty($test_data['impression']);
+$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
+
+// Renders the AC/BC threshold table of one ear (values come straight from $test_data).
+$render_threshold_table = function ($ear, $heading_class) use ($test_data, $frequencies) {
+	$types = ['ac' => 'AC (dB)', 'bc' => 'BC (dB)'];
+	?>
+	<div class="table-responsive">
+		<table class="table table-sm table-bordered text-center align-middle mb-0">
+			<thead>
+				<tr>
+					<th scope="col" class="text-start">Frekuensi</th>
+					<?php foreach ($frequencies as $freq): ?>
+						<th scope="col"><?= html_escape($freq) ?></th>
+					<?php endforeach; ?>
+					<th scope="col">Rata²</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ($types as $type => $type_label): ?>
+					<?php $values = []; ?>
+					<tr>
+						<th scope="row" class="text-start <?= html_escape($heading_class) ?>"><?= html_escape($type_label) ?></th>
+						<?php foreach ($frequencies as $freq): ?>
+							<?php
+							$value = $test_data[$ear . '_' . $type . '_' . $freq];
+							if ($value !== null) {
+								$values[] = $value;
+							}
+							?>
+							<td><?= html_escape($value !== null ? $value : '-') ?></td>
+						<?php endforeach; ?>
+						<td class="fw-bold"><?= html_escape(!empty($values) ? number_format(array_sum($values) / count($values), 1) : '-') ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+	<?php
+};
 ?>
-<div class="container-fluid p-4">
-	<!-- Top Bar Navigation & Actions -->
+<div class="container-fluid p-3 p-lg-4">
+	<!-- Page Heading & Actions -->
 	<div class="page-heading">
 		<div>
-			<span class="eyebrow"><i class="fas fa-file-medical me-1"></i> Rekam Medis Audiometri</span>
+			<span class="eyebrow"><i class="bi bi-file-earmark-medical me-1" aria-hidden="true"></i> Rekam Medis Audiometri</span>
 			<h1>Detail Pemeriksaan Pasien</h1>
 			<p>Data lengkap audiogram nada murni, tabel ambang pendengaran, dan kesimpulan dokter.</p>
 		</div>
 		<div class="d-flex align-items-center gap-2 flex-wrap">
 			<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary">
-				<i class="fas fa-arrow-left me-1"></i> Kembali
+				<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali
 			</a>
 			<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
-				<i class="fas fa-pen-to-square me-1"></i> Edit Data
+				<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data
 			</a>
-			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-danger" target="_blank">
-				<i class="fas fa-file-pdf me-1"></i> Unduh PDF
+			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-secondary" target="_blank" rel="noopener">
+				<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF
 			</a>
-			<button onclick="showDeleteModal(<?= html_escape((int) $test_data['id']) ?>)" class="btn btn-danger">
-				<i class="fas fa-trash-can me-1"></i> Hapus
+			<button type="button" onclick="showDeleteModal(<?= html_escape((int) $test_data['id']) ?>)" class="btn btn-danger">
+				<i class="bi bi-trash3 me-1" aria-hidden="true"></i> Hapus
 			</button>
 		</div>
 	</div>
 
-	<!-- Patient Dossier Hero Card -->
-	<div class="card mb-4 shadow-sm border-0">
-		<div class="card-body p-4">
+	<!-- Patient Summary -->
+	<div class="card mb-4">
+		<div class="card-body">
 			<div class="row align-items-center g-4">
 				<div class="col-lg-7">
 					<div class="d-flex align-items-start gap-3">
-						<div style="width: 54px; height: 54px; border-radius: 16px; background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%); color: #fff; display: grid; place-items: center; font-size: 22px; font-weight: 800; flex-shrink: 0; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);">
-							<?= html_escape(strtoupper(substr($test_data['nama'] ?? 'P', 0, 1))) ?>
-						</div>
+						<span class="avatar avatar-lg avatar-gradient" aria-hidden="true"><?= html_escape(strtoupper(substr($test_data['nama'] ?? 'P', 0, 1))) ?></span>
 						<div>
 							<div class="d-flex align-items-center gap-2 flex-wrap">
-								<h3 class="fw-bold mb-0 text-dark"><?= html_escape($test_data['nama']) ?></h3>
-								<span class="badge bg-light text-dark border font-monospace">RM: <?= html_escape($test_data['no_rm']) ?></span>
+								<h2 class="h4 fw-bold mb-0"><?= html_escape($test_data['nama']) ?></h2>
+								<span class="badge text-bg-light border font-monospace">RM: <?= html_escape($test_data['no_rm']) ?></span>
 								<?php if ($is_reviewed): ?>
-									<span class="badge bg-success"><i class="fas fa-circle-check"></i> Sudah Direview</span>
+									<span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Sudah Direview</span>
 								<?php else: ?>
-									<span class="badge bg-warning"><i class="fas fa-clock"></i> Menunggu Review</span>
+									<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu Review</span>
 								<?php endif; ?>
 							</div>
-							<div class="text-muted mt-2 d-flex align-items-center gap-3 flex-wrap small">
-								<span><i class="fas fa-venus-mars text-primary me-1"></i> <?= html_escape($test_data['jenis_kelamin'] ?? '-') ?></span>
-								<span>&bull;</span>
-								<span><i class="fas fa-user-clock text-primary me-1"></i> <?= html_escape($test_data['umur'] ?? '-') ?> Tahun</span>
-								<span>&bull;</span>
-								<span><i class="fas fa-building text-primary me-1"></i> <?= html_escape($test_data['perusahaan'] ?? '-') ?></span>
-								<span>&bull;</span>
-								<span><i class="fas fa-briefcase text-primary me-1"></i> <?= html_escape($test_data['jabatan'] ?? '-') ?></span>
+							<div class="text-body-secondary mt-2 d-flex align-items-center gap-3 flex-wrap small">
+								<span><i class="bi bi-gender-ambiguous text-primary me-1" aria-hidden="true"></i><?= html_escape($test_data['jenis_kelamin'] ?? '-') ?></span>
+								<span><i class="bi bi-person text-primary me-1" aria-hidden="true"></i><?= html_escape($test_data['umur'] ?? '-') ?> Tahun</span>
+								<span><i class="bi bi-building text-primary me-1" aria-hidden="true"></i><?= html_escape($test_data['perusahaan'] ?? '-') ?></span>
+								<span><i class="bi bi-briefcase text-primary me-1" aria-hidden="true"></i><?= html_escape($test_data['jabatan'] ?? '-') ?></span>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-5">
-					<div class="p-3 bg-light rounded-3 d-flex justify-content-around text-center border">
-						<div>
-							<small class="text-uppercase text-muted fw-bold d-block" style="font-size: 11px;">Tanggal Tes</small>
-							<strong class="text-dark fs-6"><?= html_escape(date('d M Y', strtotime($test_data['tanggal_tes']))) ?></strong>
+					<div class="row g-0 text-center bg-body-tertiary border rounded-3 py-3">
+						<div class="col-6 border-end">
+							<small class="stat-label d-block">Tanggal Tes</small>
+							<strong><?= html_escape(date('d M Y', strtotime($test_data['tanggal_tes']))) ?></strong>
 						</div>
-						<div class="border-end"></div>
-						<div>
-							<small class="text-uppercase text-muted fw-bold d-block" style="font-size: 11px;">Terakhir Disimpan</small>
-							<strong class="text-dark fs-6"><?= html_escape(!empty($test_data['updated_at']) ? date('d/m/Y H:i', strtotime($test_data['updated_at'])) : '-') ?></strong>
+						<div class="col-6">
+							<small class="stat-label d-block">Terakhir Disimpan</small>
+							<strong><?= html_escape(!empty($test_data['updated_at']) ? date('d/m/Y H:i', strtotime($test_data['updated_at'])) : '-') ?></strong>
 						</div>
 					</div>
 				</div>
@@ -75,180 +108,52 @@ $is_reviewed = !empty($test_data['impression']);
 	</div>
 
 	<!-- Audiogram Charts -->
-	<div class="card mb-4 shadow-sm border-0">
-		<div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-			<h5 class="card-title mb-0 fw-bold text-dark">
-				<i class="fas fa-chart-line text-primary me-2"></i>
-				Audiogram Nada Murni (Pure Tone Audiometry)
-			</h5>
-			<span class="badge bg-light text-secondary border">AC &amp; BC Comparison</span>
+	<div class="card mb-4">
+		<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+			<h2 class="h6 card-title mb-0">
+				<i class="bi bi-graph-up text-primary me-2" aria-hidden="true"></i>Audiogram Nada Murni (Pure Tone Audiometry)
+			</h2>
+			<span class="badge text-bg-light border">AC &amp; BC Comparison</span>
 		</div>
-		<div class="card-body p-4">
+		<div class="card-body">
 			<div class="row g-4">
 				<!-- Right Ear Chart -->
 				<div class="col-lg-6">
-					<div class="ear-chart-view border rounded-3 p-3 bg-white">
-						<div class="ear-title d-flex justify-content-between align-items-center mb-3">
-							<span class="fw-bold"><i class="fas fa-ear-listen me-1 text-danger"></i> TELINGA KANAN (AS)</span>
-							<span class="badge bg-danger text-white">RED / MERAH</span>
+					<div class="ear-chart-view h-100">
+						<div class="ear-title ear-title-right d-flex justify-content-between align-items-center">
+							<span><i class="bi bi-ear me-1" aria-hidden="true"></i> TELINGA KANAN (AS)</span>
+							<span class="badge bg-danger">RED / MERAH</span>
 						</div>
-						<div class="chart-container-view mb-3" style="background: #fafafa; border-radius: 8px; border: 1px solid #e2e8f0;">
+						<div class="chart-container-view">
 							<svg width="100%" height="100%" id="right-chart-view">
 								<!-- Grid akan di-generate oleh JavaScript -->
 							</svg>
 						</div>
-						<!-- Right Ear Data -->
-						<div class="table-responsive">
-							<div class="card border">
-								<div class="card-header bg-light py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
-									<strong class="text-danger small"><i class="fas fa-table me-1"></i> Ambang Pendengaran Kanan</strong>
-								</div>
-								<div class="card-body p-0">
-									<table class="table table-sm mb-0">
-										<thead class="table-light">
-											<tr>
-												<th>Frekuensi</th>
-												<th>250</th>
-												<th>500</th>
-												<th>1000</th>
-												<th>2000</th>
-												<th>3000</th>
-												<th>4000</th>
-												<th>6000</th>
-												<th>Rata²</th>
-											</tr>
-										</thead>
-										<tbody>
-											<?php
-											$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
-											?>
-											<tr>
-												<td style="font-weight: bold;">AC (dB)</td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-') ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_500']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_1000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_2000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_3000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_4000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_ac_6000']) ?></td>
-												<?php
-												$right_ac_values = [];
-												foreach ($frequencies as $freq) {
-													$value = $test_data['right_ac_' . $freq];
-													if ($value !== null) $right_ac_values[] = $value;
-												}
-												?>
-												<td style="padding-left: 10px;"><?= html_escape(!empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '-') ?></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">BC (dB)</td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_250'] !== null ? $test_data['right_bc_250'] : '-') ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_500']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_1000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_2000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_3000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_4000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['right_bc_6000']) ?></td>
-												<?php
-												$right_bc_values = [];
-												foreach ($frequencies as $freq) {
-													$value = $test_data['right_bc_' . $freq];
-													if ($value !== null) $right_bc_values[] = $value;
-												}
-												?>
-												<td style="padding-left: 10px;"><?= html_escape(!empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '-') ?></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
+						<div class="small fw-bold text-danger mb-2"><i class="bi bi-table me-1" aria-hidden="true"></i> Ambang Pendengaran Kanan</div>
+						<?php $render_threshold_table('right', 'text-danger'); ?>
 					</div>
 				</div>
 
 				<!-- Left Ear Chart -->
 				<div class="col-lg-6">
-					<div class="ear-chart-view border rounded-3 p-3 bg-white">
-						<div class="ear-title d-flex justify-content-between align-items-center mb-3">
-							<span class="fw-bold"><i class="fas fa-ear-listen me-1 text-primary"></i> TELINGA KIRI (AD)</span>
-							<span class="badge bg-primary text-white">BLUE / BIRU</span>
+					<div class="ear-chart-view h-100">
+						<div class="ear-title ear-title-left d-flex justify-content-between align-items-center">
+							<span><i class="bi bi-ear me-1" aria-hidden="true"></i> TELINGA KIRI (AD)</span>
+							<span class="badge bg-primary">BLUE / BIRU</span>
 						</div>
-						<div class="chart-container-view mb-3" style="background: #fafafa; border-radius: 8px; border: 1px solid #e2e8f0;">
+						<div class="chart-container-view">
 							<svg width="100%" height="100%" id="left-chart-view">
 								<!-- Grid akan di-generate oleh JavaScript -->
 							</svg>
 						</div>
-						<!-- Left Ear Data -->
-						<div class="table-responsive">
-							<div class="card border">
-								<div class="card-header bg-light py-2 px-3 border-bottom d-flex justify-content-between align-items-center">
-									<strong class="text-primary small"><i class="fas fa-table me-1"></i> Ambang Pendengaran Kiri</strong>
-								</div>
-								<div class="card-body p-0">
-									<table class="table table-sm mb-0">
-										<thead class="table-light">
-											<tr>
-												<th>Frekuensi</th>
-												<th>250</th>
-												<th>500</th>
-												<th>1000</th>
-												<th>2000</th>
-												<th>3000</th>
-												<th>4000</th>
-												<th>6000</th>
-												<th>Rata²</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td style="font-weight: bold;">AC (dB)</td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-') ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_500']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_1000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_2000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_3000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_4000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_ac_6000']) ?></td>
-												<?php
-												$left_ac_values = [];
-												foreach ($frequencies as $freq) {
-													$value = $test_data['left_ac_' . $freq];
-													if ($value !== null) $left_ac_values[] = $value;
-												}
-												?>
-												<td style="padding-left: 10px;"><?= html_escape(!empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '-') ?></td>
-											</tr>
-											<tr>
-												<td style="font-weight: bold;">BC (dB)</td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-') ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_500']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_1000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_2000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_3000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_4000']) ?></td>
-												<td style="padding-left: 10px;"><?= html_escape($test_data['left_bc_6000']) ?></td>
-												<?php
-												$left_bc_values = [];
-												foreach ($frequencies as $freq) {
-													$value = $test_data['left_bc_' . $freq];
-													if ($value !== null) $left_bc_values[] = $value;
-												}
-												?>
-												<td style="padding-left: 10px;"><?= html_escape(!empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '-') ?></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
+						<div class="small fw-bold text-primary mb-2"><i class="bi bi-table me-1" aria-hidden="true"></i> Ambang Pendengaran Kiri</div>
+						<?php $render_threshold_table('left', 'text-primary'); ?>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<!-- Legend -->
-		<div class="row mb-4">
-			<div class="legend-view">
+			<!-- Legend -->
+			<div class="legend-view mt-4 mb-0">
 				<div class="legend-item">
 					<div class="legend-symbol"></div>
 					<span>AC Right</span>
@@ -258,51 +163,43 @@ $is_reviewed = !empty($test_data['impression']);
 					<span>AC Left</span>
 				</div>
 				<div class="legend-item">
-					<div style="color: red;">◀</div>
+					<div class="text-danger">◀</div>
 					<span>BC Right</span>
 				</div>
 				<div class="legend-item">
-					<div style="color: red;">▶</div>
+					<div class="text-danger">▶</div>
 					<span>BC Left</span>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Audiometric Data Tables -->
-
-
 	<!-- Impression / Clinical Conclusion -->
-	<div class="card mb-4 shadow-sm border-0">
-		<div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-			<h5 class="card-title mb-0 fw-bold text-dark">
-				<i class="fas fa-stethoscope text-primary me-2"></i>
-				Impression & Kesimpulan Dokter
-			</h5>
+	<div class="card mb-4">
+		<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+			<h2 class="h6 card-title mb-0">
+				<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression &amp; Kesimpulan Dokter
+			</h2>
 			<?php if ($is_reviewed): ?>
-				<span class="badge bg-success"><i class="fas fa-circle-check"></i> Terverifikasi</span>
+				<span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Terverifikasi</span>
 			<?php else: ?>
 				<a href="<?= html_escape(base_url('review_dokter/' . $test_data['id'])) ?>" class="btn btn-sm btn-warning">
-					<i class="fas fa-pen-to-square me-1"></i> Tinjau Sekarang
+					<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Tinjau Sekarang
 				</a>
 			<?php endif; ?>
 		</div>
-		<div class="card-body p-4">
-			<div class="p-4 rounded-3 border <?= $is_reviewed ? 'bg-light' : 'bg-warning-subtle text-dark' ?>" style="min-height: 100px;">
+		<div class="card-body">
+			<div class="impression-box p-4 rounded-3 border <?= $is_reviewed ? 'bg-body-tertiary' : 'bg-warning-subtle' ?>">
 				<?php if ($is_reviewed): ?>
 					<div class="d-flex align-items-start gap-3">
-						<i class="fas fa-quote-left text-muted fs-3 opacity-25 flex-shrink-0"></i>
-						<div class="flex-grow-1">
-							<p class="fs-5 mb-0 fw-medium text-dark" style="white-space: pre-line; line-height: 1.7;">
-								<?= html_escape($test_data['impression']) ?>
-							</p>
-						</div>
+						<i class="bi bi-quote fs-1 text-body-secondary opacity-50 flex-shrink-0" aria-hidden="true"></i>
+						<p class="fs-5 mb-0 fw-medium impression-text"><?= html_escape($test_data['impression']) ?></p>
 					</div>
 				<?php else: ?>
-					<div class="text-center py-3 text-muted">
-						<i class="fas fa-hourglass-half fa-2x mb-2 text-warning d-block"></i>
-						<span class="fw-bold d-block text-dark">Belum Direview oleh Dokter</span>
-						<small>Pemeriksaan ini sedang menunggu tinjauan dan pengisian impression oleh dokter pemeriksa.</small>
+					<div class="text-center py-3">
+						<i class="bi bi-hourglass-split fs-2 text-warning d-block mb-2" aria-hidden="true"></i>
+						<span class="fw-bold d-block">Belum Direview oleh Dokter</span>
+						<small class="text-body-secondary">Pemeriksaan ini sedang menunggu tinjauan dan pengisian impression oleh dokter pemeriksa.</small>
 					</div>
 				<?php endif; ?>
 			</div>
@@ -311,18 +208,18 @@ $is_reviewed = !empty($test_data['impression']);
 
 	<!-- Action Footer Buttons -->
 	<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 pb-4">
-		<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-secondary">
-			<i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+		<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary">
+			<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali ke Daftar
 		</a>
 		<div class="d-flex gap-2 flex-wrap">
 			<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
-				<i class="fas fa-pen-to-square me-1"></i> Edit Data
+				<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data
 			</a>
-			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-danger" target="_blank">
-				<i class="fas fa-file-pdf me-1"></i> Unduh PDF
+			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-secondary" target="_blank" rel="noopener">
+				<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF
 			</a>
 			<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
-				<i class="fas fa-plus me-1"></i> Pemeriksaan Baru
+				<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Pemeriksaan Baru
 			</a>
 		</div>
 	</div>
@@ -568,5 +465,3 @@ $is_reviewed = !empty($test_data['impression']);
 		setTimeout(initViewCharts, 100);
 	});
 </script>
-
-<!-- Styles handled cleanly by workspace.css and calm.css -->

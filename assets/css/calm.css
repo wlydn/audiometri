@@ -180,15 +180,15 @@
 }
 
 /* Review tables (review_dokter.php) */
-.table-header h4 {
+.table-header h3 {
     margin: 0 0 0.5rem;
     font-size: 0.85rem;
     font-weight: 700;
 }
-.right-ear-header h4 {
+.right-ear-header h3 {
     color: #b91c1c;
 }
-.left-ear-header h4 {
+.left-ear-header h3 {
     color: #1d4ed8;
 }
 .audiometry-table {

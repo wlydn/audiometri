@@ -1,218 +1,150 @@
-<!-- Audiometri Form View -->
-<div class="container-fluid">
-	<div class="audiometri-container">
-		<div class="header">
-			<span class="eyebrow">Panel dokter / Review</span>
+<!-- Audiometri Review View -->
+<?php
+$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
+
+// Renders the AC/BC table of one ear. Cell ids (<ear>-<type>-<freq>-display and
+// <ear>-<type>-average) are kept identical to the previous markup.
+$render_review_table = function ($ear, $header_class, $heading) use ($test_data, $frequencies) {
+	?>
+	<div class="frequency-table">
+		<div class="table-header <?= html_escape($header_class) ?>">
+			<h3><?= html_escape($heading) ?></h3>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-sm table-bordered text-center align-middle mb-0 audiometry-table">
+				<thead>
+					<tr>
+						<th scope="col" class="text-start">Frekuensi</th>
+						<?php foreach ($frequencies as $freq): ?>
+							<th scope="col"><?= html_escape($freq) ?></th>
+						<?php endforeach; ?>
+						<th scope="col">Rata²</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach (['ac' => 'AC (dB)', 'bc' => 'BC (dB)'] as $type => $label): ?>
+						<?php
+						$values = [];
+						foreach ($frequencies as $freq) {
+							$value = $test_data[$ear . '_' . $type . '_' . $freq];
+							// AC averages every frequency; BC averages only measured ones.
+							if ($type === 'ac' || $value !== null) {
+								$values[] = $value;
+							}
+						}
+						?>
+						<tr class="<?= html_escape($type) ?>-row">
+							<th scope="row" class="text-start"><?= html_escape($label) ?></th>
+							<?php foreach ($frequencies as $freq): ?>
+								<?php $cell = $test_data[$ear . '_' . $type . '_' . $freq]; ?>
+								<td id="<?= html_escape($ear . '-' . $type . '-' . $freq) ?>-display"><?= html_escape($cell !== null ? $cell : '-') ?></td>
+							<?php endforeach; ?>
+							<td id="<?= html_escape($ear . '-' . $type) ?>-average" class="average-cell"><?= html_escape(!empty($values) ? number_format(array_sum($values) / count($values), 1) : '0.0') ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<?php
+};
+?>
+<div class="container-fluid p-3 p-lg-4">
+	<div class="page-heading">
+		<div>
+			<span class="eyebrow"><i class="bi bi-clipboard2-pulse me-1" aria-hidden="true"></i> Panel dokter / Review</span>
 			<h1>Review hasil audiometri</h1>
 			<p>Periksa identitas dan audiogram pasien sebelum menyimpan impression.</p>
 		</div>
+	</div>
 
-		<?php if ($this->session->flashdata('error')): ?>
-			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<?= html_escape($this->session->flashdata('error')) ?>
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-			</div>
-		<?php endif; ?>
-
-		<?php if ($this->session->flashdata('success')): ?>
-			<div class="alert alert-success d-flex align-items-center" role="alert">
-				<?= html_escape($this->session->flashdata('success')) ?>
-				<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
-					<use xlink:href="#check-circle-fill" />
-				</svg>
-				<div>
-				</div>
-			</div>
-		<?php endif; ?>
-
-		<?= form_open(current_url(), ['id' => 'audiometri-review']) ?>
-		<div class="patient-info">
-			<div class="info-group">
-				<label for="perusahaan">Perusahaan:</label>
-				<span><?= html_escape($test_data['perusahaan'] ?? 'N/A') ?></span>
-			</div>
-
-			<div class="info-group">
-				<label for="jabatan">Jabatan:</label>
-				<span><?= html_escape($test_data['jabatan'] ?? 'N/A') ?></span>
-			</div>
-
-			<div class="info-group">
-				<label for="nama">Nama:</label>
-				<span><?= html_escape($test_data['nama'] ?? 'N/A') ?></span>
-			</div>
-
-			<div class="info-group">
-				<label for="umur">Umur:</label>
-				<span><?= html_escape($test_data['umur'] ?? 'N/A') ?> Tahun</span>
-			</div>
-
-			<div class="info-group">
-				<label for="tanggal_tes">Tanggal Tes:</label>
-				<span><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></span>
-			</div>
-
-			<div class="info-group">
-				<label for="jenis_kelamin">Jenis Kelamin:</label>
-				<span><?= html_escape($test_data['jenis_kelamin'] ?? 'N/A') ?></span>
-			</div>
-
-			<div class="info-group">
-				<label for="no_rm">No RM:</label>
-				<span><?= html_escape($test_data['no_rm'] ?? 'N/A') ?></span>
-			</div>
+	<?php if ($this->session->flashdata('error')): ?>
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			<?= html_escape($this->session->flashdata('error')) ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
 		</div>
+	<?php endif; ?>
 
-		<div class="audiogram-section">
-			<h3 class="audiogram-title">AUDIOGRAM</h3>
+	<?php if ($this->session->flashdata('success')): ?>
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			<i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i><?= html_escape($this->session->flashdata('success')) ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+		</div>
+	<?php endif; ?>
 
+	<?= form_open(current_url(), ['id' => 'audiometri-review']) ?>
+
+	<!-- Identitas Pasien (read-only) -->
+	<div class="card mb-4">
+		<div class="card-header">
+			<h2 class="h6 card-title mb-0"><i class="bi bi-person-vcard text-primary me-2" aria-hidden="true"></i>Identitas Pasien</h2>
+		</div>
+		<div class="card-body">
+			<dl class="row g-3 mb-0">
+				<div class="col-md-6 col-xl-4">
+					<dt class="stat-label">Perusahaan</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['perusahaan'] ?? 'N/A') ?></dd>
+				</div>
+				<div class="col-md-6 col-xl-4">
+					<dt class="stat-label">Jabatan</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['jabatan'] ?? 'N/A') ?></dd>
+				</div>
+				<div class="col-md-6 col-xl-4">
+					<dt class="stat-label">Nama</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['nama'] ?? 'N/A') ?></dd>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<dt class="stat-label">Umur</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['umur'] ?? 'N/A') ?> Tahun</dd>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<dt class="stat-label">Tanggal Tes</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></dd>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<dt class="stat-label">Jenis Kelamin</dt>
+					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['jenis_kelamin'] ?? 'N/A') ?></dd>
+				</div>
+				<div class="col-md-6 col-xl-3">
+					<dt class="stat-label">No RM</dt>
+					<dd class="mb-0 fw-semibold font-monospace"><?= html_escape($test_data['no_rm'] ?? 'N/A') ?></dd>
+				</div>
+			</dl>
+		</div>
+	</div>
+
+	<!-- Audiogram -->
+	<div class="card mb-4">
+		<div class="card-header">
+			<h2 class="h6 card-title mb-0"><i class="bi bi-soundwave text-primary me-2" aria-hidden="true"></i>AUDIOGRAM</h2>
+		</div>
+		<div class="card-body">
 			<div class="ear-charts">
 				<!-- Right Ear Chart -->
 				<div class="ear-chart">
-					<div class="ear-title">TELINGA KANAN</div>
+					<div class="ear-title ear-title-right">TELINGA KANAN</div>
 					<div class="chart-container">
 						<svg width="100%" height="100%" id="right-chart-view">
 							<!-- Grid akan di-generate oleh JavaScript -->
 						</svg>
 					</div>
-					<div class="frequency-table">
-						<div class="table-header right-ear-header">
-							<h4>Data Telinga Kanan</h4>
-						</div>
-						<table class="audiometry-table">
-							<thead>
-								<tr>
-									<th>Frekuensi</th>
-									<th>250</th>
-									<th>500</th>
-									<th>1000</th>
-									<th>2000</th>
-									<th>3000</th>
-									<th>4000</th>
-									<th>6000</th>
-									<th>Rata²</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-								$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
-								?>
-								<tr class="ac-row">
-									<td><strong>AC (dB)</strong></td>
-									<td id="right-ac-250-display"><?= html_escape($test_data['right_ac_250'] !== null ? $test_data['right_ac_250'] : '-') ?></td>
-									<td id="right-ac-500-display"><?= html_escape($test_data['right_ac_500']) ?></td>
-									<td id="right-ac-1000-display"><?= html_escape($test_data['right_ac_1000']) ?></td>
-									<td id="right-ac-2000-display"><?= html_escape($test_data['right_ac_2000']) ?></td>
-									<td id="right-ac-3000-display"><?= html_escape($test_data['right_ac_3000']) ?></td>
-									<td id="right-ac-4000-display"><?= html_escape($test_data['right_ac_4000']) ?></td>
-									<td id="right-ac-6000-display"><?= html_escape($test_data['right_ac_6000']) ?></td>
-									<?php
-									$right_ac_values = [];
-									foreach ($frequencies as $freq) {
-										$right_ac_values[] = $test_data['right_ac_' . $freq];
-									}
-									$right_ac_average = array_sum($right_ac_values) / count($right_ac_values);
-									?>
-									<td id="right-ac-average" class="average-cell"><?= html_escape(!empty($right_ac_values) ? number_format(array_sum($right_ac_values) / count($right_ac_values), 1) : '0.0') ?></td>
-								</tr>
-								<tr class="bc-row">
-									<td><strong>BC (dB)</strong></td>
-									<td id="right-bc-250-display"><?= html_escape($test_data['right_bc_250'] !== null ? $test_data['right_bc_250'] : '-') ?></td>
-									<td id="right-bc-500-display"><?= html_escape($test_data['right_bc_500']) ?></td>
-									<td id="right-bc-1000-display"><?= html_escape($test_data['right_bc_1000']) ?></td>
-									<td id="right-bc-2000-display"><?= html_escape($test_data['right_bc_2000']) ?></td>
-									<td id="right-bc-3000-display"><?= html_escape($test_data['right_bc_3000']) ?></td>
-									<td id="right-bc-4000-display"><?= html_escape($test_data['right_bc_4000']) ?></td>
-									<td id="right-bc-6000-display"><?= html_escape($test_data['right_bc_6000']) ?></td>
-									<?php
-									$right_bc_values = [];
-									foreach ($frequencies as $freq) {
-										$value = $test_data['right_bc_' . $freq];
-										if ($value !== null) $right_bc_values[] = $value;
-									}
-									?>
-									<td id="right-bc-average" class="average-cell"><?= html_escape(!empty($right_bc_values) ? number_format(array_sum($right_bc_values) / count($right_bc_values), 1) : '0.0') ?></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<?php $render_review_table('right', 'right-ear-header', 'Data Telinga Kanan'); ?>
 				</div>
 
 				<!-- Left Ear Chart -->
 				<div class="ear-chart">
-					<div class="ear-title">TELINGA KIRI</div>
+					<div class="ear-title ear-title-left">TELINGA KIRI</div>
 					<div class="chart-container">
 						<svg width="100%" height="100%" id="left-chart-view">
 							<!-- Grid akan di-generate oleh JavaScript -->
 						</svg>
 					</div>
-
-					<div class="frequency-table">
-						<div class="table-header left-ear-header">
-							<h4>Data Telinga Kiri</h4>
-						</div>
-						<table class="audiometry-table">
-							<thead>
-								<tr>
-									<th>Frekuensi</th>
-									<th>250</th>
-									<th>500</th>
-									<th>1000</th>
-									<th>2000</th>
-									<th>3000</th>
-									<th>4000</th>
-									<th>6000</th>
-									<th>Rata²</th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php
-								$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
-								?>
-								<tr class="ac-row">
-									<td><strong>AC (dB)</strong></td>
-									<td id="left-ac-250-display"><?= html_escape($test_data['left_ac_250'] !== null ? $test_data['left_ac_250'] : '-') ?></td>
-									<td id="left-ac-500-display"><?= html_escape($test_data['left_ac_500']) ?></td>
-									<td id="left-ac-1000-display"><?= html_escape($test_data['left_ac_1000']) ?></td>
-									<td id="left-ac-2000-display"><?= html_escape($test_data['left_ac_2000']) ?></td>
-									<td id="left-ac-3000-display"><?= html_escape($test_data['left_ac_3000']) ?></td>
-									<td id="left-ac-4000-display"><?= html_escape($test_data['left_ac_4000']) ?></td>
-									<td id="left-ac-6000-display"><?= html_escape($test_data['left_ac_6000']) ?></td>
-									<?php
-									$left_ac_values = [];
-									foreach ($frequencies as $freq) {
-										$left_ac_values[] = $test_data['left_ac_' . $freq];
-									}
-									$left_ac_average = array_sum($left_ac_values) / count($left_ac_values);
-									?>
-									<td id="left-ac-average" class="average-cell"><?= html_escape(!empty($left_ac_values) ? number_format(array_sum($left_ac_values) / count($left_ac_values), 1) : '0.0') ?></td>
-								</tr>
-								<tr class="bc-row">
-									<td><strong>BC (dB)</strong></td>
-									<td id="left-bc-250-display"><?= html_escape($test_data['left_bc_250'] !== null ? $test_data['left_bc_250'] : '-') ?></td>
-									<td id="left-bc-500-display"><?= html_escape($test_data['left_bc_500']) ?></td>
-									<td id="left-bc-1000-display"><?= html_escape($test_data['left_bc_1000']) ?></td>
-									<td id="left-bc-2000-display"><?= html_escape($test_data['left_bc_2000']) ?></td>
-									<td id="left-bc-3000-display"><?= html_escape($test_data['left_bc_3000']) ?></td>
-									<td id="left-bc-4000-display"><?= html_escape($test_data['left_bc_4000']) ?></td>
-									<td id="left-bc-6000-display"><?= html_escape($test_data['left_bc_6000']) ?></td>
-									<?php
-									$left_bc_values = [];
-									foreach ($frequencies as $freq) {
-										$value = $test_data['left_bc_' . $freq];
-										if ($value !== null) $left_bc_values[] = $value;
-									}
-									?>
-									<td id="left-bc-average" class="average-cell"><?= html_escape(!empty($left_bc_values) ? number_format(array_sum($left_bc_values) / count($left_bc_values), 1) : '0.0') ?></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
+					<?php $render_review_table('left', 'left-ear-header', 'Data Telinga Kiri'); ?>
 				</div>
 			</div>
 
 			<!-- Legend -->
-			<div class="legend">
+			<div class="legend mb-0">
 				<div class="legend-item">
 					<div class="legend-symbol"></div>
 					<span>AC Right</span>
@@ -222,60 +154,64 @@
 					<span>AC Left</span>
 				</div>
 				<div class="legend-item">
-					<div style="color: red;">◀</div>
+					<div class="text-danger">◀</div>
 					<span>BC Right</span>
 				</div>
 				<div class="legend-item">
-					<div style="color: red;">▶</div>
+					<div class="text-danger">▶</div>
 					<span>BC Left</span>
 				</div>
 			</div>
+		</div>
+	</div>
 
-			<?php if ($action == 'review_dokter'): ?>
-				<div class="impression p-4 bg-light rounded-3 border mb-4">
-					<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-						<h5 class="fw-bold mb-0 text-dark">
-							<i class="fas fa-stethoscope text-primary me-2"></i>Impression / Rekomendasi Dokter:
-						</h5>
-						<div class="d-flex gap-1 flex-wrap">
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
-						</div>
-					</div>
-					<textarea id="impression" name="impression"
-						class="form-control" rows="4"
-						placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi medis..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
-					<small class="form-text text-muted mt-2 d-block">
-						Silakan lengkapi dengan interpretasi hasil audiometri, klasifikasi gangguan pendengaran, dan saran tindak lanjut.
-					</small>
-					<?= form_error('impression', '<small class="text-danger">', '</small>') ?>
+	<?php if ($action == 'review_dokter'): ?>
+		<!-- Impression -->
+		<div class="card mb-4 impression">
+			<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+				<h2 class="h6 card-title mb-0">
+					<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression / Rekomendasi Dokter:
+				</h2>
+				<div class="d-flex gap-1 flex-wrap">
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
 				</div>
-				<script>
-				function insertDoctorImpression(text) {
-					const textarea = document.getElementById('impression');
-					if (textarea.value.trim() === '') {
-						textarea.value = text;
-					} else {
-						textarea.value += '\n' + text;
-					}
-					textarea.focus();
-				}
-				</script>
-			<?php endif; ?>
-
-			<div class="controls d-flex gap-2">
-				<a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-secondary">
-					<i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
-				</a>
-				<button type="button" class="btn btn-success" onclick="showSimpanModal()">
-					<i class="fas fa-floppy-disk me-1"></i> Simpan Impression
-				</button>
+			</div>
+			<div class="card-body">
+				<label for="impression" class="visually-hidden">Impression / Rekomendasi Dokter</label>
+				<textarea id="impression" name="impression"
+					class="form-control" rows="4"
+					placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi medis..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
+				<div class="form-text">
+					Silakan lengkapi dengan interpretasi hasil audiometri, klasifikasi gangguan pendengaran, dan saran tindak lanjut.
+				</div>
+				<?= form_error('impression', '<small class="text-danger d-block mt-1">', '</small>') ?>
 			</div>
 		</div>
-		<?= form_close() ?>
+		<script>
+		function insertDoctorImpression(text) {
+			const textarea = document.getElementById('impression');
+			if (textarea.value.trim() === '') {
+				textarea.value = text;
+			} else {
+				textarea.value += '\n' + text;
+			}
+			textarea.focus();
+		}
+		</script>
+	<?php endif; ?>
+
+	<div class="controls d-flex flex-wrap gap-2 pb-4">
+		<a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-outline-secondary">
+			<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali ke Daftar
+		</a>
+		<button type="button" class="btn btn-success" onclick="showSimpanModal()">
+			<i class="bi bi-floppy me-1" aria-hidden="true"></i> Simpan Impression
+		</button>
 	</div>
+	<?= form_close() ?>
 </div>
 
 <script>
@@ -522,9 +458,3 @@
 		setTimeout(initViewCharts, 100);
 	});
 </script>
-
-<!-- Styles handled cleanly by workspace.css and calm.css -->
-
-
-
-

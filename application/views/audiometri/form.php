@@ -1,112 +1,125 @@
 <!-- Audiometri Form View -->
-<div class="container-fluid">
-	<div class="audiometri-container">
-		<div class="header">
-			<span class="eyebrow">Ruang pemeriksaan</span>
+<div class="container-fluid p-3 p-lg-4">
+	<div class="page-heading">
+		<div>
+			<span class="eyebrow"><i class="bi bi-activity me-1" aria-hidden="true"></i> Ruang pemeriksaan</span>
 			<h1><?= html_escape($action == 'edit' ? 'Edit pemeriksaan' : 'Pemeriksaan baru') ?></h1>
 			<p>Lengkapi identitas pasien, kemudian catat ambang pendengaran. Kolom bertanda * wajib diisi.</p>
 		</div>
+	</div>
 
-		<?php if ($this->session->flashdata('error')): ?>
-			<div class="alert alert-danger alert-dismissible fade show" role="alert">
-				<?= html_escape($this->session->flashdata('error')) ?>
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
+	<?php if ($this->session->flashdata('error')): ?>
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			<?= html_escape($this->session->flashdata('error')) ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+		</div>
+	<?php endif; ?>
+
+	<?php if ($this->session->flashdata('success')): ?>
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			<?= html_escape($this->session->flashdata('success')) ?>
+			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Tutup"></button>
+		</div>
+	<?php endif; ?>
+
+	<form id="audiometri-form" method="post" action="<?= html_escape(current_url()) ?>">
+		<input type="hidden" name="<?= html_escape($this->security->get_csrf_token_name()) ?>" value="<?= html_escape($this->security->get_csrf_hash()) ?>">
+
+		<!-- Identitas Pasien -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<h2 class="h6 card-title mb-0"><i class="bi bi-person-vcard text-primary me-2" aria-hidden="true"></i>Identitas Pasien</h2>
 			</div>
-		<?php endif; ?>
+			<div class="card-body">
+				<div class="row g-3">
+					<div class="col-md-6 col-xl-4">
+						<label for="perusahaan" class="form-label">Perusahaan: <span class="text-danger">*</span></label>
+						<input type="text" class="form-control" id="perusahaan" name="perusahaan"
+							value="<?= set_value('perusahaan', $test_data['perusahaan'] ?? '') ?>"
+							placeholder="Masukkan nama perusahaan" required>
+						<?= form_error('perusahaan', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-		<?php if ($this->session->flashdata('success')): ?>
-			<div class="alert alert-success alert-dismissible fade show" role="alert">
-				<?= html_escape($this->session->flashdata('success')) ?>
-				<button type="button" class="close" data-dismiss="alert">&times;</button>
-			</div>
-		<?php endif; ?>
+					<div class="col-md-6 col-xl-4">
+						<label for="jabatan" class="form-label">Jabatan: <span class="text-danger">*</span></label>
+						<input type="text" class="form-control" id="jabatan" name="jabatan"
+							value="<?= set_value('jabatan', $test_data['jabatan'] ?? '') ?>"
+							placeholder="Masukkan jabatan" required>
+						<?= form_error('jabatan', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-		<form id="audiometri-form" method="post" action="<?= html_escape(current_url()) ?>">
-			<input type="hidden" name="<?= html_escape($this->security->get_csrf_token_name()) ?>" value="<?= html_escape($this->security->get_csrf_hash()) ?>">
-			<div class="patient-info">
-				<div class="info-group">
-					<label for="perusahaan">Perusahaan: <span class="text-danger">*</span></label>
-					<input type="text" id="perusahaan" name="perusahaan"
-						value="<?= set_value('perusahaan', $test_data['perusahaan'] ?? '') ?>"
-						placeholder="Masukkan nama perusahaan" required>
-					<?= form_error('perusahaan', '<small class="text-danger">', '</small>') ?>
-				</div>
+					<div class="col-md-6 col-xl-4">
+						<label for="nama" class="form-label">Nama: <span class="text-danger">*</span></label>
+						<input type="text" class="form-control" id="nama" name="nama"
+							value="<?= set_value('nama', $test_data['nama'] ?? '') ?>"
+							placeholder="Masukkan nama lengkap" required>
+						<?= form_error('nama', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-				<div class="info-group">
-					<label for="jabatan">Jabatan: <span class="text-danger">*</span></label>
-					<input type="text" id="jabatan" name="jabatan"
-						value="<?= set_value('jabatan', $test_data['jabatan'] ?? '') ?>"
-						placeholder="Masukkan jabatan" required>
-					<?= form_error('jabatan', '<small class="text-danger">', '</small>') ?>
-				</div>
+					<div class="col-md-6 col-xl-3">
+						<label for="umur" class="form-label">Umur: <span class="text-danger">*</span></label>
+						<input type="text" class="form-control" id="umur" name="umur" min="1" max="150"
+							value="<?= set_value('umur', $test_data['umur'] ?? '') ?>"
+							placeholder="Masukkan umur" required>
+						<?= form_error('umur', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-				<div class="info-group">
-					<label for="nama">Nama: <span class="text-danger">*</span></label>
-					<input type="text" id="nama" name="nama"
-						value="<?= set_value('nama', $test_data['nama'] ?? '') ?>"
-						placeholder="Masukkan nama lengkap" required>
-					<?= form_error('nama', '<small class="text-danger">', '</small>') ?>
-				</div>
+					<div class="col-md-6 col-xl-3">
+						<label for="tanggal_tes" class="form-label">Tanggal Tes: <span class="text-danger">*</span></label>
+						<input type="date" class="form-control" id="tanggal_tes" name="tanggal_tes"
+							value="<?= set_value('tanggal_tes', $test_data['tanggal_tes'] ?? date('Y-m-d')) ?>" required>
+						<?= form_error('tanggal_tes', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-				<div class="info-group">
-					<label for="umur">Umur: <span class="text-danger">*</span></label>
-					<input type="text" id="umur" name="umur" min="1" max="150"
-						value="<?= set_value('umur', $test_data['umur'] ?? '') ?>"
-						placeholder="Masukkan umur" required>
-					<?= form_error('umur', '<small class="text-danger">', '</small>') ?>
-				</div>
+					<div class="col-md-6 col-xl-3">
+						<label for="jenis_kelamin" class="form-label">Jenis Kelamin: <span class="text-danger">*</span></label>
+						<select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
+							<option value="">Pilih Jenis Kelamin</option>
+							<option value="Laki-laki" <?= set_select('jenis_kelamin', 'Laki-laki', ($test_data['jenis_kelamin'] ?? '') === 'Laki-laki') ?>>Laki-laki</option>
+							<option value="Perempuan" <?= set_select('jenis_kelamin', 'Perempuan', ($test_data['jenis_kelamin'] ?? '') === 'Perempuan') ?>>Perempuan</option>
+						</select>
+						<?= form_error('jenis_kelamin', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 
-				<div class="info-group">
-					<label for="tanggal_tes">Tanggal Tes: <span class="text-danger">*</span></label>
-					<input type="date" id="tanggal_tes" name="tanggal_tes"
-						value="<?= set_value('tanggal_tes', $test_data['tanggal_tes'] ?? date('Y-m-d')) ?>" required>
-					<?= form_error('tanggal_tes', '<small class="text-danger">', '</small>') ?>
-				</div>
-
-				<div class="info-group">
-					<label for="jenis_kelamin">Jenis Kelamin: <span class="text-danger">*</span></label>
-					<select id="jenis_kelamin" name="jenis_kelamin" required>
-						<option value="">Pilih Jenis Kelamin</option>
-						<option value="Laki-laki" <?= set_select('jenis_kelamin', 'Laki-laki', ($test_data['jenis_kelamin'] ?? '') === 'Laki-laki') ?>>Laki-laki</option>
-						<option value="Perempuan" <?= set_select('jenis_kelamin', 'Perempuan', ($test_data['jenis_kelamin'] ?? '') === 'Perempuan') ?>>Perempuan</option>
-					</select>
-					<?= form_error('jenis_kelamin', '<small class="text-danger">', '</small>') ?>
-				</div>
-
-				<div class="info-group">
-					<label for="no_rm">No RM: <span class="text-danger">*</span></label>
-					<input type="text" id="no_rm" name="no_rm"
-						value="<?= set_value('no_rm', $test_data['no_rm'] ?? '') ?>"
-						placeholder="Nomor Rekam Medis" required>
-					<button type="button" class="btn btn-info btn-sm mt-2" onclick="searchByNoRM()">
-						Cari Riwayat
-					</button>
-					<?= form_error('no_rm', '<small class="text-danger">', '</small>') ?>
+					<div class="col-md-6 col-xl-3">
+						<label for="no_rm" class="form-label">No RM: <span class="text-danger">*</span></label>
+						<div class="input-group">
+							<input type="text" class="form-control" id="no_rm" name="no_rm"
+								value="<?= set_value('no_rm', $test_data['no_rm'] ?? '') ?>"
+								placeholder="Nomor Rekam Medis" required>
+							<button type="button" class="btn btn-outline-primary" onclick="searchByNoRM()">
+								Cari Riwayat
+							</button>
+						</div>
+						<?= form_error('no_rm', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
 				</div>
 			</div>
+		</div>
 
-			<div class="audiogram-section">
-				<h1 class="audiogram-title">AUDIOGRAM</h1>
-
+		<!-- Audiogram -->
+		<div class="card mb-4">
+			<div class="card-header">
+				<h2 class="h6 card-title mb-0"><i class="bi bi-soundwave text-primary me-2" aria-hidden="true"></i>AUDIOGRAM</h2>
+			</div>
+			<div class="card-body">
+				<?php $frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000']; ?>
 				<div class="ear-charts">
 					<!-- Right Ear Chart -->
 					<div class="ear-chart">
-						<div class="ear-title">TELINGA KANAN</div>
+						<div class="ear-title ear-title-right">TELINGA KANAN</div>
 
-						<!-- AC Right Section -->
 						<div class="conduction-section">
+							<!-- AC Right Section -->
 							<div class="frequency-inputs">
 								<div class="freq-input-group">
 									<label>FREKUENSI</label>
 									<div class="conduction-title">AC-Right</div>
 								</div>
-								<?php
-								$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
-								foreach ($frequencies as $freq):
-								?>
+								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<label><?= html_escape($freq) ?> Hz</label>
-										<input type="number" id="right-ac-<?= html_escape($freq) ?>" name="right_ac_<?= html_escape($freq) ?>"
+										<label for="right-ac-<?= html_escape($freq) ?>"><?= html_escape($freq) ?> Hz</label>
+										<input type="number" class="form-control form-control-sm" id="right-ac-<?= html_escape($freq) ?>" name="right_ac_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('right_ac_' . $freq, $test_data['right_ac_' . $freq] ?? '') ?>">
 									</div>
@@ -117,11 +130,11 @@
 							<div class="frequency-inputs">
 								<div class="freq-input-group">
 									<div class="conduction-title2">BC-Right</div>
-									<label style="color: transparent;">FREKUENSI</label>
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<input type="number" id="right-bc-<?= html_escape($freq) ?>" name="right_bc_<?= html_escape($freq) ?>"
+										<label class="visually-hidden" for="right-bc-<?= html_escape($freq) ?>">BC Right <?= html_escape($freq) ?> Hz</label>
+										<input type="number" class="form-control form-control-sm" id="right-bc-<?= html_escape($freq) ?>" name="right_bc_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('right_bc_' . $freq, $test_data['right_bc_' . $freq] ?? '') ?>">
 									</div>
@@ -138,10 +151,10 @@
 
 					<!-- Left Ear Chart -->
 					<div class="ear-chart">
-						<div class="ear-title">TELINGA KIRI</div>
+						<div class="ear-title ear-title-left">TELINGA KIRI</div>
 
-						<!-- AC Left Section -->
 						<div class="conduction-section">
+							<!-- AC Left Section -->
 							<div class="frequency-inputs">
 								<div class="freq-input-group">
 									<label>FREKUENSI</label>
@@ -149,8 +162,8 @@
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<label><?= html_escape($freq) ?> Hz</label>
-										<input type="number" id="left-ac-<?= html_escape($freq) ?>" name="left_ac_<?= html_escape($freq) ?>"
+										<label for="left-ac-<?= html_escape($freq) ?>"><?= html_escape($freq) ?> Hz</label>
+										<input type="number" class="form-control form-control-sm" id="left-ac-<?= html_escape($freq) ?>" name="left_ac_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('left_ac_' . $freq, $test_data['left_ac_' . $freq] ?? '') ?>">
 									</div>
@@ -161,11 +174,11 @@
 							<div class="frequency-inputs">
 								<div class="freq-input-group">
 									<div class="conduction-title2">BC-Left</div>
-									<label style="color: transparent;">FREKUENSI</label>
 								</div>
 								<?php foreach ($frequencies as $freq): ?>
 									<div class="freq-input-group">
-										<input type="number" id="left-bc-<?= html_escape($freq) ?>" name="left_bc_<?= html_escape($freq) ?>"
+										<label class="visually-hidden" for="left-bc-<?= html_escape($freq) ?>">BC Left <?= html_escape($freq) ?> Hz</label>
+										<input type="number" class="form-control form-control-sm" id="left-bc-<?= html_escape($freq) ?>" name="left_bc_<?= html_escape($freq) ?>"
 											placeholder="dB" min="-10" max="140" step="5"
 											value="<?= set_value('left_bc_' . $freq, $test_data['left_bc_' . $freq] ?? '') ?>">
 									</div>
@@ -181,7 +194,7 @@
 					</div>
 				</div>
 
-				<div class="legend">
+				<div class="legend mb-0">
 					<div class="legend-item">
 						<div class="legend-symbol"></div>
 						<span>AC Right</span>
@@ -191,69 +204,75 @@
 						<span>AC Left</span>
 					</div>
 					<div class="legend-item">
-						<div style="color: red;">◀</div>
+						<div class="text-danger">◀</div>
 						<span>BC Right</span>
 					</div>
 					<div class="legend-item">
-						<div style="color: red;">▶</div>
+						<div class="text-danger">▶</div>
 						<span>BC Left</span>
 					</div>
 				</div>
+			</div>
+		</div>
 
-				<?php if ($action == 'edit'): ?>
-				<div class="impression p-4 bg-light rounded-3 border mb-4">
-					<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-						<h5 class="fw-bold mb-0 text-dark">
-							<i class="fas fa-stethoscope text-primary me-2"></i>Impression / Kesimpulan Dokter
-						</h5>
-						<div class="d-flex gap-1 flex-wrap">
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
-							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
-						</div>
-					</div>
-					<textarea id="impression-text" name="impression"
-						class="form-control" rows="4"
-						placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
-					<small class="form-text text-muted mt-2 d-block">
-						Interpretasi hasil audiometri, klasifikasi derajat gangguan pendengaran, dan rekomendasi tindak lanjut.
-					</small>
-					<?= form_error('impression', '<small class="text-danger">', '</small>') ?>
-				</div>
-				<script>
-				function insertImpression(text) {
-					const textarea = document.getElementById('impression-text');
-					if (textarea.value.trim() === '') {
-						textarea.value = text;
-					} else {
-						textarea.value += '\n' + text;
-					}
-					textarea.focus();
-				}
-				</script>
-				<?php endif; ?>
-
-				<div class="controls d-flex flex-wrap gap-2 pt-2">
-					<button type="button" class="btn btn-primary" onclick="updateCharts()">
-						<i class="fas fa-arrows-rotate me-1"></i> Update Grafik
-					</button>
-					<button type="button" class="btn btn-secondary" onclick="clearAudiometricData()">
-						<i class="fas fa-eraser me-1"></i> Bersihkan Data
-					</button>
-					<button type="button" class="btn btn-success" onclick="showSimpanModal()">
-						<i class="fas fa-floppy-disk me-1"></i> <?= html_escape($action == 'edit' ? 'Update' : 'Simpan') ?> Data Pemeriksaan
-					</button>
-					<?php if ($action == 'edit'): ?>
-						<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-info text-white" target="_blank">
-							<i class="fas fa-file-pdf me-1"></i> Cetak / Ekspor PDF
-						</a>
-					<?php endif; ?>
+		<?php if ($action == 'edit'): ?>
+		<!-- Impression -->
+		<div class="card mb-4 impression">
+			<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+				<h2 class="h6 card-title mb-0">
+					<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression / Kesimpulan Dokter
+				</h2>
+				<div class="d-flex gap-1 flex-wrap">
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
+					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
 				</div>
 			</div>
-		</form>
-	</div>
+			<div class="card-body">
+				<label for="impression-text" class="visually-hidden">Impression / Kesimpulan Dokter</label>
+				<textarea id="impression-text" name="impression"
+					class="form-control" rows="4"
+					placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
+				<div class="form-text">
+					Interpretasi hasil audiometri, klasifikasi derajat gangguan pendengaran, dan rekomendasi tindak lanjut.
+				</div>
+				<?= form_error('impression', '<small class="text-danger d-block mt-1">', '</small>') ?>
+			</div>
+		</div>
+		<script>
+		function insertImpression(text) {
+			const textarea = document.getElementById('impression-text');
+			if (textarea.value.trim() === '') {
+				textarea.value = text;
+			} else {
+				textarea.value += '\n' + text;
+			}
+			textarea.focus();
+		}
+		</script>
+		<?php endif; ?>
+
+		<!-- Actions -->
+		<div class="controls d-flex flex-wrap gap-2 pb-4">
+			<button type="button" class="btn btn-primary" onclick="updateCharts()">
+				<i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i> Update Grafik
+			</button>
+			<button type="button" class="btn btn-outline-secondary" onclick="clearAudiometricData()">
+				<i class="bi bi-eraser me-1" aria-hidden="true"></i> Bersihkan Data
+			</button>
+			<button type="button" class="btn btn-success" onclick="showSimpanModal()">
+				<i class="bi bi-floppy me-1" aria-hidden="true"></i> <?= html_escape($action == 'edit' ? 'Update' : 'Simpan') ?> Data Pemeriksaan
+			</button>
+			<?php if ($action == 'edit'): ?>
+				<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-danger" target="_blank" rel="noopener">
+					<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Cetak / Ekspor PDF
+				</a>
+			<?php endif; ?>
+		</div>
+	</form>
 </div>
+
 
 <script>
 	function showSimpanModal() {
@@ -313,24 +332,23 @@
 	}
 </script>
 
-
 <!-- Modal untuk riwayat No RM -->
-<div class="modal fade" id="rmHistoryModal" tabindex="-1" role="dialog">
-	<div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="rmHistoryModal" tabindex="-1" aria-labelledby="rmHistoryModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Riwayat Tes - No RM: <span id="modal-no-rm"></span></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+				<h5 class="modal-title" id="rmHistoryModalLabel">Riwayat Tes - No RM: <span id="modal-no-rm"></span></h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
 			</div>
 			<div class="modal-body" id="rm-history-content">
-				<div class="text-center">
-					<div class="spinner-border" role="status">
-						<span class="sr-only">Loading...</span>
+				<div class="text-center py-3">
+					<div class="spinner-border text-primary" role="status">
+						<span class="visually-hidden">Loading...</span>
 					</div>
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+				<button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
 			</div>
 		</div>
 	</div>
@@ -584,7 +602,7 @@
 		}
 
 		document.getElementById('modal-no-rm').textContent = noRM;
-		$('#rmHistoryModal').modal('show');
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('rmHistoryModal')).show();
 
 		fetch(<?= json_encode(base_url('search_by_no_rm'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>, {
 				method: 'POST',
@@ -725,8 +743,3 @@
 		setTimeout(initCharts, 100);
 	});
 </script>
-
-
-<!-- Legacy styles replaced by workspace.css and calm.css -->
-
-
