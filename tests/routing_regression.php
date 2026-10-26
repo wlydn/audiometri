@@ -33,4 +33,14 @@ $builder->config['base_url'] = 'https://wlydn.my.id/audiometri/';
 verify_route('Production dashboard URL', $builder->base_url() === 'https://wlydn.my.id/audiometri/');
 verify_route('Production form URL', $builder->site_url('create') === 'https://wlydn.my.id/audiometri/create');
 verify_route('Production asset URL', $builder->base_url('assets/css/calm.css') === 'https://wlydn.my.id/audiometri/assets/css/calm.css');
+// Re-load configuration under the broken hostname-only environment value.
+putenv('APP_BASE_URL=wlydn.my.id/audiometri');
+require dirname(__DIR__) . '/application/config/config.php';
+$builder->config = $config;
+verify_route('Hostname-only environment gains HTTPS and trailing slash', $config['base_url'] === 'https://wlydn.my.id/audiometri/');
+verify_route('Menu link is absolute, not nested inside /audiometri/',
+    $builder->base_url('create') === 'https://wlydn.my.id/audiometri/create');
+verify_route('Stylesheet link is absolute and resolves under app root',
+    $builder->base_url('assets/css/workspace.css') === 'https://wlydn.my.id/audiometri/assets/css/workspace.css');
+putenv('APP_BASE_URL');
 exit($failed ? 1 : 0);

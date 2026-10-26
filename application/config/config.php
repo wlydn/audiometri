@@ -23,7 +23,24 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = getenv('APP_BASE_URL') ?: 'http://localhost:8080/audiometri/'; // Set APP_BASE_URL to your HTTPS production URL.
+// APP_BASE_URL takes precedence over this local fallback. Always use an absolute URL.
+$baseUrl = trim(getenv('APP_BASE_URL') ?: 'http://localhost:8080/audiometri/');
+// A hostname without a scheme is otherwise treated as a relative path by browsers,
+// breaking both navigation and local stylesheets. Default such hostnames to HTTPS.
+if (strpos($baseUrl, '//') === 0) {
+    $baseUrl = 'https:' . $baseUrl;
+} elseif (!preg_match('#^https?://#i', $baseUrl)) {
+    $baseUrl = 'https://' . $baseUrl;
+}
+$baseUrlParts = parse_url($baseUrl);
+if ($baseUrlParts === false || empty($baseUrlParts['host'])
+    || isset($baseUrlParts['user']) || isset($baseUrlParts['pass'])
+    || isset($baseUrlParts['query']) || isset($baseUrlParts['fragment'])
+    || preg_match('/[\s\\\\]/', $baseUrl)) {
+    throw new RuntimeException('APP_BASE_URL must be an absolute HTTP(S) URL without credentials, query or fragment.');
+}
+$config['base_url'] = rtrim($baseUrl, '/') . '/';
+unset($baseUrl, $baseUrlParts);
 
 /*
 |--------------------------------------------------------------------------

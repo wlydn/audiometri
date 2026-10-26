@@ -1,77 +1,117 @@
 <?php
 // File: application/views/audiometri/doctor_view.php
+$reviewed_count = 0;
+$pending_count = 0;
+foreach ($tests as $t) {
+    if (!empty($t['impression'])) {
+        $reviewed_count++;
+    } else {
+        $pending_count++;
+    }
+}
 ?>
 <div class="container-fluid p-4">
 	<div class="page-heading">
-		<div><span class="eyebrow">Panel dokter</span><h1>Review pemeriksaan</h1><p>Tinjau audiogram dan lengkapi impression pasien yang diperiksa hari ini.</p></div>
-		<span class="badge bg-success"><?= html_escape(number_format(count($tests))) ?> pasien hari ini</span>
+		<div>
+			<span class="eyebrow"><i class="fas fa-user-doctor me-1"></i> Panel Dokter</span>
+			<h1>Review Pemeriksaan Hari Ini</h1>
+			<p>Tinjau grafik audiogram dan verifikasi kesimpulan medis (impression) untuk pasien hari ini.</p>
+		</div>
+		<div class="d-flex align-items-center gap-2 flex-wrap">
+			<span class="badge bg-primary fs-6 px-3 py-2">
+				<i class="fas fa-users me-1"></i> <?= html_escape(number_format(count($tests))) ?> Pasien
+			</span>
+			<span class="badge bg-success fs-6 px-3 py-2">
+				<i class="fas fa-circle-check me-1"></i> <?= html_escape(number_format($reviewed_count)) ?> Selesai
+			</span>
+			<?php if ($pending_count > 0): ?>
+				<span class="badge bg-warning text-dark fs-6 px-3 py-2">
+					<i class="fas fa-clock me-1"></i> <?= html_escape(number_format($pending_count)) ?> Menunggu
+				</span>
+			<?php endif; ?>
+		</div>
 	</div>
 
-	<!-- Info Section -->
-	<div class="alert alert-info" role="alert" aria-live="polite" aria-atomic="true">
-		<i class="fas fa-info-circle me-2"></i>
-		<strong>Informasi:</strong> Halaman ini menampilkan data pasien hari ini. Anda hanya dapat mengedit bagian <strong>Impression</strong> untuk setiap pasien.
+	<!-- Info Banner -->
+	<div class="alert alert-info d-flex align-items-center gap-3 mb-4" role="alert">
+		<div style="font-size: 24px; color: #0284c7;"><i class="fas fa-circle-info"></i></div>
+		<div>
+			<strong class="d-block text-dark">Informasi Panel Review:</strong>
+			<span>Daftar di bawah menampilkan pasien yang melakukan tes pada hari ini (<strong><?= html_escape(date('d F Y')) ?></strong>). Anda dapat langsung membuka form review untuk melengkapi kesimpulan medis.</span>
+		</div>
 	</div>
 
-	<!-- Results Section -->
-	<div class="card">
-		<div class="card-header bg-light d-flex justify-content-between align-items-center">
-			<h5 class="card-title mb-0">
-				Data Pasien Hari Ini (<?= html_escape(date('d/m/Y')) ?>) - <?= html_escape(number_format(count($tests))) ?> pasien
+	<!-- Results Card -->
+	<div class="card shadow-sm border-0">
+		<div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2">
+			<h5 class="card-title mb-0 fw-bold text-dark">
+				<i class="fas fa-clipboard-check text-primary me-2"></i>
+				Data Pasien Hari Ini &bull; <?= html_escape(date('d/m/Y')) ?>
 			</h5>
-			<div class="text-muted">
-				<i class="fas fa-calendar-day me-1"></i>
-				<?= html_escape(date('l, d F Y')) ?>
+			<div class="text-muted small">
+				<i class="far fa-calendar-alt me-1"></i> <?= html_escape(date('l, d F Y')) ?>
 			</div>
 		</div>
 		<div class="card-body p-0">
 			<?php if (!empty($tests)): ?>
 				<div class="table-responsive">
-					<table class="table table-hover mb-0">
-						<thead class="table-light">
+					<table class="table table-hover align-middle mb-0">
+						<thead>
 							<tr>
-								<th>No</th>
-								<th>Tanggal Tes</th>
+								<th style="width: 50px;">No</th>
+								<th>Pasien</th>
 								<th>No RM</th>
-								<th>Nama Pasien</th>
-								<th>Umur</th>
-								<th>Perusahaan</th>
-								<th>Jabatan</th>
+								<th>Perusahaan & Jabatan</th>
+								<th>Tanggal Tes</th>
 								<th>Status Review</th>
-								<th>Aksi</th>
+								<th class="text-end" style="width: 140px;">Aksi</th>
 							</tr>
 						</thead>
 						<tbody>
 							<?php
 							$no = 1;
 							foreach ($tests as $test):
+								$is_reviewed = !empty($test['impression']);
 							?>
-								<tr>
-									<td><?= html_escape($no++) ?></td>
-									<td class="vertical-align: top"><?= html_escape(date('d/m/Y', strtotime($test['tanggal_tes']))) ?></td>
-									<td><?= html_escape($test['no_rm']) ?></td>
-									<td class="td-nama-pasien">
-										<strong><?= html_escape($test['nama']) ?></strong><br>
-										<small class="text-muted"><?= html_escape($test['jenis_kelamin']) ?></small>
-									</td>
-									<td><?= html_escape($test['umur']) ?> tahun</td>
-									<td><?= html_escape($test['perusahaan']) ?></td>
-									<td><?= html_escape($test['jabatan']) ?></td>
+								<tr class="<?= !$is_reviewed ? 'table-warning bg-opacity-10' : '' ?>">
+									<td class="text-muted fw-bold"><?= html_escape($no++) ?></td>
 									<td>
-										<?php
-										$impression = $test['impression'];
-										if (!empty($impression)) {
-											echo '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Sudah Direview</span>';
-										} else {
-											echo '<span class="badge bg-warning"><i class="fas fa-clock me-1"></i>Menunggu Review</span>';
-										}
-										?>
+										<div class="d-flex align-items-center gap-2">
+											<div style="width: 34px; height: 34px; border-radius: 50%; background: <?= $is_reviewed ? '#dcfce7' : '#fef3c7' ?>; color: <?= $is_reviewed ? '#16a34a' : '#d97706' ?>; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
+												<?= html_escape(strtoupper(substr($test['nama'] ?? 'P', 0, 1))) ?>
+											</div>
+											<div>
+												<strong class="d-block text-dark"><?= html_escape($test['nama']) ?></strong>
+												<small class="text-muted"><?= html_escape($test['jenis_kelamin']) ?> &bull; <?= html_escape($test['umur']) ?> thn</small>
+											</div>
+										</div>
 									</td>
 									<td>
+										<span class="badge bg-light text-dark border font-monospace"><?= html_escape($test['no_rm']) ?></span>
+									</td>
+									<td>
+										<div class="fw-semibold text-dark"><?= html_escape($test['perusahaan']) ?></div>
+										<small class="text-muted"><?= html_escape($test['jabatan']) ?></small>
+									</td>
+									<td>
+										<span class="text-secondary fw-semibold"><?= html_escape(date('d/m/Y', strtotime($test['tanggal_tes']))) ?></span>
+									</td>
+									<td>
+										<?php if ($is_reviewed): ?>
+											<span class="badge bg-success">
+												<i class="fas fa-circle-check"></i> Sudah Direview
+											</span>
+										<?php else: ?>
+											<span class="badge bg-warning">
+												<i class="fas fa-clock"></i> Menunggu Review
+											</span>
+										<?php endif; ?>
+									</td>
+									<td class="text-end">
 										<a href="<?= html_escape(base_url('review_dokter/' . $test['id'])) ?>"
-											class="btn btn-sm btn-outline-primary"
-											title="Review Data">
-											<i class="fas fa-edit"></i> Review
+											class="btn btn-sm <?= $is_reviewed ? 'btn-outline-primary' : 'btn-primary' ?>"
+											title="Buka Lembar Review">
+											<i class="fas fa-stethoscope me-1"></i> Review
 										</a>
 									</td>
 								</tr>
@@ -81,39 +121,14 @@
 				</div>
 			<?php else: ?>
 				<div class="text-center py-5">
-					<i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-					<h5 class="text-muted">Tidak ada data pasien hari ini</h5>
-					<p class="text-muted">Belum ada tes audiometri yang dilakukan hari ini</p>
+					<i class="fas fa-calendar-check fa-3x text-muted mb-3 opacity-50"></i>
+					<h5 class="fw-bold text-dark">Tidak Ada Pemeriksaan Hari Ini</h5>
+					<p class="text-muted">Belum ada pasien yang menjalani tes audiometri pada <?= html_escape(date('d F Y')) ?>.</p>
+					<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-primary mt-2">
+						<i class="fas fa-folder-open me-1"></i> Lihat Seluruh Riwayat Tes
+					</a>
 				</div>
 			<?php endif; ?>
 		</div>
 	</div>
 </div>
-
-<style>
-	.bg-pink {
-		background-color: #e91e63 !important;
-	}
-
-	.table td {
-		vertical-align: middle;
-	}
-
-	.badge {
-		font-size: 0.75em;
-	}
-
-	.btn-group-sm .btn {
-		padding: 0.25rem 0.5rem;
-	}
-
-	/* Semua td pada tbody rata atas */
-	.table tbody td {
-		vertical-align: top;
-	}
-
-	/* Kecuali kolom Nama Pasien, tetap vertikal tengah */
-	.table tbody td.td-nama-pasien {
-		vertical-align: middle;
-	}
-</style>

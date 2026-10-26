@@ -232,21 +232,45 @@
 			</div>
 
 			<?php if ($action == 'review_dokter'): ?>
-				<div class="impression">
-					<h3>Impression:</h3>
+				<div class="impression p-4 bg-light rounded-3 border mb-4">
+					<div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+						<h5 class="fw-bold mb-0 text-dark">
+							<i class="fas fa-stethoscope text-primary me-2"></i>Impression / Rekomendasi Dokter:
+						</h5>
+						<div class="d-flex gap-1 flex-wrap">
+							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
+							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
+							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
+							<button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2" style="font-size: 11px;" onclick="insertDoctorImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
+						</div>
+					</div>
 					<textarea id="impression" name="impression"
 						class="form-control" rows="4"
-						placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
-					<small class="form-text text-muted mt-2">
-						Silakan isi dengan interpretasi hasil audiometri, tingkat gangguan pendengaran, dan rekomendasi tindak lanjut jika diperlukan.
+						placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi medis..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
+					<small class="form-text text-muted mt-2 d-block">
+						Silakan lengkapi dengan interpretasi hasil audiometri, klasifikasi gangguan pendengaran, dan saran tindak lanjut.
 					</small>
 					<?= form_error('impression', '<small class="text-danger">', '</small>') ?>
 				</div>
+				<script>
+				function insertDoctorImpression(text) {
+					const textarea = document.getElementById('impression');
+					if (textarea.value.trim() === '') {
+						textarea.value = text;
+					} else {
+						textarea.value += '\n' + text;
+					}
+					textarea.focus();
+				}
+				</script>
 			<?php endif; ?>
 
-			<div class="controls">
+			<div class="controls d-flex gap-2">
+				<a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-secondary">
+					<i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar
+				</a>
 				<button type="button" class="btn btn-success" onclick="showSimpanModal()">
-					<i class="fas fa-save"></i> Update Data
+					<i class="fas fa-floppy-disk me-1"></i> Simpan Impression
 				</button>
 			</div>
 		</div>
@@ -499,469 +523,8 @@
 	});
 </script>
 
-<style>
-	/* CSS dari versi HTML asli dengan beberapa modifikasi untuk integrasi CI */
-	.audiometri-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		background: white;
-		border-radius: 15px;
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-		overflow: hidden;
-	}
+<!-- Styles handled cleanly by workspace.css and calm.css -->
 
-	.header {
-		background: linear-gradient(45deg, #2c3e50, #3498db);
-		color: white;
-		padding: 30px;
-		text-align: center;
-	}
 
-	.header h1 {
-		font-size: 2.5em;
-		margin-bottom: 10px;
-		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-	}
 
-	.header p {
-		font-size: 1.2em;
-		opacity: 0.9;
-	}
 
-	.patient-info {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		gap: 20px;
-		padding: 30px;
-		background: #f8f9fa;
-	}
-
-	.info-group {
-		background: white;
-		padding: 10px;
-		border-radius: 10px;
-		box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-	}
-
-	.info-group label {
-		display: block;
-		font-weight: bold;
-		color: #2c3e50;
-		margin-bottom: 8px;
-	}
-
-	.info-group input,
-	.info-group select {
-		width: 100%;
-		padding: 12px;
-		border: 2px solid #e0e0e0;
-		border-radius: 8px;
-		font-size: 16px;
-		transition: all 0.3s ease;
-	}
-
-	.info-group input:focus,
-	.info-group select:focus {
-		outline: none;
-		border-color: #3498db;
-		box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
-	}
-
-	.audiogram-section {
-		padding: 30px;
-	}
-
-	.audiogram-title {
-		text-align: center;
-		font-size: 2em;
-		color: #2c3e50;
-		margin-bottom: 30px;
-		padding: 10px;
-		background: linear-gradient(45deg, #f39c12, #e67e22);
-		color: white;
-		border-radius: 10px;
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-	}
-
-	.ear-charts {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 30px;
-		margin-bottom: 30px;
-	}
-
-	.ear-chart {
-		background: white;
-		border-radius: 15px;
-		padding: 25px;
-		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-		border: 3px solid #e0e0e0;
-	}
-
-	.ear-title {
-		text-align: center;
-		font-size: 1.5em;
-		font-weight: bold;
-		color: #2c3e50;
-		margin-bottom: 20px;
-		padding: 5px;
-		background: linear-gradient(45deg, #3498db, #2980b9);
-		color: white;
-		border-radius: 8px;
-	}
-
-	.chart-container {
-		position: relative;
-		height: 400px;
-		border: 2px solid #34495e;
-		margin: 20px 0;
-		background: #ffffff;
-	}
-
-	.conduction-title,
-	.conduction-title2 {
-		background: linear-gradient(45deg, #16a085, #1abc9c);
-		color: white;
-		padding: 12px 5px;
-		font-weight: bold;
-		font-size: 12px;
-		text-align: center;
-		border-radius: 8px;
-		margin-bottom: 1px;
-		text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-	}
-
-	.frequency-inputs {
-		display: grid;
-		grid-template-columns: repeat(8, 1fr);
-		gap: 10px;
-		margin-bottom: 20px;
-	}
-
-	.freq-input-group {
-		text-align: center;
-	}
-
-	.freq-input-group label {
-		display: block;
-		font-weight: bold;
-		font-size: 12px;
-		margin-bottom: 5px;
-		color: #2c3e50;
-	}
-
-	.freq-input-group input {
-		width: 100%;
-		padding: 8px;
-		border: 2px solid #e0e0e0;
-		border-radius: 5px;
-		text-align: center;
-		font-size: 14px;
-		transition: all 0.3s ease;
-	}
-
-	.freq-input-group input:focus {
-		outline: none;
-		border-color: #3498db;
-		box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
-	}
-
-	.chart-grid {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-	}
-
-	.chart-line {
-		stroke: #bdc3c7;
-		stroke-width: 1;
-	}
-
-	.chart-line.major {
-		stroke: #7f8c8d;
-		stroke-width: 1.5;
-	}
-
-	.hearing-line {
-		stroke: #3498db;
-		stroke-width: 3;
-		fill: none;
-		stroke-dasharray: none;
-	}
-
-	.hearing-line.bc {
-		stroke: #e74c3c;
-		stroke-width: 3;
-		stroke-dasharray: 5, 5;
-	}
-
-	.hearing-point {
-		fill: #e74c3c;
-		stroke: #c0392b;
-		stroke-width: 2;
-		r: 4;
-	}
-
-	.hearing-point.bc {
-		fill: #3498db;
-		stroke: #2980b9;
-	}
-
-	.hearing-point:hover {
-		r: 6;
-		fill: #c0392b;
-	}
-
-	.axis-label {
-		fill: #2c3e50;
-		font-size: 12px;
-		font-weight: bold;
-	}
-
-	.arrow-symbol {
-		font-size: 14px;
-		fill: #c0392b;
-		font-weight: normal;
-		pointer-events: none;
-		opacity: 0.8;
-	}
-
-	.diamond {
-		fill: #3498db;
-		stroke: #2980b9;
-		pointer-events: none;
-	}
-
-	.controls {
-		display: flex;
-		justify-content: center;
-		gap: 20px;
-		margin: 30px 0;
-		flex-wrap: wrap;
-	}
-
-	.btn {
-		padding: 15px 30px;
-		border: none;
-		border-radius: 8px;
-		font-size: 16px;
-		font-weight: bold;
-		cursor: pointer;
-		transition: all 0.3s ease;
-		text-transform: uppercase;
-		letter-spacing: 1px;
-		text-decoration: none;
-		display: inline-block;
-	}
-
-	.btn-primary {
-		background: linear-gradient(45deg, #3498db, #2980b9);
-		color: white;
-		box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-	}
-
-	.btn-primary:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-		color: white;
-		text-decoration: none;
-	}
-
-	.btn-secondary {
-		background: linear-gradient(45deg, #95a5a6, #7f8c8d);
-		color: white;
-		box-shadow: 0 5px 15px rgba(149, 165, 166, 0.3);
-	}
-
-	.btn-secondary:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-		color: white;
-		text-decoration: none;
-	}
-
-	.btn-success {
-		background: linear-gradient(45deg, #27ae60, #229954);
-		color: white;
-		box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
-	}
-
-	.btn-success:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(39, 174, 96, 0.4);
-		color: white;
-		text-decoration: none;
-	}
-
-	.btn-info {
-		background: linear-gradient(45deg, #3498db, #2980b9);
-		color: white;
-		box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-	}
-
-	.btn-info:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
-		color: white;
-		text-decoration: none;
-	}
-
-	.impression {
-		background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-		padding: 25px;
-		border-radius: 10px;
-		margin-top: 30px;
-		border-left: 5px solid #3498db;
-	}
-
-	.impression h3 {
-		color: #2c3e50;
-		margin-bottom: 15px;
-		font-size: 1.3em;
-	}
-
-	.impression p {
-		color: #34495e;
-		line-height: 1.6;
-		font-size: 16px;
-	}
-
-	.legend {
-		display: flex;
-		justify-content: center;
-		gap: 30px;
-		margin-top: 20px;
-		padding: 20px;
-		background: #f8f9fa;
-		border-radius: 10px;
-		flex-wrap: wrap;
-	}
-
-	.legend-item {
-		display: flex;
-		align-items: center;
-		gap: 10px;
-		font-weight: bold;
-		color: #2c3e50;
-	}
-
-	.legend-symbol {
-		width: 20px;
-		height: 20px;
-		border-radius: 50%;
-		background: #3498db;
-	}
-
-	.diamond-symbol {
-		width: 15px;
-		height: 15px;
-		transform: rotate(45deg);
-		background: #3498db;
-	}
-
-	@media (max-width: 768px) {
-		.ear-charts {
-			grid-template-columns: 1fr;
-		}
-
-		.frequency-inputs {
-			grid-template-columns: repeat(4, 1fr);
-		}
-
-		.controls {
-			flex-direction: column;
-			align-items: center;
-		}
-
-		.legend {
-			flex-direction: column;
-			align-items: center;
-		}
-	}
-
-	.frequency-table {
-		margin-top: 20px;
-		border-radius: 10px;
-		overflow: hidden;
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	}
-
-	.table-header {
-		padding: 12px 15px;
-		color: white;
-		font-weight: bold;
-		text-align: center;
-	}
-
-	.right-ear-header {
-		background: linear-gradient(45deg, #17a2b8, #138496);
-	}
-
-	.left-ear-header {
-		background: linear-gradient(45deg, #ffc107, #e0a800);
-	}
-
-	.table-header h4 {
-		margin: 0;
-		font-size: 16px;
-	}
-
-	.audiometry-table {
-		width: 100%;
-		border-collapse: collapse;
-		background: white;
-		font-size: 12px;
-	}
-
-	.audiometry-table th,
-	.audiometry-table td {
-		padding: 8px 6px;
-		text-align: center;
-		border: 1px solid #dee2e6;
-	}
-
-	.audiometry-table th {
-		background: #f8f9fa;
-		font-weight: bold;
-		color: #495057;
-		font-size: 11px;
-	}
-
-	.audiometry-table tbody tr:nth-child(even) {
-		background: #f8f9fa;
-	}
-
-	.audiometry-table tbody tr:hover {
-		background: #e9ecef;
-	}
-
-	.average-cell {
-		background: #d4edda !important;
-		font-weight: bold;
-		color: #155724;
-	}
-
-	.ac-row td:first-child {
-		background: #d1ecf1;
-		color: #0c5460;
-	}
-
-	.bc-row td:first-child {
-		background: #fff3cd;
-		color: #856404;
-	}
-
-	@media (max-width: 768px) {
-		.audiometry-table {
-			font-size: 10px;
-		}
-
-		.audiometry-table th,
-		.audiometry-table td {
-			padding: 6px 4px;
-		}
-	}
-</style>

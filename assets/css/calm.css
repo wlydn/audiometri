@@ -1,136 +1,361 @@
-/* Calm clinical workspace. Screen-only shell; clinical SVG colors stay unchanged. */
-.workspace .btn { border-radius:9px; padding:10px 16px; min-height:40px; font-weight:600; font-size:13px; letter-spacing:0; }
-.workspace .btn-primary, .workspace .btn-success { background:var(--accent); border-color:var(--accent); color:#fff; }
-.workspace .btn-primary:hover, .workspace .btn-success:hover { background:#1b5148; border-color:#1b5148; }
-.workspace .btn-secondary, .workspace .btn-info { background:#edf3ef; color:#315d53; border-color:#d7e4dc; }
-.workspace .btn-warning { background:#f6efdF; color:#775b24; border-color:#e9daba; }
-.workspace .btn-danger { background:#fcf0ee; color:#a4443a; border-color:#ebccc7; }
-.workspace .btn-danger:hover { background:#f5dfda; }
-.workspace .btn-outline-primary, .workspace .btn-outline-info, .workspace .btn-outline-secondary { background:transparent; color:#3a655a; border-color:#d6e3db; }
-.workspace .btn-group { gap:5px; flex-wrap:wrap; }
-.workspace .btn-group > .btn { border-radius:8px !important; margin:0 !important; }
-.workspace .btn-sm, .workspace .btn-group-sm > .btn { min-height:34px; padding:6px 10px; }
-.workspace .form-label { font-size:12px; font-weight:600; margin-bottom:7px; }
-.workspace .form-control, .workspace .form-select { background:#fbfdfb; border:1px solid #cad9d0; border-radius:9px; min-height:44px; color:var(--ink); }
-.workspace input::placeholder, .workspace textarea::placeholder { color:#7b8b85; }
-.workspace .form-control:focus, .workspace .form-select:focus { background:#fff; border-color:var(--accent); box-shadow:0 0 0 3px #25665c18; }
-.workspace .text-muted { color:var(--muted) !important; }
-.workspace .table { font-size:13px; margin-bottom:0; }
-.workspace .table > :not(caption) > * > * { padding:16px 15px; vertical-align:middle; border-color:#e9eeea; }
-.workspace .table th { background:#f5f8f5; font-size:10px; letter-spacing:.65px; text-transform:uppercase; color:#5e736a; }
-.workspace .table-hover tbody tr:hover { --bs-table-accent-bg:#f0f6f1; }
-.workspace .table strong { font-weight:600; }
-.workspace .table-responsive { scrollbar-width:thin; scrollbar-color:#b9cdc0 transparent; }
-.workspace .badge { font-size:11px; font-weight:600; border-radius:20px; padding:7px 10px; white-space:nowrap; }
-.workspace .badge.bg-success { background:#e5f2e9 !important; color:#306249; }
-.workspace .badge.bg-danger, .workspace .badge.bg-warning { background:#f7efdb !important; color:#765a22; }
-.workspace .alert { border-radius:12px; padding:16px 20px; border:1px solid; }
-.workspace .alert-info { background:#edf4f3; border-color:#d6e6e1; color:#365d55; }
-.workspace .alert-danger { background:#fcf0ee; border-color:#ebd4ce; color:#94483e; }
-.workspace .alert-success { background:#edf5ee; border-color:#d1e4d5; color:#315f44; }
-.workspace .breadcrumb { font-size:12px; margin-bottom:0; }
-.workspace .modal-content { border-radius:18px; box-shadow:0 24px 80px #173d3326; }
-.workspace .modal-header, .workspace .modal-footer { border-color:var(--line); padding:20px 24px; }
-.workspace .modal-body { padding:24px; }
-.workspace .page-link { color:var(--accent); background:#fff; border-color:var(--line); border-radius:7px !important; margin:0 3px; }
-.workspace .page-item.active .page-link { background:var(--accent); border-color:var(--accent); }
-.workspace :is(a,button,input,select,textarea):focus-visible { outline:3px solid #82ac9e; outline-offset:3px; }
-.workspace .audiometri-container { max-width:none; border:1px solid var(--line); border-radius:18px; box-shadow:0 4px 24px #254c3c05; overflow:hidden; }
-.workspace .audiometri-container .header { padding:28px 30px; background:#fdfefd; color:var(--ink); text-align:left; border-bottom:1px solid var(--line); }
-.workspace .audiometri-container .header h1 { font-size:27px; text-shadow:none; text-transform:none; margin:4px 0 6px; }
-.workspace .patient-info { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); background:#f7faf7; gap:20px; padding:28px 30px; }
-.workspace .info-group { padding:0; background:transparent; border:0; box-shadow:none; min-width:0; }
-.workspace .info-group label { display:block; font-size:12px; color:#50695e; margin-bottom:8px; font-weight:600; }
-.workspace .info-group span:not(.text-danger) { overflow-wrap:anywhere; }
-.workspace .info-group input, .workspace .info-group select { width:100%; background:#fff; min-height:44px; padding:10px 12px; border:1px solid #cad9d0; border-radius:9px; font-size:14px; color:var(--ink); }
-.workspace .info-group input:focus, .workspace .info-group select:focus { border-color:var(--accent); box-shadow:0 0 0 3px #25665c18; }
-.workspace .audiogram-section { padding:28px 30px; }
-.workspace .audiogram-title { background:transparent; color:var(--ink); border-bottom:1px solid var(--line); padding:0 0 14px; margin-bottom:24px; text-align:left; text-shadow:none; font-size:19px; border-radius:0; }
-.workspace .ear-charts { gap:20px; }
-.workspace .ear-chart, .workspace .ear-chart-view { min-width:0; border:1px solid var(--line); border-radius:14px; background:#fff; box-shadow:none; padding:20px; }
-.workspace .ear-title { background:#edf3f0; color:#28594f; text-shadow:none; text-align:left; font-size:14px; letter-spacing:.4px; padding:12px 16px; border-radius:9px; margin-bottom:18px; }
-.workspace .ear-chart:nth-child(2) .ear-title, .workspace .col-md-6:nth-child(2) .ear-title { background:#eef1f7; color:#435c7c; }
-.workspace .conduction-title, .workspace .conduction-title2, .workspace .table-header { background:#eff5f1; color:#315e52; text-shadow:none; border-radius:7px; }
-.workspace .chart-container, .workspace .chart-container-view { border:1px solid #cddbd3; background:#fff; border-radius:9px; overflow:hidden; }
-.workspace .freq-input-group input { border:1px solid #cad9d0; border-radius:7px; min-height:36px; background:#fbfdfb; }
-.workspace .frequency-inputs { gap:6px; }
-.workspace .impression, .workspace .legend { background:#f3f8f4; border-radius:10px; }
-.workspace .controls { justify-content:flex-start; gap:10px; }
-.workspace .audiometri-container .btn { padding:10px 16px; min-height:40px; text-transform:none; font-size:13px; letter-spacing:0; box-shadow:none; }
-.workspace .audiometri-container .btn-primary { background:var(--accent); border-color:var(--accent); }
-.workspace .audiometri-container .btn-primary:hover { background:#1b5148; transform:none; box-shadow:none; }
-.workspace .audiometri-container .btn:hover { transform:none; }
-.workspace .audiometry-table { display:block; overflow-x:auto; max-width:100%; }
-:root { --ink:#263d3b; --muted:#607470; --line:#dce6e1; --accent:#25665c; --paper:#f3f6f3; --surface:#fdfefd; --soft:#e8f1ec; }
-body.workspace { background:var(--paper); color:var(--ink); font-family:'Segoe UI',system-ui,sans-serif; font-size:14px; line-height:1.65; }
-.workspace .app-sidebar { position:fixed; inset:0 auto 0 0; width:238px; background:#eaf0eb; border-right:1px solid #d5e0d9; padding:30px 20px; z-index:1040; display:flex; flex-direction:column; overflow-y:auto; }
-.workspace .app-brand { display:flex; gap:12px; align-items:center; text-decoration:none; color:var(--ink); font-size:22px; font-weight:700; letter-spacing:-.7px; }
-.workspace .brand-mark { background:var(--accent); width:44px; height:44px; border-radius:15px; }
-.workspace .brand-caption { font-size:11px; letter-spacing:.2px; font-weight:400; }
-.nav-section-label { margin:40px 12px 12px; font-size:10px; font-weight:700; letter-spacing:1.8px; color:var(--muted); text-transform:uppercase; }
-.workspace .app-nav { display:flex; flex-direction:column; gap:7px; }
-.workspace .app-nav a { display:flex; align-items:center; gap:13px; min-height:46px; padding:11px 14px; border-radius:11px; color:#4e6560; font-weight:500; text-decoration:none; }
-.workspace .app-nav a i { width:20px; text-align:center; }
-.workspace .app-nav a:hover { background:#dce9e1; color:#214f46; }
-.workspace .app-nav a.active { background:var(--accent); color:#fff; box-shadow:0 4px 12px #25665c14; }
-.sidebar-note { margin-top:auto; padding:18px 12px 0; border-top:1px solid #d1ddd5; color:var(--muted); font-size:12px; }
-.sidebar-note strong { display:block; color:var(--ink); margin-bottom:4px; font-size:13px; }
-.workspace .app-topbar { margin-left:238px; height:80px; padding:0 36px; display:flex; align-items:center; justify-content:space-between; gap:16px; background:#fdfefdcf; border-bottom:1px solid var(--line); }
-.topbar-context { display:flex; align-items:center; gap:12px; }
-.topbar-context small { color:var(--muted); display:block; font-size:11px; }
-.topbar-context strong { font-weight:600; font-size:14px; }
-.topbar-date { color:var(--muted); font-size:12px; display:flex; gap:9px; align-items:center; }
-.workspace .menu-toggle { display:none; }
-.workspace .content-wrapper { margin:0 0 0 238px; max-width:none; min-height:calc(100vh - 160px); padding:8px 12px 20px; }
-.workspace .content-wrapper > .container-fluid { max-width:1560px; margin:auto; padding:28px 24px !important; }
-.workspace .footer-custom { margin:0 36px 0 274px; max-width:none; padding:18px 0; font-size:11px; }
-.workspace h1 { font-size:clamp(24px,2.2vw,32px); font-weight:650; letter-spacing:-1px; }
-.workspace .page-heading { margin:0 0 28px; align-items:center; }
-.workspace .page-heading p { max-width:660px; font-size:14px; }
-.workspace .eyebrow { font-size:10px; letter-spacing:1.8px; color:var(--accent); }
-.workspace .card { border-radius:16px; border:1px solid var(--line); background:var(--surface); box-shadow:0 3px 16px #294c3d04; }
-.workspace .card-header, .workspace .card-header.bg-light, .workspace .card-header.bg-success, .workspace .card-header.bg-primary { background:var(--surface) !important; color:var(--ink) !important; padding:20px 24px; border-color:var(--line); }
-.workspace .card-body { padding:24px; }
-.workspace .card-title { letter-spacing:-.2px; }
-.workspace .card-header .card-title i { color:var(--accent); }
-.workspace .stat-card .card-body { padding:22px; }
-.workspace .stat-card .card-title { font-size:34px; line-height:1.3; margin:0 0 6px; }
-.workspace .stat-card .fa-2x, .workspace .stat-icon { display:grid; place-items:center; width:44px; height:44px; background:var(--soft); border-radius:14px; color:var(--accent); font-size:20px; }
-.workspace .stat-card .card-footer { background:#f6f9f6 !important; padding:11px 22px; font-size:11px; }
-.workspace .stat-card .card-text { margin:0; }
-.workspace .stat-label { display:none; }
-.workspace .quick-actions { margin-top:0 !important; }
-.workspace .quick-actions .btn { border-radius:12px; background:#f6f9f6; padding:18px; }
-.workspace .quick-actions .btn:hover { background:var(--soft); }
-.workspace .progress { background:var(--soft); border-radius:20px; }
-.workspace .progress-bar { background:var(--accent) !important; }
-@media (max-width:1199px) { .workspace .patient-info { grid-template-columns:repeat(2,minmax(0,1fr)); } .workspace .ear-charts { grid-template-columns:1fr; } }
-@media (max-width:991px) {
- .workspace .app-sidebar { position:relative; width:auto; padding:14px 20px; display:block; }
- .workspace .app-brand { display:inline-flex; }
- .workspace .app-sidebar .collapse:not(.show) { display:none !important; }
- .workspace .app-sidebar .collapse.show { display:block; padding-bottom:15px; }
- .workspace .app-nav { gap:3px; }
- .workspace .nav-section-label { margin-top:20px; }
- .workspace .sidebar-note { display:none; }
- .workspace .app-topbar { margin:0; height:66px; padding:0 20px; }
- .workspace .menu-toggle { display:inline-flex; align-items:center; justify-content:center; }
- .workspace .content-wrapper { margin:0; padding:0; }
- .workspace .footer-custom { margin:0 20px; }
+/* ==========================================================================
+   AUDIOMETRI CLINICAL WORKBENCH & AUDIOGRAM COMPONENTS
+   ========================================================================== */
+
+.workspace .table-responsive { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+.workspace .breadcrumb { font-size: 12.5px; margin-bottom: 0; }
+.workspace .modal-content { border-radius: var(--radius-lg); border: 1px solid var(--border-color); box-shadow: var(--shadow-xl); }
+.workspace .modal-header, .workspace .modal-footer { border-color: var(--border-color); padding: 18px 24px; }
+.workspace .modal-body { padding: 24px; }
+.workspace .page-link { color: var(--primary); background: #ffffff; border-color: var(--border-color); border-radius: var(--radius-sm) !important; margin: 0 3px; font-weight: 600; font-size: 13px; }
+.workspace .page-item.active .page-link { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.workspace :is(a,button,input,select,textarea):focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
+/* Workspace Container & Audiogram Workbench */
+.workspace .audiometri-container {
+    max-width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: #ffffff;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
 }
-@media (max-width:767px) {
- .workspace .content-wrapper > .container-fluid { padding:20px 16px !important; }
- .workspace .page-heading { flex-direction:column; align-items:stretch; gap:16px; }
- .workspace .page-heading > .btn { align-self:flex-start; }
- .workspace .patient-info { grid-template-columns:1fr; padding:20px; }
- .workspace .audiogram-section { padding:20px; }
- .workspace .audiometri-container .header { padding:22px 20px; }
- .workspace .card-header.d-flex { flex-wrap:wrap; gap:12px; }
- .workspace .topbar-date { display:none; }
- .workspace .card-body { padding:20px; }
- .workspace .ear-chart, .workspace .ear-chart-view { padding:14px; }
- .workspace .frequency-inputs { overflow-x:auto; grid-template-columns:repeat(8,minmax(56px,1fr)); }
- .workspace .chart-container, .workspace .chart-container-view { min-width:0; }
- .workspace .row > .col-12 > .d-flex { flex-wrap:wrap; gap:12px; }
+
+.workspace .audiometri-container .header {
+    padding: 24px 28px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
 }
-@media (prefers-reduced-motion:reduce) { .workspace *, .workspace *::before, .workspace *::after { transition:none !important; animation:none !important; } }
+.workspace .audiometri-container .header h1 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 4px 0 6px;
+    color: var(--text-primary);
+}
+.workspace .audiometri-container .header p {
+    color: var(--text-muted);
+    font-size: 13.5px;
+    margin: 0;
+}
+
+.workspace .patient-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    padding: 24px 28px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.workspace .info-group {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    transition: all 0.15s ease;
+}
+.workspace .info-group:focus-within {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-glow);
+}
+.workspace .info-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+.workspace .info-group input,
+.workspace .info-group select {
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 2px 0;
+}
+.workspace .info-group span {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: block;
+}
+
+.workspace .audiogram-section {
+    padding: 28px;
+}
+.workspace .audiogram-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.workspace .ear-charts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.workspace .ear-chart,
+.workspace .ear-chart-view {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+.workspace .ear-title {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    text-align: center;
+}
+.workspace .ear-chart:first-child .ear-title,
+.workspace .col-md-6:first-child .ear-title,
+.workspace .col-lg-6:first-child .ear-title {
+    background: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+}
+.workspace .ear-chart:last-child .ear-title,
+.workspace .col-md-6:last-child .ear-title,
+.workspace .col-lg-6:last-child .ear-title {
+    background: #eff6ff;
+    color: #2563eb;
+    border: 1px solid #bfdbfe;
+}
+
+.workspace .conduction-section {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.workspace .frequency-inputs {
+    display: grid;
+    grid-template-columns: 80px repeat(7, 1fr);
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+.workspace .frequency-inputs:last-child {
+    margin-bottom: 0;
+}
+
+.workspace .conduction-title,
+.workspace .conduction-title2 {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    text-align: center;
+}
+.workspace .conduction-title {
+    background: #fee2e2;
+    color: #dc2626;
+}
+.workspace .conduction-title2 {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.workspace .freq-input-group label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-align: center;
+    display: block;
+    margin-bottom: 4px;
+}
+.workspace .freq-input-group input {
+    width: 100%;
+    text-align: center;
+    font-weight: 700;
+    font-size: 13.5px;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    height: 36px;
+    background: #ffffff;
+    transition: all 0.15s ease;
+}
+.workspace .freq-input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2.5px var(--primary-glow);
+    outline: none;
+}
+/* SVG Chart Container */
+.workspace .chart-container,
+.workspace .chart-container-view {
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+    height: 280px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 16px;
+}
+
+.workspace .chart-line {
+    stroke: #e2e8f0;
+    stroke-width: 1;
+}
+.workspace .axis-label {
+    fill: #64748b;
+    font-size: 10px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+}
+.workspace .hearing-line {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.workspace .hearing-line.bc {
+    stroke: #dc2626;
+}
+.workspace .hearing-line:not(.bc) {
+    stroke: #2563eb;
+}
+.workspace .hearing-point {
+    fill: #dc2626;
+    r: 4;
+}
+.workspace .diamond {
+    fill: #2563eb;
+}
+.workspace .arrow-symbol {
+    fill: #dc2626;
+    font-size: 13px;
+    font-weight: bold;
+}
+/* Legend & Impression */
+.workspace .legend,
+.workspace .legend-view {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 14px 20px;
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+.workspace .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+.workspace .legend-symbol {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dc2626;
+}
+.workspace .diamond-symbol {
+    width: 10px;
+    height: 10px;
+    background: #2563eb;
+    transform: rotate(45deg);
+}
+
+.workspace .impression {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-md);
+    padding: 22px;
+    margin-bottom: 24px;
+}
+.workspace .impression h3,
+.workspace .impression h5 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 10px 0;
+}
+
+.workspace .template-pill {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full);
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+.workspace .template-pill:hover {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.workspace .controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.workspace .audiometry-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    margin-top: 10px;
+}
+.workspace .audiometry-table th,
+.workspace .audiometry-table td {
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+.workspace .audiometry-table th {
+    background: #f1f5f9;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+.workspace .average-cell {
+    font-weight: 800;
+    background: #f8fafc;
+    color: var(--primary);
+}
+
+@media (max-width: 1199px) {
+    .workspace .patient-info { grid-template-columns: repeat(2, 1fr); }
+    .workspace .ear-charts { grid-template-columns: 1fr; }
+}
+@media (max-width: 767px) {
+    .workspace .content-wrapper > .container-fluid { padding: 18px 14px !important; }
+    .workspace .page-heading { flex-direction: column; align-items: stretch; gap: 14px; }
+    .workspace .patient-info { grid-template-columns: 1fr; }
+    .workspace .frequency-inputs { overflow-x: auto; grid-template-columns: 70px repeat(7, 50px); }
+    .workspace .topbar-date { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .workspace *, .workspace *::before, .workspace *::after { transition: none !important; animation: none !important; }
+}
