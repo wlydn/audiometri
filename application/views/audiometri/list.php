@@ -1,67 +1,67 @@
 <?php
 // File: application/views/audiometri/list.php
+$has_filter = !empty($filters['nama']) || !empty($filters['perusahaan']) || !empty($filters['tanggal_dari']) || !empty($filters['tanggal_sampai']);
 ?>
-<div class="container-fluid p-4">
+<div class="container-fluid p-3 p-lg-4">
 	<div class="page-heading">
 		<div>
-			<span class="eyebrow"><i class="fas fa-folder-open me-1"></i> Data Pemeriksaan</span>
+			<span class="eyebrow"><i class="bi bi-folder2-open me-1" aria-hidden="true"></i> Data Pemeriksaan</span>
 			<h1>Rekam Medis Audiometri</h1>
 			<p>Kelola dan telusuri seluruh riwayat pemeriksaan pendengaran pasien secara terpusat.</p>
 		</div>
-		<div class="d-flex gap-2">
+		<div class="d-flex flex-wrap gap-2">
 			<a href="<?= html_escape(base_url('export_excel')) ?>" class="btn btn-outline-success">
-				<i class="fas fa-file-excel me-1"></i> Ekspor Excel
+				<i class="bi bi-file-earmark-excel me-1" aria-hidden="true"></i> Ekspor Excel
 			</a>
 			<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
-				<i class="fas fa-plus me-1"></i> Pemeriksaan Baru
+				<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Pemeriksaan Baru
 			</a>
 		</div>
 	</div>
 
 	<!-- Filter Card -->
-	<div class="card mb-4 shadow-sm border-0">
-		<div class="card-header bg-white py-3 border-bottom d-flex align-items-center">
-			<h6 class="card-title mb-0 fw-bold text-dark">
-				<i class="fas fa-filter text-primary me-2"></i>
-				Filter & Pencarian
-			</h6>
+	<div class="card mb-4">
+		<div class="card-header">
+			<h2 class="h6 card-title mb-0">
+				<i class="bi bi-funnel text-primary me-2" aria-hidden="true"></i>Filter &amp; Pencarian
+			</h2>
 		</div>
-		<div class="card-body p-4">
+		<div class="card-body">
 			<form method="get" action="<?= html_escape(base_url('list_tests')) ?>">
 				<div class="row g-3">
 					<div class="col-lg-3 col-md-6">
-						<label for="nama" class="form-label small fw-bold text-secondary">Nama Pasien</label>
+						<label for="nama" class="form-label">Nama Pasien</label>
 						<div class="input-group">
-							<span class="input-group-text bg-light border-end-0"><i class="fas fa-user text-muted small"></i></span>
-							<input type="text" class="form-control border-start-0" id="nama" name="nama"
+							<span class="input-group-text"><i class="bi bi-person" aria-hidden="true"></i></span>
+							<input type="text" class="form-control" id="nama" name="nama"
 								value="<?= html_escape($filters['nama'] ?? '') ?>" placeholder="Cari nama pasien...">
 						</div>
 					</div>
 					<div class="col-lg-3 col-md-6">
-						<label for="perusahaan" class="form-label small fw-bold text-secondary">Perusahaan</label>
+						<label for="perusahaan" class="form-label">Perusahaan</label>
 						<div class="input-group">
-							<span class="input-group-text bg-light border-end-0"><i class="fas fa-building text-muted small"></i></span>
-							<input type="text" class="form-control border-start-0" id="perusahaan" name="perusahaan"
+							<span class="input-group-text"><i class="bi bi-building" aria-hidden="true"></i></span>
+							<input type="text" class="form-control" id="perusahaan" name="perusahaan"
 								value="<?= html_escape($filters['perusahaan'] ?? '') ?>" placeholder="Cari perusahaan...">
 						</div>
 					</div>
 					<div class="col-lg-2 col-md-6">
-						<label for="tanggal_dari" class="form-label small fw-bold text-secondary">Dari Tanggal</label>
+						<label for="tanggal_dari" class="form-label">Dari Tanggal</label>
 						<input type="date" class="form-control" id="tanggal_dari" name="tanggal_dari"
 							value="<?= html_escape($filters['tanggal_dari'] ?? '') ?>">
 					</div>
 					<div class="col-lg-2 col-md-6">
-						<label for="tanggal_sampai" class="form-label small fw-bold text-secondary">Sampai Tanggal</label>
+						<label for="tanggal_sampai" class="form-label">Sampai Tanggal</label>
 						<input type="date" class="form-control" id="tanggal_sampai" name="tanggal_sampai"
 							value="<?= html_escape($filters['tanggal_sampai'] ?? '') ?>">
 					</div>
 					<div class="col-lg-2 col-md-12 d-flex align-items-end gap-2">
 						<button type="submit" class="btn btn-primary flex-grow-1">
-							<i class="fas fa-search me-1"></i> Terapkan
+							<i class="bi bi-search me-1" aria-hidden="true"></i> Terapkan
 						</button>
-						<?php if (!empty($filters['nama']) || !empty($filters['perusahaan']) || !empty($filters['tanggal_dari']) || !empty($filters['tanggal_sampai'])): ?>
-							<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary" title="Reset Filter">
-								<i class="fas fa-rotate-left"></i>
+						<?php if ($has_filter): ?>
+							<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary" title="Reset Filter" aria-label="Reset Filter">
+								<i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
 							</a>
 						<?php endif; ?>
 					</div>
@@ -71,13 +71,13 @@
 	</div>
 
 	<!-- Results Table Card -->
-	<div class="card shadow-sm border-0">
-		<div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+	<div class="card">
+		<div class="card-header d-flex justify-content-between align-items-center">
 			<div class="d-flex align-items-center gap-2">
-				<h6 class="card-title mb-0 fw-bold text-dark">Daftar Pasien</h6>
-				<span class="badge bg-primary text-white fw-bold"><?= html_escape(number_format($total_tests)) ?> Total</span>
+				<h2 class="h6 card-title mb-0">Daftar Pasien</h2>
+				<span class="badge bg-primary"><?= html_escape(number_format($total_tests)) ?> Total</span>
 			</div>
-			<div class="text-muted small">
+			<div class="text-body-secondary small">
 				Halaman <?= html_escape($current_page) ?>
 			</div>
 		</div>
@@ -87,13 +87,13 @@
 					<table class="table table-hover align-middle mb-0">
 						<thead>
 							<tr>
-								<th style="width: 50px;">No</th>
-								<th>Pasien</th>
-								<th>No RM</th>
-								<th>Perusahaan & Jabatan</th>
-								<th>Tanggal Tes</th>
-								<th>Status Review</th>
-								<th class="text-end" style="width: 140px;">Aksi</th>
+								<th scope="col">No</th>
+								<th scope="col">Pasien</th>
+								<th scope="col">No RM</th>
+								<th scope="col">Perusahaan &amp; Jabatan</th>
+								<th scope="col">Tanggal Tes</th>
+								<th scope="col">Status Review</th>
+								<th scope="col" class="text-end">Aksi</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -102,56 +102,48 @@
 							foreach ($tests as $test):
 							?>
 								<tr>
-									<td class="text-muted fw-bold"><?= html_escape($no++) ?></td>
+									<td class="text-body-secondary fw-bold"><?= html_escape($no++) ?></td>
 									<td>
 										<div class="d-flex align-items-center gap-2">
-											<div style="width: 34px; height: 34px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: grid; place-items: center; font-weight: 700; font-size: 13px; flex-shrink: 0;">
-												<?= html_escape(strtoupper(substr($test['nama'] ?? 'P', 0, 1))) ?>
-											</div>
+											<span class="avatar avatar-primary" aria-hidden="true"><?= html_escape(strtoupper(substr($test['nama'] ?? 'P', 0, 1))) ?></span>
 											<div>
-												<strong class="d-block text-dark"><?= html_escape($test['nama']) ?></strong>
-												<small class="text-muted"><?= html_escape($test['jenis_kelamin']) ?> &bull; <?= html_escape($test['umur']) ?> thn</small>
+												<strong class="d-block"><?= html_escape($test['nama']) ?></strong>
+												<small class="text-body-secondary"><?= html_escape($test['jenis_kelamin']) ?> &bull; <?= html_escape($test['umur']) ?> thn</small>
 											</div>
 										</div>
 									</td>
 									<td>
-										<span class="badge bg-light text-dark border font-monospace"><?= html_escape($test['no_rm']) ?></span>
+										<span class="badge text-bg-light border font-monospace"><?= html_escape($test['no_rm']) ?></span>
 									</td>
 									<td>
-										<div class="fw-semibold text-dark"><?= html_escape($test['perusahaan']) ?></div>
-										<small class="text-muted"><?= html_escape($test['jabatan']) ?></small>
+										<div class="fw-semibold"><?= html_escape($test['perusahaan']) ?></div>
+										<small class="text-body-secondary"><?= html_escape($test['jabatan']) ?></small>
 									</td>
 									<td>
-										<div class="d-flex align-items-center gap-1 text-secondary">
-											<i class="far fa-calendar-alt small"></i>
-											<span class="fw-semibold"><?= html_escape(date('d M Y', strtotime($test['tanggal_tes']))) ?></span>
-										</div>
+										<span class="text-body-secondary fw-semibold text-nowrap">
+											<i class="bi bi-calendar3 me-1" aria-hidden="true"></i><?= html_escape(date('d M Y', strtotime($test['tanggal_tes']))) ?>
+										</span>
 									</td>
 									<td>
-										<?php
-										$impression = $test['impression'];
-										if (!empty($impression)) {
-											echo '<span class="badge bg-success"><i class="fas fa-circle-check"></i> Sudah Direview</span>';
-										} else {
-											echo '<span class="badge bg-warning"><i class="fas fa-hourglass-half"></i> Menunggu Review</span>';
-										}
-										?>
+										<?php if (!empty($test['impression'])): ?>
+											<span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Sudah Direview</span>
+										<?php else: ?>
+											<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu Review</span>
+										<?php endif; ?>
 									</td>
-									<td class="text-end">
-										<div class="btn-group btn-group-sm">
-											<a href="<?= html_escape(base_url('view/' . $test['id'])) ?>"
-												class="btn btn-outline-primary" title="Lihat Rekam Medis">
-												<i class="fas fa-eye"></i>
-											</a>
-											<a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>"
-												class="btn btn-outline-secondary" title="Edit Data">
-												<i class="fas fa-pen-to-square"></i>
-											</a>
-											<a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>"
-												class="btn btn-outline-info" title="Unduh PDF" target="_blank">
-												<i class="fas fa-file-pdf"></i>
-											</a>
-										</div>
+									<td class="text-end text-nowrap">
+										<a href="<?= html_escape(base_url('view/' . $test['id'])) ?>"
+											class="btn btn-outline-secondary btn-sm" title="Lihat Rekam Medis" aria-label="Lihat Rekam Medis">
+											<i class="bi bi-eye" aria-hidden="true"></i>
+										</a>
+										<a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>"
+											class="btn btn-outline-secondary btn-sm" title="Edit Data" aria-label="Edit Data">
+											<i class="bi bi-pencil-square" aria-hidden="true"></i>
+										</a>
+										<a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>"
+											class="btn btn-outline-secondary btn-sm" title="Unduh PDF" aria-label="Unduh PDF" target="_blank" rel="noopener">
+											<i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+										</a>
 									</td>
 								</tr>
 							<?php endforeach; ?>
@@ -161,11 +153,11 @@
 
 				<!-- Pagination Bar -->
 				<?php if (!empty($pagination)): ?>
-					<div class="card-footer bg-white border-top py-3">
+					<div class="card-footer bg-transparent">
 						<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-							<div class="text-muted small">
-								Menampilkan <strong class="text-dark"><?= html_escape((($current_page - 1) * 10) + 1) ?></strong> -
-								<strong class="text-dark"><?= html_escape(min($current_page * 10, $total_tests)) ?></strong> dari <strong class="text-dark"><?= html_escape(number_format($total_tests)) ?></strong> total pemeriksaan
+							<div class="text-body-secondary small">
+								Menampilkan <strong><?= html_escape((($current_page - 1) * 10) + 1) ?></strong> -
+								<strong><?= html_escape(min($current_page * 10, $total_tests)) ?></strong> dari <strong><?= html_escape(number_format($total_tests)) ?></strong> total pemeriksaan
 							</div>
 							<div>
 								<?= $pagination ?>
@@ -175,15 +167,16 @@
 				<?php endif; ?>
 
 			<?php else: ?>
-				<div class="text-center py-5">
-					<i class="fas fa-magnifying-glass fa-3x text-muted mb-3 opacity-50"></i>
-					<h5 class="fw-bold text-dark">Tidak Ada Data Ditemukan</h5>
-					<p class="text-muted">Coba sesuaikan kata kunci pencarian atau buat pemeriksaan baru.</p>
+				<div class="text-center py-5 empty-state">
+					<i class="bi bi-search display-4 text-body-secondary" aria-hidden="true"></i>
+					<h3 class="h5 mt-3">Tidak Ada Data Ditemukan</h3>
+					<p class="text-body-secondary">Coba sesuaikan kata kunci pencarian atau buat pemeriksaan baru.</p>
 					<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary mt-2">
-						<i class="fas fa-plus me-1"></i> Input Pemeriksaan Baru
+						<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Input Pemeriksaan Baru
 					</a>
 				</div>
 			<?php endif; ?>
 		</div>
 	</div>
 </div>
+

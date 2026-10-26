@@ -1,23 +1,24 @@
 <?php
 // File: application/views/audiometri/footer.php
 ?>
-    </main> <!-- End Content Wrapper -->
+        </main> <!-- End Content Wrapper -->
 
-    <!-- Footer -->
-    <div class="footer-custom">
-        <p class="mb-0">
-            Audiometri &middot; Manajemen pemeriksaan pendengaran
-            <span class="float-md-end">&copy; <?= html_escape(date('Y')) ?> ArChiee</span>
-        </p>
-    </div>
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-1">
+                <span>Audiometri &middot; Manajemen pemeriksaan pendengaran</span>
+                <span>&copy; <?= html_escape(date('Y')) ?> ArChiee</span>
+            </div>
+        </footer>
+    </div> <!-- End .app-main -->
 
     <!-- Report Modal -->
-    <div class="modal fade" id="reportModal" tabindex="-1">
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Filter Laporan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title" id="reportModalLabel">Filter Laporan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
                 </div>
                 <div class="modal-body">
                     <form id="reportForm" action="<?= html_escape(base_url('export_excel')) ?>" method="get">
@@ -45,7 +46,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     <button type="submit" form="reportForm" class="btn btn-success">
-                        <i class="fas fa-download me-1"></i> Download Excel
+                        <i class="bi bi-download me-1" aria-hidden="true"></i> Download Excel
                     </button>
                 </div>
             </div>
@@ -53,20 +54,19 @@
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
     <!-- Custom JS -->
     <script>
         function showReportModal() {
-            new bootstrap.Modal(document.getElementById('reportModal')).show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('reportModal')).show();
         }
 
-        // Auto-hide alerts after 5 seconds
+        // Auto-hide dismissible (flash) alerts after 5 seconds
         setTimeout(function() {
-            $('.alert').fadeOut('slow');
+            document.querySelectorAll('.alert-dismissible').forEach(function(el) {
+                bootstrap.Alert.getOrCreateInstance(el).close();
+            });
         }, 5000);
 
         // Confirm delete actions with SweetAlert

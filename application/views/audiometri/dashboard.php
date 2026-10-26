@@ -2,128 +2,123 @@
 // File: application/views/audiometri/dashboard.php
 $pending_count = count(array_filter($recent_tests, function ($test) { return empty($test['impression']); }));
 ?>
-<div class="container-fluid p-4">
-    <!-- Hero Banner / Page Heading -->
+<div class="container-fluid p-3 p-lg-4">
+    <!-- Page Heading -->
     <div class="page-heading">
         <div>
-            <span class="eyebrow"><i class="fas fa-stethoscope me-1"></i> Diagnostic Intelligence</span>
+            <span class="eyebrow"><i class="bi bi-heart-pulse me-1" aria-hidden="true"></i> Diagnostic Intelligence</span>
             <h1>Ringkasan Audiometri</h1>
             <p>Selamat datang di sistem manajemen pemeriksaan pendengaran kerja dan klinis.</p>
         </div>
-        <div class="d-flex gap-2">
-            <button onclick="showSearchModal()" class="btn btn-secondary">
-                <i class="fas fa-magnifying-glass"></i> Cari Data
+        <div class="d-flex flex-wrap gap-2">
+            <button type="button" onclick="showSearchModal()" class="btn btn-outline-secondary">
+                <i class="bi bi-search me-1" aria-hidden="true"></i> Cari Data
             </button>
             <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Pemeriksaan Baru
+                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Pemeriksaan Baru
             </a>
         </div>
     </div>
 
-    <!-- 4 High-End Metric Cards -->
+    <!-- Metric Cards -->
     <div class="row g-3 mb-4">
-        <!-- Metric 1: Total Tests -->
         <div class="col-sm-6 col-xl-3">
             <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="text-muted fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Total Tes Selesai</span>
-                            <h3 class="card-title mt-1 mb-0"><?= html_escape(number_format($stats['total_tests'])) ?></h3>
+                            <span class="stat-label">Total Tes Selesai</span>
+                            <p class="stat-value"><?= html_escape(number_format($stats['total_tests'])) ?></p>
                         </div>
-                        <div class="stat-icon" style="background: #eff6ff; color: #2563eb;">
-                            <i class="fas fa-file-waveform"></i>
+                        <div class="stat-icon bg-primary-subtle text-primary">
+                            <i class="bi bi-file-earmark-medical" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="text-muted" style="font-size: 11.5px;">Akumulasi seluruh tes</span>
-                    <i class="fas fa-arrow-trend-up text-primary" style="font-size: 12px;"></i>
+                <div class="card-footer bg-transparent d-flex align-items-center justify-content-between small text-body-secondary">
+                    <span>Akumulasi seluruh tes</span>
+                    <i class="bi bi-graph-up-arrow text-primary" aria-hidden="true"></i>
                 </div>
             </div>
         </div>
 
-        <!-- Metric 2: Tests This Month -->
         <div class="col-sm-6 col-xl-3">
             <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="text-muted fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Tes Bulan Ini</span>
-                            <h3 class="card-title mt-1 mb-0"><?= html_escape(number_format($stats['tests_this_month'])) ?></h3>
+                            <span class="stat-label">Tes Bulan Ini</span>
+                            <p class="stat-value"><?= html_escape(number_format($stats['tests_this_month'])) ?></p>
                         </div>
-                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;">
-                            <i class="fas fa-calendar-check"></i>
+                        <div class="stat-icon bg-success-subtle text-success">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="text-muted" style="font-size: 11.5px;"><?= html_escape(date('F Y')) ?></span>
-                    <span class="badge bg-success" style="font-size: 10px;">Bulan Berjalan</span>
+                <div class="card-footer bg-transparent d-flex align-items-center justify-content-between small text-body-secondary">
+                    <span><?= html_escape(date('F Y')) ?></span>
+                    <span class="badge bg-success">Bulan Berjalan</span>
                 </div>
             </div>
         </div>
 
-        <!-- Metric 3: Top Companies -->
         <div class="col-sm-6 col-xl-3">
             <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="text-muted fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Perusahaan Mitra</span>
-                            <h3 class="card-title mt-1 mb-0"><?= html_escape(count($stats['top_companies'])) ?></h3>
+                            <span class="stat-label">Perusahaan Mitra</span>
+                            <p class="stat-value"><?= html_escape(count($stats['top_companies'])) ?></p>
                         </div>
-                        <div class="stat-icon" style="background: #f5f3ff; color: #7c3aed;">
-                            <i class="fas fa-building-user"></i>
+                        <div class="stat-icon bg-info-subtle text-info-emphasis">
+                            <i class="bi bi-buildings" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="text-muted" style="font-size: 11.5px;">Mitra industri aktif</span>
-                    <span class="text-muted" style="font-size: 11.5px;">Top 5</span>
+                <div class="card-footer bg-transparent d-flex align-items-center justify-content-between small text-body-secondary">
+                    <span>Mitra industri aktif</span>
+                    <span>Top 5</span>
                 </div>
             </div>
         </div>
 
-        <!-- Metric 4: Pending Doctor Reviews -->
         <div class="col-sm-6 col-xl-3">
             <div class="card stat-card h-100">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
-                            <span class="text-muted fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.5px;">Menunggu Review</span>
-                            <h3 class="card-title mt-1 mb-0 text-warning"><?= html_escape($pending_count) ?></h3>
+                            <span class="stat-label">Menunggu Review</span>
+                            <p class="stat-value text-warning-emphasis"><?= html_escape($pending_count) ?></p>
                         </div>
-                        <div class="stat-icon" style="background: #fffbeb; color: #d97706;">
-                            <i class="fas fa-user-doctor"></i>
+                        <div class="stat-icon bg-warning-subtle text-warning-emphasis">
+                            <i class="bi bi-clipboard2-pulse" aria-hidden="true"></i>
                         </div>
                     </div>
                 </div>
-                <div class="card-footer d-flex align-items-center justify-content-between">
-                    <span class="text-muted" style="font-size: 11.5px;">Memerlukan impression dokter</span>
-                    <a href="<?= html_escape(base_url('doctor_view')) ?>" class="text-warning fw-bold" style="font-size: 11.5px;">Review <i class="fas fa-arrow-right"></i></a>
+                <div class="card-footer bg-transparent d-flex align-items-center justify-content-between small text-body-secondary">
+                    <span>Memerlukan impression dokter</span>
+                    <a href="<?= html_escape(base_url('doctor_view')) ?>" class="fw-bold text-decoration-none">Review <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Recent Tests Section -->
+        <!-- Recent Tests -->
         <div class="col-lg-8">
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-clock-rotate-left text-primary"></i>
-                        <span>Pemeriksaan Terbaru</span>
-                    </h5>
+                    <h2 class="h6 card-title mb-0">
+                        <i class="bi bi-clock-history text-primary me-2" aria-hidden="true"></i>Pemeriksaan Terbaru
+                    </h2>
                     <a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-sm btn-outline-primary">
-                        Lihat Semua <i class="fas fa-chevron-right ms-1"></i>
+                        Lihat Semua <i class="bi bi-chevron-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
                 <div class="card-body p-0">
                     <?php if (!empty($recent_tests)): ?>
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th>Pasien</th>
@@ -138,44 +133,36 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-2">
-                                                <div style="width: 32px; height: 32px; border-radius: 50%; background: #eff6ff; color: #2563eb; display: grid; place-items: center; font-weight: 700; font-size: 12px; flex-shrink: 0;">
-                                                    <?= html_escape(strtoupper(substr($test['nama'] ?? 'P', 0, 1))) ?>
-                                                </div>
+                                                <span class="avatar avatar-primary" aria-hidden="true"><?= html_escape(strtoupper(substr($test['nama'] ?? 'P', 0, 1))) ?></span>
                                                 <div>
-                                                    <strong class="d-block text-dark"><?= html_escape($test['nama']) ?></strong>
-                                                    <small class="text-muted"><?= html_escape($test['jenis_kelamin'] ?? '-') ?>, <?= html_escape($test['umur'] ?? '-') ?> thn</small>
+                                                    <strong class="d-block"><?= html_escape($test['nama']) ?></strong>
+                                                    <small class="text-body-secondary"><?= html_escape($test['jenis_kelamin'] ?? '-') ?>, <?= html_escape($test['umur'] ?? '-') ?> thn</small>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="badge bg-light text-dark border"><?= html_escape($test['perusahaan']) ?></span>
+                                            <span class="badge text-bg-light border"><?= html_escape($test['perusahaan']) ?></span>
                                         </td>
                                         <td>
-                                            <span class="text-secondary fw-semibold"><?= html_escape(date('d M Y', strtotime($test['tanggal_tes']))) ?></span>
+                                            <span class="text-body-secondary fw-semibold"><?= html_escape(date('d M Y', strtotime($test['tanggal_tes']))) ?></span>
                                         </td>
                                         <td>
                                             <?php if (!empty($test['impression'])): ?>
-                                                <span class="badge bg-success">
-                                                    <i class="fas fa-circle-check"></i> Selesai
-                                                </span>
+                                                <span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Selesai</span>
                                             <?php else: ?>
-                                                <span class="badge bg-warning">
-                                                    <i class="fas fa-hourglass-half"></i> Menunggu
-                                                </span>
+                                                <span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td class="text-end">
-                                            <div class="btn-group btn-group-sm">
-                                                <a href="<?= html_escape(base_url('view/' . $test['id'])) ?>" class="btn btn-outline-primary" title="Lihat Rekam">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>" class="btn btn-outline-secondary" title="Edit Data">
-                                                    <i class="fas fa-pen-to-square"></i>
-                                                </a>
-                                                <a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>" class="btn btn-outline-info" title="Unduh PDF" target="_blank">
-                                                    <i class="fas fa-file-pdf"></i>
-                                                </a>
-                                            </div>
+                                        <td class="text-end text-nowrap">
+                                            <a href="<?= html_escape(base_url('view/' . $test['id'])) ?>" class="btn btn-outline-secondary btn-sm" title="Lihat Rekam" aria-label="Lihat Rekam">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>" class="btn btn-outline-secondary btn-sm" title="Edit Data" aria-label="Edit Data">
+                                                <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>" class="btn btn-outline-secondary btn-sm" title="Unduh PDF" aria-label="Unduh PDF" target="_blank" rel="noopener">
+                                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
@@ -183,11 +170,11 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
                             </table>
                         </div>
                     <?php else: ?>
-                        <div class="text-center py-5">
-                            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
-                            <h6 class="text-muted">Belum ada pemeriksaan audiometri</h6>
+                        <div class="text-center py-5 empty-state">
+                            <i class="bi bi-folder2-open display-4 text-body-secondary" aria-hidden="true"></i>
+                            <h3 class="h6 text-body-secondary mt-3">Belum ada pemeriksaan audiometri</h3>
                             <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary mt-2">
-                                <i class="fas fa-plus me-1"></i> Input Pemeriksaan Pertama
+                                <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Input Pemeriksaan Pertama
                             </a>
                         </div>
                     <?php endif; ?>
@@ -195,14 +182,14 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
             </div>
         </div>
 
-        <!-- Top Companies & Actions Section -->
+
+        <!-- Top Companies & Quick Actions -->
         <div class="col-lg-4">
             <div class="card h-100">
                 <div class="card-header">
-                    <h5 class="card-title mb-0">
-                        <i class="fas fa-building text-primary"></i>
-                        <span>Rekanan Perusahaan</span>
-                    </h5>
+                    <h2 class="h6 card-title mb-0">
+                        <i class="bi bi-building text-primary me-2" aria-hidden="true"></i>Rekanan Perusahaan
+                    </h2>
                 </div>
                 <div class="card-body">
                     <?php if (!empty($stats['top_companies'])): ?>
@@ -214,45 +201,45 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
                                 ?>
                                 <div>
                                     <div class="d-flex justify-content-between align-items-center mb-1">
-                                        <span class="fw-bold text-dark font-monospace" style="font-size: 13px;"><?= html_escape($company['perusahaan']) ?></span>
-                                        <span class="badge bg-light text-primary border fw-bold"><?= html_escape($company['count']) ?> tes</span>
+                                        <span class="fw-semibold small"><?= html_escape($company['perusahaan']) ?></span>
+                                        <span class="badge text-bg-light border"><?= html_escape($company['count']) ?> tes</span>
                                     </div>
-                                    <div class="progress" style="height: 6px; border-radius: 9999px; background: #e2e8f0;">
-                                        <div class="progress-bar bg-primary" role="progressbar" style="width: <?= html_escape($percentage) ?>%; border-radius: 9999px;"></div>
+                                    <div class="progress progress-thin" role="progressbar" aria-label="Porsi tes <?= html_escape($company['perusahaan']) ?>" aria-valuenow="<?= html_escape($percentage) ?>" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar bg-primary" style="width: <?= html_escape($percentage) ?>%"></div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
                     <?php else: ?>
-                        <p class="text-muted text-center py-4 mb-0">Belum ada data perusahaan</p>
+                        <p class="text-body-secondary text-center py-4 mb-0">Belum ada data perusahaan</p>
                     <?php endif; ?>
 
-                    <hr class="my-4 text-muted">
+                    <hr class="my-4">
 
-                    <h6 class="fw-bold mb-3 text-secondary text-uppercase" style="font-size: 11px; letter-spacing: 0.8px;">Aksi Cepat Sistem</h6>
+                    <h3 class="stat-label mb-3">Aksi Cepat Sistem</h3>
                     <div class="row g-2">
                         <div class="col-6">
-                            <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-outline-primary w-100 py-3 text-center d-flex flex-column align-items-center justify-content-center">
-                                <i class="fas fa-plus mb-1" style="font-size: 18px;"></i>
-                                <span style="font-size: 12px;">Tes Baru</span>
+                            <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-outline-primary quick-action">
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i>
+                                <span>Tes Baru</span>
                             </a>
                         </div>
                         <div class="col-6">
-                            <a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-outline-warning w-100 py-3 text-center d-flex flex-column align-items-center justify-content-center">
-                                <i class="fas fa-user-doctor mb-1" style="font-size: 18px;"></i>
-                                <span style="font-size: 12px;">Panel Dokter</span>
+                            <a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-outline-warning quick-action">
+                                <i class="bi bi-clipboard2-pulse" aria-hidden="true"></i>
+                                <span>Panel Dokter</span>
                             </a>
                         </div>
                         <div class="col-6">
-                            <button onclick="showReportModal()" class="btn btn-outline-success w-100 py-3 text-center d-flex flex-column align-items-center justify-content-center">
-                                <i class="fas fa-file-excel mb-1" style="font-size: 18px;"></i>
-                                <span style="font-size: 12px;">Ekspor Data</span>
+                            <button type="button" onclick="showReportModal()" class="btn btn-outline-success quick-action">
+                                <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
+                                <span>Ekspor Data</span>
                             </button>
                         </div>
                         <div class="col-6">
-                            <button onclick="showSearchModal()" class="btn btn-outline-secondary w-100 py-3 text-center d-flex flex-column align-items-center justify-content-center">
-                                <i class="fas fa-magnifying-glass mb-1" style="font-size: 18px;"></i>
-                                <span style="font-size: 12px;">Pencarian</span>
+                            <button type="button" onclick="showSearchModal()" class="btn btn-outline-secondary quick-action">
+                                <i class="bi bi-search" aria-hidden="true"></i>
+                                <span>Pencarian</span>
                             </button>
                         </div>
                     </div>
@@ -263,16 +250,16 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
 </div>
 
 <!-- Search Modal -->
-<div class="modal fade" id="searchModal" tabindex="-1">
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold">
-                    <i class="fas fa-magnifying-glass text-primary me-2"></i>Pencarian Cepat
+                <h5 class="modal-title fw-bold" id="searchModalLabel">
+                    <i class="bi bi-search text-primary me-2" aria-hidden="true"></i>Pencarian Cepat
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body">
                 <form action="<?= html_escape(base_url('list_tests')) ?>" method="get">
                     <div class="mb-3">
                         <label for="search_nama" class="form-label">Nama Pasien</label>
@@ -285,9 +272,9 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
                                placeholder="Masukkan nama perusahaan...">
                     </div>
                     <div class="d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary px-4">
-                            <i class="fas fa-magnifying-glass me-1"></i> Cari Pasien
+                            <i class="bi bi-search me-1" aria-hidden="true"></i> Cari Pasien
                         </button>
                     </div>
                 </form>
@@ -298,6 +285,7 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
 
 <script>
 function showSearchModal() {
-    new bootstrap.Modal(document.getElementById('searchModal')).show();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('searchModal')).show();
 }
 </script>
+
