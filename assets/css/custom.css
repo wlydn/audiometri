@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    AUDIOMETRI - Bootstrap 5.3.3 + Bootswatch Flatly theme layer
    Load order: Flatly -> Bootstrap Icons -> custom.css -> calm.css
    Re-colours Flatly to the teal-green clinic palette and defines the
@@ -328,6 +328,14 @@ body.workspace {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+#topbar-clock {
+    font-variant-numeric: tabular-nums;
+}
+.topbar-clock-zone {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    opacity: 0.75;
 }
 .topbar-date {
     display: inline-flex;

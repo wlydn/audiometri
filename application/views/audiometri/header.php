@@ -110,11 +110,11 @@
             </div>
 
             <div class="topbar-actions d-flex align-items-center gap-2">
-                <?php if ($method !== 'create'): ?>
-                    <a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary btn-sm d-none d-md-inline-flex align-items-center gap-1">
-                        <i class="bi bi-plus-lg" aria-hidden="true"></i> Tes Baru
-                    </a>
-                <?php endif; ?>
+                <div class="topbar-date" role="timer" aria-label="Jam saat ini (WIB)">
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+                    <time id="topbar-clock" datetime="<?= date('c') ?>"><?= date('H:i:s') ?></time>
+                    <span class="topbar-clock-zone">WIB</span>
+                </div>
                 <div class="topbar-date d-none d-sm-inline-flex">
                     <i class="bi bi-calendar3" aria-hidden="true"></i>
                     <time datetime="<?= date('Y-m-d') ?>"><?= date('d M Y') ?></time>

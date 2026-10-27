@@ -65,6 +65,31 @@
             bootstrap.Modal.getOrCreateInstance(document.getElementById('reportModal')).show();
         }
 
+        // Live clock in topbar, fixed to Asia/Jakarta so it matches server time
+        (function() {
+            var el = document.getElementById('topbar-clock');
+            if (!el) {
+                return;
+            }
+            var fmt;
+            try {
+                fmt = new Intl.DateTimeFormat('id-ID', {
+                    timeZone: 'Asia/Jakarta',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+            } catch (e) {
+                return;
+            }
+            function tick() {
+                el.textContent = fmt.format(new Date()).replace(/\./g, ':');
+            }
+            tick();
+            setInterval(tick, 1000);
+        })();
+
         // Auto-hide dismissible (flash) alerts after 5 seconds
         setTimeout(function() {
             document.querySelectorAll('.alert-dismissible').forEach(function(el) {
