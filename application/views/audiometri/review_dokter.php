@@ -200,57 +200,90 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 		}
 		</script>
 		<script>
-		// Template impression dibangun dari data pemeriksaan (testData) dan dikelompokkan: Normal / Perlu perhatian.
+		// Template impression dibangun dari data pemeriksaan (testData), dikelompokkan Normal / Gangguan pendengaran.
+		// Aturan dikalibrasi terhadap 1.360 impression dokter yang sudah ada (kalimat mengikuti pola dokter).
 		(function () {
 			const freqs = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
-			const earNames = { right: 'kanan', left: 'kiri' };
-			// Batas sama dengan classify_hearing_level di model
-			const levels = [
-				[25, 'normal', 0],
-				[40, 'ringan', 1],
-				[55, 'sedang', 2],
-				[70, 'sedang-berat', 3],
-				[90, 'berat', 4],
-				[Infinity, 'sangat berat', 5]
-			];
+			const sideName = { right: 'kanan', left: 'kiri' };
 
-			function average(ear, type) {
-				const vals = freqs
-					.map(f => parseFloat(testData[ear + '_' + type + '_' + f]))
-					.filter(v => !isNaN(v));
-				return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+			function values(ear, type) {
+				return freqs.map(f => {
+					const v = parseFloat(testData[ear + '_' + type + '_' + f]);
+					return isNaN(v) ? null : v;
+				});
 			}
 
-			function level(avg) {
-				return levels.find(l => avg <= l[0]);
+			function average(list) {
+				const v = list.filter(x => x !== null);
+				return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null;
+			}
+
+			// Derajat berdasarkan rata-rata AC (kalibrasi dari data dokter)
+			function degree(db) {
+				if (db < 25) return null;
+				if (db <= 45) return 'ringan';
+				if (db <= 60) return 'sedang';
+				if (db <= 75) return 'sedang berat';
+				if (db <= 90) return 'berat';
+				return 'sangat berat';
 			}
 
 			function analyze(ear) {
-				const ac = average(ear, 'ac');
-				if (ac === null) return null;
-				const bc = average(ear, 'bc');
-				const acLevel = level(ac);
-				const result = { ear, ac, bc, normal: acLevel[2] === 0, label: acLevel[1], type: '' };
-				if (!result.normal) {
-					if (bc === null) {
-						result.type = 'gangguan pendengaran';
+				const ac = values(ear, 'ac');
+				const acAvg = average(ac);
+				if (acAvg === null) return null;
+				const bc = values(ear, 'bc');
+				const bcAvg = average(bc);
+				const result = { ear, acAvg, bcAvg, abnormal: acAvg >= 25, type: '', degree: null, dips: [] };
+
+				if (result.abnormal) {
+					result.degree = degree(acAvg);
+					if (bcAvg === null) {
+						result.type = '';
+					} else if (acAvg - bcAvg >= 15) {
+						result.type = bcAvg > 30 ? 'campur' : 'konduktif';
 					} else {
-						const bcAbnormal = level(bc)[2] > 0;
-						const gap = ac - bc;
-						if (!bcAbnormal) result.type = 'tuli konduktif';
-						else if (gap >= 15) result.type = 'tuli campuran';
-						else result.type = 'tuli sensorineural';
+						result.type = 'saraf';
 					}
+				} else {
+					// Rata-rata normal tetapi ada frekuensi tertentu yang turun (> 30 dB)
+					ac.forEach((v, i) => {
+						if (v !== null && v > 30) result.dips.push({ freq: freqs[i], db: v });
+					});
 				}
 				return result;
 			}
 
-			function describe(r) {
-				const base = 'Telinga ' + earNames[r.ear];
-				const acText = 'rata-rata AC ' + r.ac.toFixed(1) + ' dB';
-				if (r.normal) return base + ': pendengaran dalam batas normal (' + acText + ').';
-				const bcText = r.bc !== null ? ', BC ' + r.bc.toFixed(1) + ' dB' : '';
-				return base + ': ' + r.type + ' derajat ' + r.label + ' (' + acText + bcText + ').';
+			function phrase(r) {
+				return 'Tuli ' + (r.type ? r.type + ' ' : '') + 'derajat ' + r.degree;
+			}
+
+			function joinList(items) {
+				if (items.length <= 1) return items.join('');
+				return items.slice(0, -1).join(', ') + ' dan ' + items[items.length - 1];
+			}
+
+			// Kalimat gangguan: telinga normal tidak disebut, sama seperti tulisan dokter
+			function abnormalSentence(list) {
+				if (list.length === 2 && phrase(list[0]) === phrase(list[1])) {
+					return phrase(list[0]) + ' bilateral.';
+				}
+				return list.map(r => phrase(r) + ' telinga ' + sideName[r.ear] + '.').join(' ');
+			}
+
+			function dipSentence(results) {
+				const withDips = results.filter(r => r.dips.length);
+				if (!withDips.length) return null;
+				const maxDb = Math.max.apply(null, withDips.map(r => Math.max.apply(null, r.dips.map(d => d.db))));
+				const level = degree(Math.max(maxDb, 25)) || 'ringan';
+				const dipText = r => joinList(r.dips.map(d => d.freq)) + ' Hz';
+				let where;
+				if (withDips.length === 2 && dipText(withDips[0]) === dipText(withDips[1])) {
+					where = 'pada frekuensi ' + dipText(withDips[0]) + ' bilateral';
+				} else {
+					where = 'pada ' + withDips.map(r => 'frekuensi ' + dipText(r) + ' telinga ' + sideName[r.ear]).join(', ');
+				}
+				return 'Ambang dengar kedua telinga dalam batas normal. Terdapat penurunan derajat ' + level + ' ' + where + '.';
 			}
 
 			function addGroup(container, title, items, btnClass) {
@@ -285,25 +318,30 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 					return;
 				}
 
-				const normals = results.filter(r => r.normal);
-				const abnormals = results.filter(r => !r.normal);
+				const summary = document.createElement('div');
+				summary.className = 'small text-body-secondary mb-2';
+				summary.textContent = 'Rata-rata AC: ' + results.map(r => 'telinga ' + sideName[r.ear] + ' ' + r.acAvg.toFixed(1) + ' dB').join(', ');
+				container.appendChild(summary);
+
+				const abnormals = results.filter(r => r.abnormal);
 				const normalItems = [];
 				const abnormalItems = [];
 
-				if (normals.length === 2) {
-					normalItems.push({ label: 'Normal bilateral', text: 'Pendengaran dalam batas normal bilateral.' });
+				if (!abnormals.length) {
+					normalItems.push({ label: 'Normal bilateral', text: 'Ambang dengar kedua telinga dalam batas normal.' });
+					const dip = dipSentence(results);
+					if (dip) normalItems.push({ label: 'Normal dengan penurunan frekuensi tertentu', text: dip });
 				} else {
-					normals.forEach(r => normalItems.push({ label: 'Normal telinga ' + earNames[r.ear], text: describe(r) }));
-				}
-
-				abnormals.forEach(r => abnormalItems.push({
-					label: 'Telinga ' + earNames[r.ear] + ': ' + r.type + ' ' + r.label,
-					text: describe(r)
-				}));
-				if (abnormals.length === 2) {
-					abnormalItems.push({ label: 'Ringkasan bilateral', text: abnormals.map(describe).join(' ') });
-				} else if (abnormals.length === 1 && normals.length === 1) {
-					abnormalItems.push({ label: 'Ringkasan kedua telinga', text: results.map(describe).join(' ') });
+					abnormalItems.push({
+						label: abnormals.length === 2 ? 'Kedua telinga' : 'Telinga ' + sideName[abnormals[0].ear],
+						text: abnormalSentence(abnormals)
+					});
+					if (abnormals.length === 2) {
+						abnormals.forEach(r => abnormalItems.push({
+							label: 'Telinga ' + sideName[r.ear] + ' saja',
+							text: abnormalSentence([r])
+						}));
+					}
 				}
 
 				addGroup(container, 'Normal', normalItems, 'btn-outline-success');
