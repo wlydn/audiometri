@@ -114,27 +114,26 @@
 }
 .hearing-line {
     fill: none;
-    stroke-width: 2.5;
+    stroke-width: 2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 .hearing-line.bc {
     stroke: #dc2626;
+    stroke-dasharray: 5 3;
 }
 .hearing-line:not(.bc) {
-    stroke: #2563eb;
+    stroke: #0066cc;
 }
 .hearing-point {
-    fill: #dc2626;
+    fill: #0066cc;
     r: 4;
 }
 .diamond {
-    fill: #2563eb;
+    fill: #0066cc;
 }
 .arrow-symbol {
     fill: #dc2626;
-    font-size: 13px;
-    font-weight: bold;
 }
 
 /* Legend */
@@ -165,12 +164,12 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #dc2626;
+    background: #0066cc;
 }
 .diamond-symbol {
     width: 10px;
     height: 10px;
-    background: #2563eb;
+    background: #0066cc;
     transform: rotate(45deg);
 }
 

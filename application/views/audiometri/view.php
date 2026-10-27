@@ -163,11 +163,11 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 					<span>AC Left</span>
 				</div>
 				<div class="legend-item">
-					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="3.5,7 10.5,2.5 10.5,11.5" fill="#fff"/></svg>
+					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon points="2,7 12,1.5 12,12.5" fill="#dc2626"/></svg>
 					<span>BC Right</span>
 				</div>
 				<div class="legend-item">
-					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="10.5,7 3.5,2.5 3.5,11.5" fill="#fff"/></svg>
+					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon points="12,7 2,1.5 2,12.5" fill="#dc2626"/></svg>
 					<span>BC Left</span>
 				</div>
 			</div>
@@ -367,27 +367,16 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 		svg.appendChild(gridGroup);
 	}
 
-	// Penanda BC: kotak biru dengan segitiga putih (sama seperti hasil cetak)
+	// Penanda BC: segitiga merah solid (sama seperti hasil cetak PDF).
+	// Telinga kanan menghadap kiri, telinga kiri menghadap kanan.
 	function createBcMarker(x, y, ear) {
-		const ns = 'http://www.w3.org/2000/svg';
-		const g = document.createElementNS(ns, 'g');
-		g.setAttribute('class', 'arrow-symbol');
-		const box = document.createElementNS(ns, 'rect');
-		box.setAttribute('x', x - 7);
-		box.setAttribute('y', y - 7);
-		box.setAttribute('width', 14);
-		box.setAttribute('height', 14);
-		box.setAttribute('rx', 2.5);
-		box.setAttribute('fill', '#1976d2');
-		const tri = document.createElementNS(ns, 'polygon');
+		const tri = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
 		const pts = ear === 'right'
-			? [x - 4, y, x + 3, y - 4.5, x + 3, y + 4.5]
-			: [x + 4, y, x - 3, y - 4.5, x - 3, y + 4.5];
+			? [x - 5.5, y, x + 4.5, y - 5.5, x + 4.5, y + 5.5]
+			: [x + 5.5, y, x - 4.5, y - 5.5, x - 4.5, y + 5.5];
 		tri.setAttribute('points', pts.join(' '));
-		tri.setAttribute('fill', '#ffffff');
-		g.appendChild(box);
-		g.appendChild(tri);
-		return g;
+		tri.setAttribute('class', 'arrow-symbol');
+		return tri;
 	}
 
 	function updateViewChart(ear, chartId) {
@@ -425,7 +414,7 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 				d += ` L ${acPoints[i].x} ${acPoints[i].y}`;
 			}
 			path.setAttribute('d', d);
-			path.setAttribute('class', 'hearing-line');
+			path.setAttribute('class', 'hearing-line bc');
 			svg.appendChild(path);
 		}
 
@@ -470,7 +459,7 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 				d += ` L ${bcPoints[i].x} ${bcPoints[i].y}`;
 			}
 			path.setAttribute('d', d);
-			path.setAttribute('class', 'hearing-line bc');
+			path.setAttribute('class', 'hearing-line');
 			svg.appendChild(path);
 		}
 	}
