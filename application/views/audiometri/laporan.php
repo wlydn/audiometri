@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // File: application/views/audiometri/laporan.php
 $total = (int) $report['total'];
 $pct = function ($part, $whole) {

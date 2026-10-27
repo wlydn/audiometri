@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // File: application/views/audiometri/footer.php
 ?>
         </main> <!-- End Content Wrapper -->

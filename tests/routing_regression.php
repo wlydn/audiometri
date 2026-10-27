@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /** Run: php tests/routing_regression.php; no database or HTTP requests. */
 define('BASEPATH', dirname(__DIR__) . '/system/');
 define('APPPATH', dirname(__DIR__) . '/application/');

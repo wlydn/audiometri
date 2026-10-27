@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // File: application/views/audiometri/dashboard.php
 $month_report = $overview['month_report'];
 $month_total = (int) $month_report['total'];

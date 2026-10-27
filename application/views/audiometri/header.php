@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // File: application/views/audiometri/header.php
 ?>
 <!DOCTYPE html>
