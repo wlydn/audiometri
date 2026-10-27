@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
 // use DateTime;
@@ -918,8 +918,10 @@ class Audiometri extends CI_Controller
 	public function export_excel()
 	{
 		try {
-			// Get all audiometri data
-			$data['audiometri_data'] = $this->Audiometri_model->get_all_tests();
+			// Tanpa filter = semua data; dengan filter = hanya periode/perusahaan terpilih
+			$filters = $this->_get_report_filters(false);
+			$data['filters'] = $filters;
+			$data['audiometri_data'] = $this->Audiometri_model->get_report_rows($filters);
 
 			// Load the export view
 			$this->load->view('audiometri/export_excel', $data);
@@ -928,6 +930,94 @@ class Audiometri extends CI_Controller
 			$this->session->set_flashdata('error', 'Gagal mengexport data ke Excel');
 			redirect('list_tests');
 		}
+	}
+
+	/**
+	 * Laporan periode: ringkasan, distribusi tingkat pendengaran, tren, dan ekspor
+	 */
+	public function laporan()
+	{
+		try {
+			$filters = $this->_get_report_filters(true);
+			$rows = $this->Audiometri_model->get_report_rows($filters);
+
+			$data['title'] = 'Laporan Periode';
+			$data['filters'] = $filters;
+			$data['presets'] = $this->_report_presets();
+			$data['report'] = $this->Audiometri_model->build_period_report($rows);
+
+			$this->load->view('audiometri/header', $data);
+			$this->load->view('audiometri/laporan', $data);
+			$this->load->view('audiometri/footer');
+		} catch (Exception $e) {
+			log_message('error', 'Laporan error: ' . $e->getMessage());
+			$this->_show_error_page('Laporan tidak dapat dimuat', $e->getMessage());
+		}
+	}
+
+	/**
+	 * Filter laporan dari query string (tanggal_dari, tanggal_sampai, perusahaan).
+	 * Jika parameter tanggal tidak ada sama sekali, laporan default ke bulan berjalan.
+	 */
+	private function _get_report_filters($default_to_current_month = false)
+	{
+		$get = $this->input->get();
+		$get = is_array($get) ? $get : [];
+		$has_date = array_key_exists('tanggal_dari', $get) || array_key_exists('tanggal_sampai', $get);
+
+		if (!$has_date && $default_to_current_month) {
+			$dari = date('Y-m-01');
+			$sampai = date('Y-m-t');
+		} else {
+			$dari = $this->_clean_report_date(isset($get['tanggal_dari']) ? $get['tanggal_dari'] : '');
+			$sampai = $this->_clean_report_date(isset($get['tanggal_sampai']) ? $get['tanggal_sampai'] : '');
+		}
+
+		if ($dari !== '' && $sampai !== '' && $dari > $sampai) {
+			list($dari, $sampai) = [$sampai, $dari];
+		}
+
+		$perusahaan = (isset($get['perusahaan']) && is_string($get['perusahaan'])) ? trim($get['perusahaan']) : '';
+		$perusahaan = function_exists('mb_substr') ? mb_substr($perusahaan, 0, 100) : substr($perusahaan, 0, 100);
+
+		return [
+			'tanggal_dari' => $dari,
+			'tanggal_sampai' => $sampai,
+			'perusahaan' => $perusahaan
+		];
+	}
+
+	/**
+	 * Mengembalikan tanggal Y-m-d yang valid atau string kosong
+	 */
+	private function _clean_report_date($value)
+	{
+		if (!is_string($value)) {
+			return '';
+		}
+
+		$value = trim($value);
+		$date = DateTime::createFromFormat('Y-m-d', $value);
+
+		return ($date && $date->format('Y-m-d') === $value) ? $value : '';
+	}
+
+	/**
+	 * Pilihan periode cepat untuk halaman laporan
+	 */
+	private function _report_presets()
+	{
+		$today = date('Y-m-d');
+		$last_month = strtotime('first day of last month');
+
+		return [
+			['label' => 'Hari Ini', 'dari' => $today, 'sampai' => $today],
+			['label' => '7 Hari Terakhir', 'dari' => date('Y-m-d', strtotime('-6 days')), 'sampai' => $today],
+			['label' => 'Bulan Ini', 'dari' => date('Y-m-01'), 'sampai' => date('Y-m-t')],
+			['label' => 'Bulan Lalu', 'dari' => date('Y-m-01', $last_month), 'sampai' => date('Y-m-t', $last_month)],
+			['label' => 'Tahun Ini', 'dari' => date('Y-01-01'), 'sampai' => date('Y-12-31')],
+			['label' => 'Semua Waktu', 'dari' => '', 'sampai' => '']
+		];
 	}
 
 	/**

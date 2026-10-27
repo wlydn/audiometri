@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // File: application/views/audiometri/header.php
 ?>
 <!DOCTYPE html>
@@ -79,9 +79,9 @@
                     <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
                     <span>Ekspor Data Excel</span>
                 </a>
-                <a href="#" onclick="showReportModal(); return false;">
-                    <i class="bi bi-funnel" aria-hidden="true"></i>
-                    <span>Filter Laporan Periode</span>
+                <a href="<?= html_escape(base_url('laporan')) ?>" class="<?= $method === 'laporan' ? 'active' : '' ?>" <?= $method === 'laporan' ? 'aria-current="page"' : '' ?>>
+                    <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                    <span>Laporan Periode</span>
                 </a>
             </nav>
 

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
@@ -11,6 +11,9 @@ class Audiometri_model extends CI_Model {
 
     private $table = 'audiometri_tests';
     private $frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
+    // Urut dari paling ringan ke paling berat (sama dengan classify_hearing_level)
+    private $hearing_levels = ['Normal', 'Mild hearing loss', 'Moderate hearing loss',
+        'Moderately severe hearing loss', 'Severe hearing loss', 'Profound hearing loss'];
 
     public function __construct() {
         parent::__construct();
@@ -606,4 +609,175 @@ class Audiometri_model extends CI_Model {
             return [];
         }
     }
+
+    /**
+     * Mengambil data tes untuk laporan/ekspor periode (tanpa pagination).
+     * Filter: tanggal_dari, tanggal_sampai (Y-m-d) dan perusahaan (mengandung teks).
+     */
+    public function get_report_rows($filters = []) {
+        try {
+            $this->db->select('*');
+            $this->db->from($this->table);
+
+            if (!empty($filters['tanggal_dari']) && $this->_validate_date($filters['tanggal_dari'])) {
+                $this->db->where('tanggal_tes >=', $filters['tanggal_dari']);
+            }
+            if (!empty($filters['tanggal_sampai']) && $this->_validate_date($filters['tanggal_sampai'])) {
+                $this->db->where('tanggal_tes <=', $filters['tanggal_sampai']);
+            }
+            if (!empty($filters['perusahaan'])) {
+                $this->db->like('perusahaan', $filters['perusahaan']);
+            }
+
+            $this->db->order_by('tanggal_tes', 'DESC');
+            $this->db->order_by('created_at', 'DESC');
+
+            $result = $this->db->get()->result_array();
+            return $result ?: [];
+
+        } catch (Exception $e) {
+            log_message('error', 'Get report rows error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Klasifikasi satu tes berdasarkan rata-rata AC telinga yang lebih buruk.
+     * Mengembalikan null jika tidak ada nilai AC yang terukur.
+     */
+    public function classify_test($row) {
+        $averages = [];
+        foreach (['right', 'left'] as $ear) {
+            $values = $this->get_hearing_values($row, $ear, 'ac');
+            if (!empty($values)) {
+                $averages[] = array_sum($values) / count($values);
+            }
+        }
+
+        if (empty($averages)) {
+            return null;
+        }
+
+        return $this->classify_hearing_level(max($averages));
+    }
+
+    /**
+     * Menyusun ringkasan laporan periode dari baris tes (tanpa akses database).
+     */
+    public function build_period_report(array $rows) {
+        $report = [
+            'total'      => count($rows),
+            'reviewed'   => 0,
+            'pending'    => 0,
+            'gender'     => ['Laki-laki' => 0, 'Perempuan' => 0],
+            'avg_age'    => null,
+            'levels'     => array_fill_keys($this->hearing_levels, 0),
+            'no_data'    => 0,
+            'abnormal'   => 0,
+            'companies'  => [],
+            'trend'      => [],
+            'trend_unit' => 'day',
+            'attention'  => [],
+        ];
+
+        $age_sum = 0;
+        $age_count = 0;
+        $companies = [];
+        $day_counts = [];
+        $attention = [];
+
+        foreach ($rows as $row) {
+            if (trim((string) (isset($row['impression']) ? $row['impression'] : '')) !== '') {
+                $report['reviewed']++;
+            } else {
+                $report['pending']++;
+            }
+
+            $gender = isset($row['jenis_kelamin']) ? $row['jenis_kelamin'] : '';
+            if (isset($report['gender'][$gender])) {
+                $report['gender'][$gender]++;
+            }
+
+            if (isset($row['umur']) && is_numeric($row['umur']) && $row['umur'] > 0) {
+                $age_sum += (float) $row['umur'];
+                $age_count++;
+            }
+
+            $name = trim((string) (isset($row['perusahaan']) ? $row['perusahaan'] : ''));
+            if ($name === '') {
+                $name = '-';
+            }
+            if (!isset($companies[$name])) {
+                $companies[$name] = ['name' => $name, 'count' => 0, 'abnormal' => 0];
+            }
+            $companies[$name]['count']++;
+
+            $level = $this->classify_test($row);
+            if ($level === null) {
+                $report['no_data']++;
+            } else {
+                $report['levels'][$level]++;
+                if ($level !== 'Normal') {
+                    $report['abnormal']++;
+                    $companies[$name]['abnormal']++;
+                    $attention[] = [
+                        'id'         => isset($row['id']) ? $row['id'] : null,
+                        'nama'       => isset($row['nama']) ? $row['nama'] : '',
+                        'no_rm'      => isset($row['no_rm']) ? $row['no_rm'] : '',
+                        'perusahaan' => $name,
+                        'tanggal'    => isset($row['tanggal_tes']) ? $row['tanggal_tes'] : '',
+                        'level'      => $level,
+                        'severity'   => (int) array_search($level, $this->hearing_levels, true),
+                    ];
+                }
+            }
+
+            $date = substr((string) (isset($row['tanggal_tes']) ? $row['tanggal_tes'] : ''), 0, 10);
+            if ($date !== '') {
+                $day_counts[$date] = (isset($day_counts[$date]) ? $day_counts[$date] : 0) + 1;
+            }
+        }
+
+        if ($age_count > 0) {
+            $report['avg_age'] = round($age_sum / $age_count, 1);
+        }
+
+        $companies = array_values($companies);
+        usort($companies, function ($a, $b) {
+            if ($a['count'] !== $b['count']) {
+                return $b['count'] - $a['count'];
+            }
+            return strcmp($a['name'], $b['name']);
+        });
+        $report['companies'] = $companies;
+
+        usort($attention, function ($a, $b) {
+            if ($a['severity'] !== $b['severity']) {
+                return $b['severity'] - $a['severity'];
+            }
+            return strcmp($b['tanggal'], $a['tanggal']);
+        });
+        $report['attention'] = array_slice($attention, 0, 10);
+
+        if (!empty($day_counts)) {
+            ksort($day_counts);
+            $days = array_keys($day_counts);
+            $span = (strtotime(end($days)) - strtotime(reset($days))) / 86400;
+
+            if ($span > 62) {
+                // Rentang panjang: gabungkan per bulan agar grafik tetap terbaca
+                $report['trend_unit'] = 'month';
+                foreach ($day_counts as $day => $count) {
+                    $month = substr($day, 0, 7);
+                    $report['trend'][$month] = (isset($report['trend'][$month]) ? $report['trend'][$month] : 0) + $count;
+                }
+            } else {
+                $report['trend'] = $day_counts;
+            }
+        }
+
+        return $report;
+    }
+
+
 }

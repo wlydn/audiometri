@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // File: application/views/audiometri/footer.php
 ?>
         </main> <!-- End Content Wrapper -->
@@ -45,6 +45,9 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" form="reportForm" formaction="<?= html_escape(base_url('laporan')) ?>" class="btn btn-primary">
+                        <i class="bi bi-bar-chart-line me-1" aria-hidden="true"></i> Lihat Laporan
+                    </button>
                     <button type="submit" form="reportForm" class="btn btn-success">
                         <i class="bi bi-download me-1" aria-hidden="true"></i> Download Excel
                     </button>

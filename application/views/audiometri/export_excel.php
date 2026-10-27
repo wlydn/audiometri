@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 header("Content-type: application/vnd-ms-excel");
 header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
 ?>
@@ -8,6 +8,22 @@ header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
         <tr>
             <th colspan="23" style="text-align: center;">DATA TES AUDIOMETRI</th>
         </tr>
+        <?php
+        $period_parts = [];
+        if (!empty($filters['tanggal_dari']) || !empty($filters['tanggal_sampai'])) {
+            $period_parts[] = 'Periode: '
+                . (!empty($filters['tanggal_dari']) ? date('d/m/Y', strtotime($filters['tanggal_dari'])) : '...')
+                . ' s/d '
+                . (!empty($filters['tanggal_sampai']) ? date('d/m/Y', strtotime($filters['tanggal_sampai'])) : '...');
+        }
+        if (!empty($filters['perusahaan'])) {
+            $period_parts[] = 'Perusahaan: ' . $filters['perusahaan'];
+        }
+        if (!empty($period_parts)): ?>
+        <tr>
+            <th colspan="23" style="text-align: center;"><?= html_escape(implode(' | ', $period_parts)) ?></th>
+        </tr>
+        <?php endif; ?>
         <tr>
             <th>No</th>
             <th>Tanggal Tes</th>

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // File: application/views/audiometri/dashboard.php
 $pending_count = count(array_filter($recent_tests, function ($test) { return empty($test['impression']); }));
 ?>
@@ -231,10 +231,10 @@ $pending_count = count(array_filter($recent_tests, function ($test) { return emp
                             </a>
                         </div>
                         <div class="col-6">
-                            <button type="button" onclick="showReportModal()" class="btn btn-outline-success quick-action">
-                                <i class="bi bi-file-earmark-excel" aria-hidden="true"></i>
-                                <span>Ekspor Data</span>
-                            </button>
+                            <a href="<?= html_escape(base_url('laporan')) ?>" class="btn btn-outline-success quick-action">
+                                <i class="bi bi-bar-chart-line" aria-hidden="true"></i>
+                                <span>Laporan Periode</span>
+                            </a>
                         </div>
                         <div class="col-6">
                             <button type="button" onclick="showSearchModal()" class="btn btn-outline-secondary quick-action">

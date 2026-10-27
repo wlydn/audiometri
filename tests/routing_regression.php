@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /** Run: php tests/routing_regression.php; no database or HTTP requests. */
 define('BASEPATH', dirname(__DIR__) . '/system/');
 define('APPPATH', dirname(__DIR__) . '/application/');
@@ -14,7 +14,7 @@ verify_route('Root opens Audiometri', $route['default_controller'] === 'audiomet
 verify_route('Generated URLs omit index.php', $config['index_page'] === '');
 $paths = ['dashboard', 'doctor_view', 'review_dokter/(:num)', 'create', 'edit/(:num)',
     'view/(:num)', 'delete/(:num)', 'list', 'list_tests', 'search', 'search_by_no_rm',
-    'export_pdf/(:num)', 'export_excel', 'update_chart'];
+    'export_pdf/(:num)', 'export_excel', 'laporan', 'update_chart'];
 foreach ($paths as $path) {
     verify_route('Canonical route matches legacy: ' . $path,
         isset($route[$path], $route['audiometri/' . $path]) && $route[$path] === $route['audiometri/' . $path]);
