@@ -222,12 +222,10 @@
 				<h2 class="h6 card-title mb-0">
 					<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression / Kesimpulan Dokter
 				</h2>
-				<div class="d-flex gap-1 flex-wrap">
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
-				</div>
+			</div>
+			<div class="card-body border-bottom pb-3">
+				<div class="small text-body-secondary mb-2">Template otomatis dari angka ambang di atas (berubah saat angka diedit, klik untuk menambahkan ke impression):</div>
+				<div id="impression-templates"></div>
 			</div>
 			<div class="card-body">
 				<label for="impression-text" class="visually-hidden">Impression / Kesimpulan Dokter</label>
@@ -240,6 +238,7 @@
 				<?= form_error('impression', '<small class="text-danger d-block mt-1">', '</small>') ?>
 			</div>
 		</div>
+		<script src="<?= html_escape(base_url('assets/js/impression-templates.js')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/js/impression-templates.js')) ?>"></script>
 		<script>
 		function insertImpression(text) {
 			const textarea = document.getElementById('impression-text');
@@ -250,6 +249,36 @@
 			}
 			textarea.focus();
 		}
+
+		// Ambil nilai langsung dari input, sehingga template ikut berubah saat angka diedit
+		function readAudiometricInputs() {
+			const data = {};
+			['right', 'left'].forEach(function (ear) {
+				['ac', 'bc'].forEach(function (type) {
+					['250', '500', '1000', '2000', '3000', '4000', '6000'].forEach(function (freq) {
+						const input = document.getElementById(ear + '-' + type + '-' + freq);
+						data[ear + '_' + type + '_' + freq] = input ? input.value : '';
+					});
+				});
+			});
+			return data;
+		}
+
+		let impressionTemplates = null;
+		document.addEventListener('DOMContentLoaded', function () {
+			impressionTemplates = ImpressionTemplates.init({
+				container: document.getElementById('impression-templates'),
+				getData: readAudiometricInputs,
+				onInsert: insertImpression
+			});
+			let templateTimer = null;
+			document.addEventListener('input', function (e) {
+				if (e.target.matches('.freq-input-group input[type="number"]')) {
+					clearTimeout(templateTimer);
+					templateTimer = setTimeout(function () { impressionTemplates.refresh(); }, 400);
+				}
+			});
+		});
 		</script>
 		<?php endif; ?>
 
