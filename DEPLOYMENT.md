@@ -50,3 +50,22 @@ hosting atau menerapkan environment server.
 2. Buka URL lama `/audiometri/audiometri` dan pastikan menuju `/audiometri/`.
 3. Uji pencarian berfilter, pagination, form, review, dan ekspor pada database uji.
 4. Jalankan `php tests/routing_regression.php` dan `php tests/audit_regression.php`.
+
+## Catatan keamanan
+
+- Header keamanan (CSP, HSTS pada HTTPS, `X-Frame-Options`, `Referrer-Policy`,
+  `Permissions-Policy`, `Cache-Control: no-store`) dikirim oleh controller dan
+  `.htaccess`, jadi tetap berlaku bila `mod_headers` tidak aktif.
+- CSP masih memakai `'unsafe-inline'` karena view memakai script/style inline.
+  Pindahkan ke file terpisah atau nonce sebelum menghapusnya.
+- Log error aktif (`log_threshold = 1`) di `application/logs`; folder ini ditolak
+  `.htaccess`. Pada Nginx/IIS, tambahkan aturan setara agar `application/` dan
+  `system/` tidak dapat diakses publik.
+- Di belakang Cloudflare, set `proxy_ips` di `application/config/config.php`
+  ke rentang IP Cloudflare bila IP klien dibutuhkan (mis. audit). `sess_match_ip`
+  dibiarkan `FALSE` agar sesi tidak putus saat IP berubah.
+- SweetAlert2 dikunci ke versi `11.26.25` dengan SRI. Perbarui hash bersamaan
+  dengan versi saat upgrade.
+- **Belum ada login/otorisasi.** Batasi akses dengan HTTP Basic Auth / Cloudflare
+  Access / VPN sampai autentikasi aplikasi dibuat. Lihat `AUDIT.md` (P0).
+

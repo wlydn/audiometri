@@ -1,6 +1,15 @@
 ﻿<?php
 header("Content-type: application/vnd-ms-excel");
 header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
+
+// Sel teks yang diawali = + - @ (atau tab/CR) dianggap formula oleh Excel; netralkan dengan apostrof.
+$safe = function ($value) {
+    $value = (string) $value;
+    if ($value !== '' && strpbrk($value[0], "=+-@\t\r") !== false && !is_numeric($value)) {
+        $value = "'" . $value;
+    }
+    return html_escape($value);
+};
 ?>
 
 <table border="1">
@@ -59,12 +68,12 @@ header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
         <tr>
             <td><?= html_escape($no++) ?></td>
             <td><?= html_escape(date('d/m/Y', strtotime($data['tanggal_tes']))) ?></td>
-            <td><?= html_escape($data['no_rm']) ?></td>
-            <td><?= html_escape($data['nama']) ?></td>
+            <td><?= $safe($data['no_rm']) ?></td>
+            <td><?= $safe($data['nama']) ?></td>
             <td><?= html_escape($data['umur']) ?></td>
             <td><?= html_escape($data['jenis_kelamin']) ?></td>
-            <td><?= html_escape($data['perusahaan']) ?></td>
-            <td><?= html_escape($data['jabatan']) ?></td>
+            <td><?= $safe($data['perusahaan']) ?></td>
+            <td><?= $safe($data['jabatan']) ?></td>
             <!-- Telinga Kanan AC -->
             <td><?= html_escape($data['right_ac_250']) ?></td>
             <td><?= html_escape($data['right_ac_500']) ?></td>
@@ -81,7 +90,7 @@ header("Content-Disposition: attachment; filename=Data_Tes_Audiometri.xls");
             <td><?= html_escape($data['left_ac_3000']) ?></td>
             <td><?= html_escape($data['left_ac_4000']) ?></td>
             <td><?= html_escape($data['left_ac_6000']) ?></td>
-            <td><?= html_escape($data['impression']) ?></td>
+            <td><?= $safe($data['impression']) ?></td>
         </tr>
         <?php endforeach; ?>
     </tbody>

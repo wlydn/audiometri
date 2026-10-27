@@ -85,5 +85,29 @@ check('Automatic analysis retains zero and ignores absent thresholds', function 
     $result = $model->generate_impression(['right_ac_250' => 0, 'right_ac_500' => null]);
     return strpos($result, '0.0 dB') !== false && strpos($result, 'Telinga kiri') === false;
 });
+check('Text input helper rejects arrays, strips control chars and caps length', function () {
+    $c = (new ReflectionClass('Audiometri'))->newInstanceWithoutConstructor();
+    $m = new ReflectionMethod('Audiometri', '_clean_text');
+    $m->setAccessible(true);
+    return $m->invoke($c, ['x'], 10) === '' && $m->invoke($c, "  ab\x00c  ", 10) === 'abc'
+        && strlen($m->invoke($c, str_repeat('a', 300), 100)) === 100;
+});
+check('Page helper clamps negative, array and huge values', function () {
+    $c = (new ReflectionClass('Audiometri'))->newInstanceWithoutConstructor();
+    $m = new ReflectionMethod('Audiometri', '_clean_page');
+    $m->setAccessible(true);
+    return $m->invoke($c, '-5') === 1 && $m->invoke($c, ['1']) === 1 && $m->invoke($c, '3') === 3
+        && $m->invoke($c, '99999999999') === 100000;
+});
+check('Excel export neutralises formula-leading text', function () {
+    $source = file_get_contents(APPPATH . 'views/audiometri/export_excel.php');
+    return strpos($source, '$safe(') !== false && strpos($source, 'strpbrk') !== false;
+});
+check('Empty period report has safe zero defaults', function () {
+    $m = (new ReflectionClass('Audiometri_model'))->newInstanceWithoutConstructor();
+    $report = $m->build_period_report([]);
+    return $report['total'] === 0 && $report['abnormal'] === 0 && $report['attention'] === [];
+});
+
 echo "\nAudit checks: {$passed} passed, {$failed} failed.\n";
 exit($failed ? 1 : 0);

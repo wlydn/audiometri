@@ -40,6 +40,14 @@ PHP CLI yang dipakai: 8.1.30, tanpa ekstensi mysqli. Belum dilakukan browser des
 18. composer.json menyatakan PHP >=5.3.7 tetapi kode memakai fitur modern; composer.lock diabaikan; konfigurasi tes bawaan tidak tersedia. Tetapkan runtime supported dan dependency lock konsisten.
 19. .htaccess hanya melindungi jika Apache menerapkannya. Nginx/IIS/PHP built-in memerlukan konfigurasi setara.
 
+## Pembaruan keamanan (dashboard redesign)
+- Sebagian #6/#10 tertutup: filter `list_tests`, `search_by_no_rm` dan `update_impression` memakai `_clean_text`/`_clean_page` (hanya string, tanpa karakter kontrol, panjang dibatasi, page 1..100000). Jalur lain (mis. input langsung ke model) belum.
+- Sebagian #4: sel teks ekspor yang diawali `= + - @` dinetralkan. Format HTML `.xls` dan nol awal No RM belum diubah.
+- Sebagian #16: SweetAlert2 dikunci ke 11.26.25 dengan SRI. Belum diuji di browser.
+- #17: `log_threshold = 1` (error saja).
+- Header keamanan (CSP, HSTS pada HTTPS, Permissions-Policy, no-store) dikirim dari controller. CSP masih `'unsafe-inline'`.
+- P0 (autentikasi/otorisasi, jejak audit) **tetap terbuka**.
+
 ## Kriteria menuju kualitas produksi
 - Selesaikan P0/P1 dengan acceptance test dan role/izin yang disepakati.
 - Sediakan skema/migrasi dan database pengujian terisolasi, bukan data pasien nyata.

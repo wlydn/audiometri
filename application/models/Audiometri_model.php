@@ -778,6 +778,66 @@ class Audiometri_model extends CI_Model {
 
         return $report;
     }
+    /**
+     * Ringkasan dashboard: total, hari ini, bulan ini vs bulan lalu, menunggu review,
+     * tren 6 bulan (nol terisi), distribusi dan kasus perhatian bulan berjalan.
+     */
+    public function get_dashboard_overview() {
+        $overview = [
+            'total'        => 0,
+            'today'        => 0,
+            'pending'      => 0,
+            'month_count'  => 0,
+            'prev_count'   => 0,
+            'trend'        => [],
+            'month_report' => $this->build_period_report([]),
+        ];
+
+        try {
+            $month_start = date('Y-m-01');
+            $today = date('Y-m-d');
+            $prev_key = date('Y-m', strtotime('first day of last month'));
+            $month_key = date('Y-m');
+
+            for ($i = 5; $i >= 0; $i--) {
+                $overview['trend'][date('Y-m', strtotime('first day of -' . $i . ' months'))] = 0;
+            }
+
+            $overview['total'] = (int) $this->db->count_all($this->table);
+
+            $this->db->group_start();
+            $this->db->where('impression IS NULL', null, false);
+            $this->db->or_where('impression', '');
+            $this->db->group_end();
+            $overview['pending'] = (int) $this->db->count_all_results($this->table);
+
+            $trend_start = key($overview['trend']) . '-01';
+            $month_rows = [];
+            foreach ($this->get_report_rows(['tanggal_dari' => $trend_start]) as $row) {
+                $date = substr((string) (isset($row['tanggal_tes']) ? $row['tanggal_tes'] : ''), 0, 10);
+                $key = substr($date, 0, 7);
+                if (isset($overview['trend'][$key])) {
+                    $overview['trend'][$key]++;
+                }
+                if ($date === $today) {
+                    $overview['today']++;
+                }
+                if ($date >= $month_start) {
+                    $month_rows[] = $row;
+                }
+            }
+
+            $overview['month_count'] = $overview['trend'][$month_key];
+            $overview['prev_count'] = $overview['trend'][$prev_key];
+            $overview['month_report'] = $this->build_period_report($month_rows);
+        } catch (Throwable $e) {
+            log_message('error', 'Get dashboard overview error: ' . $e->getMessage());
+        }
+
+        return $overview;
+    }
+
+
 
 
 }

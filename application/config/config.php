@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
@@ -242,7 +242,9 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+// Errors only (level 1). Logs live in application/logs, which .htaccess denies from the web.
+// Never log patient data in log_message() calls.
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------

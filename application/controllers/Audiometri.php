@@ -26,6 +26,8 @@ class Audiometri extends CI_Controller
 	{
 		parent::__construct();
 
+		$this->_send_security_headers();
+
 		// Canonicalize old controller-prefixed bookmarks without redirecting POST bodies.
 		if (in_array($this->input->method(TRUE), ['GET', 'HEAD'], true)
 			&& $this->uri->segment(1) === 'audiometri') {
@@ -68,8 +70,8 @@ class Audiometri extends CI_Controller
 			$data['title'] = 'Dashboard';
 
 			// Load stats dengan error handling
-			$data['stats'] = $this->Audiometri_model->get_dashboard_stats();
-			$data['recent_tests'] = $this->Audiometri_model->get_tests(5, 0);
+			$data['overview'] = $this->Audiometri_model->get_dashboard_overview();
+			$data['recent_tests'] = $this->Audiometri_model->get_tests(6, 0);
 
 			$this->load->view('audiometri/header', $data);
 			$this->load->view('audiometri/dashboard', $data);
@@ -149,21 +151,21 @@ class Audiometri extends CI_Controller
 	public function list_tests()
 	{
 		try {
-			$page = (int)$this->input->get('page') ?: 1;
+			$page = $this->_clean_page($this->input->get('page'));
 			$limit = 10;
 			$offset = ($page - 1) * $limit;
 
-			// Filter parameters dengan sanitasi
+			// Filter parameters: hanya string, dipangkas, dan dibatasi panjangnya
 			$filters = [
-				'nama' => $this->security->xss_clean($this->input->get('nama')),
-				'perusahaan' => $this->security->xss_clean($this->input->get('perusahaan')),
-				'tanggal_dari' => $this->input->get('tanggal_dari'),
-				'tanggal_sampai' => $this->input->get('tanggal_sampai')
+				'nama' => $this->_clean_text($this->input->get('nama'), 100),
+				'perusahaan' => $this->_clean_text($this->input->get('perusahaan'), 100),
+				'tanggal_dari' => $this->_clean_report_date($this->input->get('tanggal_dari')),
+				'tanggal_sampai' => $this->_clean_report_date($this->input->get('tanggal_sampai'))
 			];
 
 			// Remove empty filters
 			$filters = array_filter($filters, function ($value) {
-				return !empty(trim($value));
+				return $value !== '';
 			});
 
 			$data['title'] = 'Daftar Pasien';
@@ -301,8 +303,8 @@ class Audiometri extends CI_Controller
 				return;
 			}
 
-			$no_rm = trim($this->security->xss_clean($this->input->post('no_rm')));
-			if (empty($no_rm)) {
+			$no_rm = $this->_clean_text($this->input->post('no_rm'), 50);
+			if ($no_rm === '') {
 				$this->_json_response([
 					'status' => false,
 					'message' => 'No RM tidak boleh kosong'
@@ -1003,6 +1005,65 @@ class Audiometri extends CI_Controller
 	}
 
 	/**
+	 * Teks input aman: hanya string, tanpa karakter kontrol, dipangkas, dibatasi panjang.
+	 * Nilai array/non-string menjadi string kosong.
+	 */
+	private function _clean_text($value, $max_length = 100)
+	{
+		if (!is_string($value)) {
+			return '';
+		}
+
+		$value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
+		$value = trim((string) $value);
+
+		return function_exists('mb_substr') ? mb_substr($value, 0, $max_length) : substr($value, 0, $max_length);
+	}
+
+	/**
+	 * Nomor halaman: bilangan bulat 1..100000, selain itu 1.
+	 */
+	private function _clean_page($value)
+	{
+		if (!is_string($value) || !ctype_digit($value)) {
+			return 1;
+		}
+
+		return max(1, min(100000, (int) $value));
+	}
+
+	/**
+	 * Header keamanan dikirim dari aplikasi agar tetap berlaku di server selain Apache.
+	 * CSP mengizinkan inline script/style (dipakai view saat ini) dan CDN jsDelivr saja.
+	 */
+	private function _send_security_headers()
+	{
+		$csp = "default-src 'self'; "
+			. "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+			. "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+			. "font-src 'self' https://cdn.jsdelivr.net data:; "
+			. "img-src 'self' data:; connect-src 'self'; object-src 'none'; "
+			. "base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
+
+		$headers = [
+			'Content-Security-Policy: ' . $csp,
+			'X-Content-Type-Options: nosniff',
+			'X-Frame-Options: DENY',
+			'Referrer-Policy: strict-origin-when-cross-origin',
+			'Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()',
+			'Cache-Control: private, no-store, max-age=0',
+		];
+
+		if (strpos((string) $this->config->item('base_url'), 'https://') === 0) {
+			$headers[] = 'Strict-Transport-Security: max-age=31536000';
+		}
+
+		foreach ($headers as $header) {
+			$this->output->set_header($header);
+		}
+	}
+
+	/**
 	 * Pilihan periode cepat untuk halaman laporan
 	 */
 	private function _report_presets()
@@ -1054,9 +1115,9 @@ class Audiometri extends CI_Controller
 			}
 
 			$test_id = $this->input->post('test_id');
-			$impression = trim($this->input->post('impression'));
+			$impression = $this->_clean_text($this->input->post('impression'), 5000);
 
-			if (!$test_id || !is_numeric($test_id)) {
+			if (!is_scalar($test_id) || !ctype_digit((string) $test_id) || (int) $test_id < 1) {
 				$this->_json_response([
 					'status' => false,
 					'message' => 'ID tes tidak valid'
@@ -1064,7 +1125,7 @@ class Audiometri extends CI_Controller
 				return;
 			}
 
-			if (empty($impression)) {
+			if ($impression === '') {
 				$this->_json_response([
 					'status' => false,
 					'message' => 'Impression tidak boleh kosong'
