@@ -104,7 +104,7 @@
                     <i class="bi bi-list" aria-hidden="true"></i>
                 </button>
                 <div class="text-truncate">
-                    <small>Klinik & Keselamatan Kerja / Audiometri</small>
+                    <small>Web Audiometri</small>
                     <strong><?= html_escape($title ?? 'Pemeriksaan Pendengaran') ?></strong>
                 </div>
             </div>
