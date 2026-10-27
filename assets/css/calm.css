@@ -179,6 +179,11 @@
     border-left: 4px solid var(--bs-primary);
 }
 
+/* Doctor panel: pending row, subtle marker instead of full-row colour */
+.table > tbody > tr.row-pending > td:first-child {
+    border-left: 3px solid var(--bs-warning-border-subtle);
+}
+
 /* Review tables (review_dokter.php) */
 .table-header h3 {
     margin: 0 0 0.5rem;

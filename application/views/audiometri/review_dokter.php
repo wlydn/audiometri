@@ -154,11 +154,11 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 					<span>AC Left</span>
 				</div>
 				<div class="legend-item">
-					<div class="text-danger">◀</div>
+					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="3.5,7 10.5,2.5 10.5,11.5" fill="#fff"/></svg>
 					<span>BC Right</span>
 				</div>
 				<div class="legend-item">
-					<div class="text-danger">▶</div>
+					<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="10.5,7 3.5,2.5 3.5,11.5" fill="#fff"/></svg>
 					<span>BC Left</span>
 				</div>
 			</div>
@@ -172,12 +172,10 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 				<h2 class="h6 card-title mb-0">
 					<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression / Rekomendasi Dokter:
 				</h2>
-				<div class="d-flex gap-1 flex-wrap">
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Pendengaran dalam batas normal bilateral.')">Normal</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Tuli konduktif derajat ringan.')">Konduktif Ringan</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Tuli sensorineural derajat ringan.')">Sensorineural Ringan</button>
-					<button type="button" class="btn btn-sm btn-outline-secondary" onclick="insertDoctorImpression('Noise-Induced Hearing Loss (NIHL) bilateral.')">NIHL</button>
-				</div>
+			</div>
+			<div class="card-body border-bottom pb-3">
+				<div class="small text-body-secondary mb-2">Template otomatis dari hasil pemeriksaan (klik untuk menambahkan ke impression):</div>
+				<div id="impression-templates"></div>
 			</div>
 			<div class="card-body">
 				<label for="impression" class="visually-hidden">Impression / Rekomendasi Dokter</label>
@@ -200,6 +198,120 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 			}
 			textarea.focus();
 		}
+		</script>
+		<script>
+		// Template impression dibangun dari data pemeriksaan (testData) dan dikelompokkan: Normal / Perlu perhatian.
+		(function () {
+			const freqs = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
+			const earNames = { right: 'kanan', left: 'kiri' };
+			// Batas sama dengan classify_hearing_level di model
+			const levels = [
+				[25, 'normal', 0],
+				[40, 'ringan', 1],
+				[55, 'sedang', 2],
+				[70, 'sedang-berat', 3],
+				[90, 'berat', 4],
+				[Infinity, 'sangat berat', 5]
+			];
+
+			function average(ear, type) {
+				const vals = freqs
+					.map(f => parseFloat(testData[ear + '_' + type + '_' + f]))
+					.filter(v => !isNaN(v));
+				return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+			}
+
+			function level(avg) {
+				return levels.find(l => avg <= l[0]);
+			}
+
+			function analyze(ear) {
+				const ac = average(ear, 'ac');
+				if (ac === null) return null;
+				const bc = average(ear, 'bc');
+				const acLevel = level(ac);
+				const result = { ear, ac, bc, normal: acLevel[2] === 0, label: acLevel[1], type: '' };
+				if (!result.normal) {
+					if (bc === null) {
+						result.type = 'gangguan pendengaran';
+					} else {
+						const bcAbnormal = level(bc)[2] > 0;
+						const gap = ac - bc;
+						if (!bcAbnormal) result.type = 'tuli konduktif';
+						else if (gap >= 15) result.type = 'tuli campuran';
+						else result.type = 'tuli sensorineural';
+					}
+				}
+				return result;
+			}
+
+			function describe(r) {
+				const base = 'Telinga ' + earNames[r.ear];
+				const acText = 'rata-rata AC ' + r.ac.toFixed(1) + ' dB';
+				if (r.normal) return base + ': pendengaran dalam batas normal (' + acText + ').';
+				const bcText = r.bc !== null ? ', BC ' + r.bc.toFixed(1) + ' dB' : '';
+				return base + ': ' + r.type + ' derajat ' + r.label + ' (' + acText + bcText + ').';
+			}
+
+			function addGroup(container, title, items, btnClass) {
+				if (!items.length) return;
+				const group = document.createElement('div');
+				group.className = 'mb-2';
+				const heading = document.createElement('div');
+				heading.className = 'fw-semibold small mb-1';
+				heading.textContent = title;
+				group.appendChild(heading);
+				const wrap = document.createElement('div');
+				wrap.className = 'd-flex gap-1 flex-wrap';
+				items.forEach(item => {
+					const btn = document.createElement('button');
+					btn.type = 'button';
+					btn.className = 'btn btn-sm ' + btnClass;
+					btn.textContent = item.label;
+					btn.title = item.text;
+					btn.addEventListener('click', () => insertDoctorImpression(item.text));
+					wrap.appendChild(btn);
+				});
+				group.appendChild(wrap);
+				container.appendChild(group);
+			}
+
+			function buildTemplates() {
+				const container = document.getElementById('impression-templates');
+				if (!container) return;
+				const results = ['right', 'left'].map(analyze).filter(Boolean);
+				if (!results.length) {
+					container.innerHTML = '<span class="text-body-secondary small">Data audiometri belum lengkap untuk membuat template.</span>';
+					return;
+				}
+
+				const normals = results.filter(r => r.normal);
+				const abnormals = results.filter(r => !r.normal);
+				const normalItems = [];
+				const abnormalItems = [];
+
+				if (normals.length === 2) {
+					normalItems.push({ label: 'Normal bilateral', text: 'Pendengaran dalam batas normal bilateral.' });
+				} else {
+					normals.forEach(r => normalItems.push({ label: 'Normal telinga ' + earNames[r.ear], text: describe(r) }));
+				}
+
+				abnormals.forEach(r => abnormalItems.push({
+					label: 'Telinga ' + earNames[r.ear] + ': ' + r.type + ' ' + r.label,
+					text: describe(r)
+				}));
+				if (abnormals.length === 2) {
+					abnormalItems.push({ label: 'Ringkasan bilateral', text: abnormals.map(describe).join(' ') });
+				} else if (abnormals.length === 1 && normals.length === 1) {
+					abnormalItems.push({ label: 'Ringkasan kedua telinga', text: results.map(describe).join(' ') });
+				}
+
+				addGroup(container, 'Normal', normalItems, 'btn-outline-success');
+				addGroup(container, 'Gangguan pendengaran', abnormalItems, 'btn-outline-warning');
+			}
+
+			document.addEventListener('DOMContentLoaded', buildTemplates);
+		})();
 		</script>
 	<?php endif; ?>
 
@@ -360,6 +472,29 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 		svg.appendChild(gridGroup);
 	}
 
+	// Penanda BC: kotak biru dengan segitiga putih (sama seperti hasil cetak)
+	function createBcMarker(x, y, ear) {
+		const ns = 'http://www.w3.org/2000/svg';
+		const g = document.createElementNS(ns, 'g');
+		g.setAttribute('class', 'arrow-symbol');
+		const box = document.createElementNS(ns, 'rect');
+		box.setAttribute('x', x - 7);
+		box.setAttribute('y', y - 7);
+		box.setAttribute('width', 14);
+		box.setAttribute('height', 14);
+		box.setAttribute('rx', 2.5);
+		box.setAttribute('fill', '#1976d2');
+		const tri = document.createElementNS(ns, 'polygon');
+		const pts = ear === 'right'
+			? [x - 4, y, x + 3, y - 4.5, x + 3, y + 4.5]
+			: [x + 4, y, x - 3, y - 4.5, x - 3, y + 4.5];
+		tri.setAttribute('points', pts.join(' '));
+		tri.setAttribute('fill', '#ffffff');
+		g.appendChild(box);
+		g.appendChild(tri);
+		return g;
+	}
+
 	function updateViewChart(ear, chartId) {
 		const svg = document.getElementById(chartId);
 		if (!svg) return;
@@ -428,14 +563,7 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 				});
 
 				// Create BC point
-				const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-				text.setAttribute('x', x);
-				text.setAttribute('y', y + 5);
-				text.setAttribute('text-anchor', 'middle');
-				text.setAttribute('alignment-baseline', 'middle');
-				text.setAttribute('class', 'arrow-symbol');
-				text.textContent = ear === 'right' ? '◀' : '▶';
-				svg.appendChild(text);
+				svg.appendChild(createBcMarker(x, y, ear));
 			}
 		});
 

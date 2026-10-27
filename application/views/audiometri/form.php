@@ -204,11 +204,11 @@
 						<span>AC Left</span>
 					</div>
 					<div class="legend-item">
-						<div class="text-danger">◀</div>
+						<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="3.5,7 10.5,2.5 10.5,11.5" fill="#fff"/></svg>
 						<span>BC Right</span>
 					</div>
 					<div class="legend-item">
-						<div class="text-danger">▶</div>
+						<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><rect width="14" height="14" rx="2.5" fill="#1976d2"/><polygon points="10.5,7 3.5,2.5 3.5,11.5" fill="#fff"/></svg>
 						<span>BC Left</span>
 					</div>
 				</div>
@@ -450,6 +450,29 @@
 		// updateImpressionAjax();
 	}
 
+	// Penanda BC: kotak biru dengan segitiga putih (sama seperti hasil cetak)
+	function createBcMarker(x, y, ear) {
+		const ns = 'http://www.w3.org/2000/svg';
+		const g = document.createElementNS(ns, 'g');
+		g.setAttribute('class', 'arrow-symbol');
+		const box = document.createElementNS(ns, 'rect');
+		box.setAttribute('x', x - 7);
+		box.setAttribute('y', y - 7);
+		box.setAttribute('width', 14);
+		box.setAttribute('height', 14);
+		box.setAttribute('rx', 2.5);
+		box.setAttribute('fill', '#1976d2');
+		const tri = document.createElementNS(ns, 'polygon');
+		const pts = ear === 'right'
+			? [x - 4, y, x + 3, y - 4.5, x + 3, y + 4.5]
+			: [x + 4, y, x - 3, y - 4.5, x - 3, y + 4.5];
+		tri.setAttribute('points', pts.join(' '));
+		tri.setAttribute('fill', '#ffffff');
+		g.appendChild(box);
+		g.appendChild(tri);
+		return g;
+	}
+
 	function updateChart(ear, chartId) {
 		const svg = document.getElementById(chartId);
 		if (!svg) return;
@@ -484,14 +507,7 @@
 				});
 
 				// Create BC point
-				const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-				text.setAttribute('x', x);
-				text.setAttribute('y', y + 5);
-				text.setAttribute('text-anchor', 'middle');
-				text.setAttribute('alignment-baseline', 'middle');
-				text.setAttribute('class', 'arrow-symbol');
-				text.textContent = ear === 'right' ? '◀' : '▶';
-				svg.appendChild(text);
+				svg.appendChild(createBcMarker(x, y, ear));
 			}
 		});
 

@@ -18,14 +18,14 @@ foreach ($tests as $t) {
 			<p>Tinjau grafik audiogram dan verifikasi kesimpulan medis (impression) untuk pasien hari ini.</p>
 		</div>
 		<div class="d-flex align-items-center gap-2 flex-wrap">
-			<span class="badge bg-primary fs-6 px-3 py-2">
+			<span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle fw-semibold px-3 py-2">
 				<i class="bi bi-people me-1" aria-hidden="true"></i> <?= html_escape(number_format(count($tests))) ?> Pasien
 			</span>
-			<span class="badge bg-success fs-6 px-3 py-2">
+			<span class="badge bg-success-subtle text-success-emphasis border border-success-subtle fw-semibold px-3 py-2">
 				<i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i> <?= html_escape(number_format($reviewed_count)) ?> Selesai
 			</span>
 			<?php if ($pending_count > 0): ?>
-				<span class="badge bg-warning text-dark fs-6 px-3 py-2">
+				<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-semibold px-3 py-2">
 					<i class="bi bi-clock me-1" aria-hidden="true"></i> <?= html_escape(number_format($pending_count)) ?> Menunggu
 				</span>
 			<?php endif; ?>
@@ -72,7 +72,7 @@ foreach ($tests as $t) {
 							foreach ($tests as $test):
 								$is_reviewed = !empty($test['impression']);
 							?>
-								<tr class="<?= !$is_reviewed ? 'table-warning' : '' ?>">
+								<tr class="<?= !$is_reviewed ? 'row-pending' : '' ?>">
 									<td class="text-body-secondary fw-bold"><?= html_escape($no++) ?></td>
 									<td>
 										<div class="d-flex align-items-center gap-2">
@@ -84,7 +84,7 @@ foreach ($tests as $t) {
 										</div>
 									</td>
 									<td>
-										<span class="badge text-bg-light border font-monospace"><?= html_escape($test['no_rm']) ?></span>
+										<span class="font-monospace small text-body-secondary"><?= html_escape($test['no_rm']) ?></span>
 									</td>
 									<td>
 										<div class="fw-semibold"><?= html_escape($test['perusahaan']) ?></div>
@@ -95,14 +95,14 @@ foreach ($tests as $t) {
 									</td>
 									<td>
 										<?php if ($is_reviewed): ?>
-											<span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Sudah Direview</span>
+											<span class="badge bg-success-subtle text-success-emphasis fw-semibold"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>Sudah Direview</span>
 										<?php else: ?>
-											<span class="badge bg-warning text-dark"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu Review</span>
+											<span class="badge bg-warning-subtle text-warning-emphasis fw-semibold"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu Review</span>
 										<?php endif; ?>
 									</td>
 									<td class="text-end text-nowrap">
 										<a href="<?= html_escape(base_url('review_dokter/' . $test['id'])) ?>"
-											class="btn btn-sm <?= $is_reviewed ? 'btn-outline-primary' : 'btn-primary' ?>"
+											class="btn btn-sm <?= $is_reviewed ? 'btn-outline-secondary' : 'btn-outline-primary' ?>"
 											title="Buka Lembar Review">
 											<i class="bi bi-clipboard2-pulse me-1" aria-hidden="true"></i> Review
 										</a>
