@@ -1133,8 +1133,8 @@ class Audiometri extends CI_Controller
 				return;
 			}
 
-			// Update test data with impression only
-			$result = $this->Audiometri_model->update_test($test_id, ['impression' => $impression]);
+			// Hanya kolom impression yang diubah
+			$result = $this->Audiometri_model->update_impression_only((int) $test_id, $impression);
 			$this->_json_response($result);
 		} catch (Exception $e) {
 			log_message('error', 'Update impression error: ' . $e->getMessage());
@@ -1145,6 +1145,50 @@ class Audiometri extends CI_Controller
 		}
 	}
 
+	/**
+	 * Setujui massal pasien yang jelas normal (AJAX POST).
+	 * Server menghitung ulang kelayakan setiap ID; teks impression tetap dari server.
+	 */
+	public function bulk_approve_normal()
+	{
+		try {
+			if ($this->input->method(TRUE) !== 'POST' || !$this->input->is_ajax_request()) {
+				show_404();
+				return;
+			}
+
+			$ids = $this->input->post('ids');
+			if (!is_array($ids) || empty($ids)) {
+				$this->_json_response(['status' => false, 'message' => 'Tidak ada pasien yang dipilih']);
+				return;
+			}
+
+			$clean = [];
+			foreach ($ids as $id) {
+				if (is_string($id) && ctype_digit($id) && (int) $id > 0) {
+					$clean[] = (int) $id;
+				}
+			}
+			if (empty($clean)) {
+				$this->_json_response(['status' => false, 'message' => 'ID tidak valid']);
+				return;
+			}
+
+			$result = $this->Audiometri_model->bulk_approve_normal($clean);
+			$approved = count($result['approved']);
+			$skipped = count($result['skipped']);
+
+			$this->_json_response([
+				'status'   => $approved > 0,
+				'message'  => $approved . ' pasien disetujui sebagai normal' . ($skipped ? ', ' . $skipped . ' dilewati' : ''),
+				'approved' => $result['approved'],
+				'skipped'  => $result['skipped'],
+			]);
+		} catch (Exception $e) {
+			log_message('error', 'Bulk approve error: ' . $e->getMessage());
+			$this->_json_response(['status' => false, 'message' => 'Terjadi kesalahan sistem']);
+		}
+	}
 	/**
 	 * Get patient data for modal view
 	 */
@@ -1194,10 +1238,10 @@ class Audiometri extends CI_Controller
 		// Handle POST request
 		if ($this->input->method(TRUE) == 'POST') {
 			try {
-				// Get impression from POST
-				$impression = $this->input->post('impression');
+				// Ambil impression dari POST (hanya string, dibersihkan)
+				$impression = $this->_clean_text($this->input->post('impression'), 5000);
 
-				if (empty($impression)) {
+				if ($impression === '') {
 					if ($this->input->is_ajax_request()) {
 						$this->_json_response([
 							'status' => false,
@@ -1210,29 +1254,15 @@ class Audiometri extends CI_Controller
 					return;
 				}
 
-				// Get existing test data
-				$existing_data = $this->Audiometri_model->get_test($id);
-				if (!$existing_data) {
-					if ($this->input->is_ajax_request()) {
-						$this->_json_response([
-							'status' => false,
-							'message' => 'Data tidak ditemukan'
-						]);
-						return;
-					}
-					$this->session->set_flashdata('error', 'Data tidak ditemukan');
-					redirect('review_dokter/' . $id);
-					return;
-				}
-
-				// Update only impression field
-				$update_data = $existing_data;
-				$update_data['impression'] = $impression;
-
-				// Save update
-				$result = $this->Audiometri_model->update_test($id, $update_data);
+				// Hanya kolom impression yang diubah (data pasien/audiogram tidak ditulis ulang)
+				$result = $this->Audiometri_model->update_impression_only((int) $id, $impression);
 
 				if ($this->input->is_ajax_request()) {
+					if (!empty($result['status']) && $this->input->post('next') === '1') {
+						$next_id = $this->Audiometri_model->get_next_pending_id((int) $id);
+						$result['next_url'] = $next_id ? base_url('review_dokter/' . $next_id) : base_url('doctor_view');
+						$result['has_next'] = (bool) $next_id;
+					}
 					$this->_json_response($result);
 					return;
 				}

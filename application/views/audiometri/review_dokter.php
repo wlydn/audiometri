@@ -215,15 +215,18 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 		<a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-outline-secondary">
 			<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali ke Daftar
 		</a>
-		<button type="button" class="btn btn-success" onclick="showSimpanModal()">
+		<button type="button" class="btn btn-success" onclick="showSimpanModal(false)">
 			<i class="bi bi-floppy me-1" aria-hidden="true"></i> Simpan Impression
+		</button>
+		<button type="button" class="btn btn-primary" onclick="showSimpanModal(true)">
+			<i class="bi bi-skip-forward-fill me-1" aria-hidden="true"></i> Simpan &amp; Pasien Berikutnya
 		</button>
 	</div>
 	<?= form_close() ?>
 </div>
 
 <script>
-	function showSimpanModal() {
+	function showSimpanModal(goNext) {
 		Swal.fire({
 			title: 'Update Data Audiometri',
 			text: 'Apakah Anda yakin ingin mengupdate data audiometri ini?',
@@ -236,12 +239,12 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 			reverseButtons: true
 		}).then((result) => {
 			if (result.isConfirmed) {
-				submitFormWithLoading();
+				submitFormWithLoading(goNext === true);
 			}
 		});
 	}
 
-	function submitFormWithLoading() {
+	function submitFormWithLoading(goNext) {
 		Swal.fire({
 			title: 'Mengupdate Data...',
 			text: 'Mohon tunggu sebentar',
@@ -255,6 +258,9 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 
 		const form = document.getElementById('audiometri-review');
 		const formData = new FormData(form);
+		if (goNext) {
+			formData.set('next', '1');
+		}
 
 		fetch(form.action, {
 			method: 'POST',
@@ -275,8 +281,9 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 					timerProgressBar: true,
 					showConfirmButton: false
 				}).then(() => {
-					// After 3 seconds, redirect to doctor_view
-					window.location.href = <?= json_encode(base_url('doctor_view'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+					// Pindah ke pasien berikutnya bila diminta, selain itu kembali ke daftar
+					const fallback = <?= json_encode(base_url('doctor_view'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+					window.location.href = (goNext && data.next_url) ? data.next_url : fallback;
 				});
 			} else {
 				Swal.fire({

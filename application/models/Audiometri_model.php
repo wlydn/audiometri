@@ -457,6 +457,163 @@ class Audiometri_model extends CI_Model {
     }
 
     /**
+     * Kalimat impression standar untuk hasil normal (sama dengan template di UI).
+     */
+    const NORMAL_IMPRESSION = 'Ambang dengar kedua telinga dalam batas normal.';
+
+    /**
+     * Rata-rata AC satu telinga dari nilai yang terukur; null bila tidak ada.
+     */
+    public function get_ac_average($row, $ear) {
+        $values = $this->get_hearing_values($row, $ear, 'ac');
+        return empty($values) ? null : array_sum($values) / count($values);
+    }
+
+    /**
+     * Hasil jelas normal: kedua telinga punya >= 4 nilai AC, rata-rata < 25 dB,
+     * dan tidak ada frekuensi di atas 30 dB. Dipakai untuk persetujuan massal;
+     * kasus perbatasan sengaja dikeluarkan agar dokter menilainya satu per satu.
+     */
+    public function is_clearly_normal($row) {
+        foreach (['right', 'left'] as $ear) {
+            $values = $this->get_hearing_values($row, $ear, 'ac');
+            if (count($values) < 4) {
+                return false;
+            }
+            if ((array_sum($values) / count($values)) >= 25) {
+                return false;
+            }
+            if (max($values) > 30) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Hanya mengubah kolom impression (data pasien dan audiogram tidak disentuh,
+     * sehingga tidak menimpa perubahan paralel pada kolom lain).
+     * Bila $only_if_empty true, hanya menulis saat impression masih kosong.
+     */
+    public function update_impression_only($id, $impression, $only_if_empty = false) {
+        try {
+            if (!is_numeric($id) || $id <= 0) {
+                return ['status' => false, 'message' => 'ID tidak valid'];
+            }
+            if (!is_string($impression) || trim($impression) === '') {
+                return ['status' => false, 'message' => 'Impression tidak boleh kosong'];
+            }
+            if (!$this->get_test($id)) {
+                return ['status' => false, 'message' => 'Data tidak ditemukan'];
+            }
+
+            $this->db->where('id', (int) $id);
+            if ($only_if_empty) {
+                $this->db->group_start();
+                $this->db->where('impression IS NULL', null, false);
+                $this->db->or_where('impression', '');
+                $this->db->group_end();
+            }
+
+            $ok = $this->db->update($this->table, [
+                'impression' => trim($impression),
+                'updated_at' => date('Y-m-d H:i:s'),
+            ]);
+
+            if (!$ok) {
+                $error = $this->db->error();
+                log_message('error', 'Update impression error: ' . $error['message']);
+                return ['status' => false, 'message' => 'Gagal menyimpan impression'];
+            }
+
+            return [
+                'status'  => true,
+                'message' => 'Impression berhasil disimpan',
+                'changed' => $this->db->affected_rows() > 0,
+            ];
+        } catch (Exception $e) {
+            log_message('error', 'Update impression only error: ' . $e->getMessage());
+            return ['status' => false, 'message' => 'Terjadi kesalahan sistem'];
+        }
+    }
+
+    /**
+     * Setujui sekaligus pasien yang jelas normal. Server menghitung ulang
+     * kelayakan tiap ID dan hanya menulis bila impression masih kosong;
+     * klien tidak dapat memaksa teks atau melewati kriteria.
+     */
+    public function bulk_approve_normal(array $ids) {
+        $clean = [];
+        foreach ($ids as $id) {
+            $id = (int) $id;
+            if ($id > 0) {
+                $clean[$id] = $id;
+            }
+        }
+        $clean = array_slice(array_values($clean), 0, 200);
+
+        $result = ['approved' => [], 'skipped' => []];
+        foreach ($clean as $id) {
+            $row = $this->get_test($id);
+            if (!$row) {
+                $result['skipped'][$id] = 'tidak ditemukan';
+                continue;
+            }
+            if (trim((string) ($row['impression'] ?? '')) !== '') {
+                $result['skipped'][$id] = 'sudah direview';
+                continue;
+            }
+            if (!$this->is_clearly_normal($row)) {
+                $result['skipped'][$id] = 'tidak memenuhi kriteria normal';
+                continue;
+            }
+
+            $saved = $this->update_impression_only($id, self::NORMAL_IMPRESSION, true);
+            if (!empty($saved['status']) && !empty($saved['changed'])) {
+                $result['approved'][] = $id;
+            } else {
+                $result['skipped'][$id] = 'gagal disimpan atau sudah diubah pihak lain';
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * ID pasien berikutnya yang belum direview pada tanggal tes yang sama
+     * (urutan sama dengan panel dokter). Null bila sudah habis.
+     */
+    public function get_next_pending_id($id) {
+        $current = $this->get_test($id);
+        if (!$current) {
+            return null;
+        }
+
+        $date = substr((string) $current['tanggal_tes'], 0, 10);
+        $rows = $this->get_tests(0, 0, ['tanggal_dari' => $date, 'tanggal_sampai' => $date]);
+
+        $seen = false;
+        $first = null;
+        $after = null;
+        foreach ($rows as $row) {
+            if ((int) $row['id'] === (int) $id) {
+                $seen = true;
+                continue;
+            }
+            if (trim((string) ($row['impression'] ?? '')) !== '') {
+                continue;
+            }
+            if ($first === null) {
+                $first = (int) $row['id'];
+            }
+            if ($seen && $after === null) {
+                $after = (int) $row['id'];
+            }
+        }
+        return $after !== null ? $after : $first;
+    }
+
+
+    /**
      * Mendapatkan statistik dashboard dengan error handling
      */
     public function get_dashboard_stats() {

@@ -63,6 +63,7 @@ $route['translate_uri_dashes'] = FALSE;
 $route['dashboard'] = 'audiometri/index';
 $route['doctor_view'] = 'audiometri/doctor_view';
 $route['review_dokter/(:num)'] = 'audiometri/review_dokter/$1';
+$route['bulk_approve_normal'] = 'audiometri/bulk_approve_normal';
 $route['create'] = 'audiometri/create';
 $route['edit/(:num)'] = 'audiometri/edit/$1';
 $route['view/(:num)'] = 'audiometri/view/$1';
@@ -84,6 +85,7 @@ $route['audiometri/dashboard'] = 'audiometri/index';
 // Doctor view and review routes
 $route['audiometri/doctor_view'] = 'audiometri/doctor_view';
 $route['audiometri/review_dokter/(:num)'] = 'audiometri/review_dokter/$1';
+$route['audiometri/bulk_approve_normal'] = 'audiometri/bulk_approve_normal';
 
 // CRUD routes
 $route['audiometri/create'] = 'audiometri/create';
