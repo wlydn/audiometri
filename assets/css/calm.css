@@ -222,3 +222,73 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Patient summary card (review_dokter.php) */
+.patient-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    padding-bottom: 1.1rem;
+    margin-bottom: 1.1rem;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+.patient-dates {
+    display: flex;
+    gap: 0;
+    text-align: center;
+    background: var(--clinic-surface-soft);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius-lg);
+}
+.patient-dates > div {
+    padding: 0.6rem 1.25rem;
+}
+.patient-dates > div + div {
+    border-left: 1px solid var(--bs-border-color);
+}
+.patient-facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+.patient-fact {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+.patient-fact-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    font-size: 1.1rem;
+    color: var(--bs-primary);
+    background: var(--bs-primary-bg-subtle);
+    border-radius: 12px;
+}
+.patient-fact-body {
+    min-width: 0;
+}
+.patient-fact dd {
+    overflow-wrap: anywhere;
+}
+@media (max-width: 1199.98px) {
+    .patient-facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 575.98px) {
+    .patient-facts {
+        grid-template-columns: 1fr;
+    }
+    .patient-dates {
+        width: 100%;
+    }
+    .patient-dates > div {
+        flex: 1;
+    }
+}

@@ -75,40 +75,54 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 	<?= form_open(current_url(), ['id' => 'audiometri-review']) ?>
 
 	<!-- Identitas Pasien (read-only) -->
-	<div class="card mb-4">
-		<div class="card-header">
-			<h2 class="h6 card-title mb-0"><i class="bi bi-person-vcard text-primary me-2" aria-hidden="true"></i>Identitas Pasien</h2>
-		</div>
+	<?php
+	$rv_name = trim((string) ($test_data['nama'] ?? ''));
+	$rv_reviewed = trim((string) ($test_data['impression'] ?? '')) !== '';
+	$rv_facts = [
+		['bi-gender-ambiguous', 'Jenis Kelamin', ($test_data['jenis_kelamin'] ?? '') !== '' ? $test_data['jenis_kelamin'] : '-'],
+		['bi-person', 'Umur', ($test_data['umur'] ?? '') !== '' ? $test_data['umur'] . ' Tahun' : '-'],
+		['bi-building', 'Perusahaan', ($test_data['perusahaan'] ?? '') !== '' ? $test_data['perusahaan'] : '-'],
+		['bi-briefcase', 'Jabatan', ($test_data['jabatan'] ?? '') !== '' ? $test_data['jabatan'] : '-'],
+	];
+	?>
+	<div class="card mb-4 patient-card">
 		<div class="card-body">
-			<dl class="row g-3 mb-0">
-				<div class="col-md-6 col-xl-4">
-					<dt class="stat-label">Perusahaan</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['perusahaan'] ?? 'N/A') ?></dd>
+			<div class="patient-head">
+				<div class="d-flex align-items-center gap-3">
+					<span class="avatar avatar-lg avatar-gradient" aria-hidden="true"><?= html_escape(strtoupper(substr($rv_name !== '' ? $rv_name : 'P', 0, 1))) ?></span>
+					<div>
+						<h2 class="h4 fw-bold mb-1"><?= html_escape($rv_name !== '' ? $rv_name : 'Tanpa nama') ?></h2>
+						<div class="d-flex align-items-center gap-2 flex-wrap">
+							<span class="badge text-bg-light border font-monospace">RM: <?= html_escape($test_data['no_rm'] ?? '-') ?></span>
+							<?php if ($rv_reviewed): ?>
+								<span class="badge bg-success"><i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i>Sudah Direview</span>
+							<?php else: ?>
+								<span class="badge bg-warning"><i class="bi bi-hourglass-split me-1" aria-hidden="true"></i>Menunggu Review</span>
+							<?php endif; ?>
+						</div>
+					</div>
 				</div>
-				<div class="col-md-6 col-xl-4">
-					<dt class="stat-label">Jabatan</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['jabatan'] ?? 'N/A') ?></dd>
+				<div class="patient-dates">
+					<div>
+						<small class="stat-label d-block">Tanggal Tes</small>
+						<strong><?= html_escape(!empty($test_data['tanggal_tes']) ? date('d M Y', strtotime($test_data['tanggal_tes'])) : '-') ?></strong>
+					</div>
+					<div>
+						<small class="stat-label d-block">Terakhir Disimpan</small>
+						<strong><?= html_escape(!empty($test_data['updated_at']) ? date('d/m/Y H:i', strtotime($test_data['updated_at'])) : '-') ?></strong>
+					</div>
 				</div>
-				<div class="col-md-6 col-xl-4">
-					<dt class="stat-label">Nama</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['nama'] ?? 'N/A') ?></dd>
-				</div>
-				<div class="col-md-6 col-xl-3">
-					<dt class="stat-label">Umur</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['umur'] ?? 'N/A') ?> Tahun</dd>
-				</div>
-				<div class="col-md-6 col-xl-3">
-					<dt class="stat-label">Tanggal Tes</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape(date('d F Y', strtotime($test_data['tanggal_tes']))) ?></dd>
-				</div>
-				<div class="col-md-6 col-xl-3">
-					<dt class="stat-label">Jenis Kelamin</dt>
-					<dd class="mb-0 fw-semibold"><?= html_escape($test_data['jenis_kelamin'] ?? 'N/A') ?></dd>
-				</div>
-				<div class="col-md-6 col-xl-3">
-					<dt class="stat-label">No RM</dt>
-					<dd class="mb-0 fw-semibold font-monospace"><?= html_escape($test_data['no_rm'] ?? 'N/A') ?></dd>
-				</div>
+			</div>
+			<dl class="patient-facts mb-0">
+				<?php foreach ($rv_facts as $fact): ?>
+					<div class="patient-fact">
+						<span class="patient-fact-icon" aria-hidden="true"><i class="bi <?= html_escape($fact[0]) ?>"></i></span>
+						<div class="patient-fact-body">
+							<dt class="stat-label"><?= html_escape($fact[1]) ?></dt>
+							<dd class="mb-0 fw-semibold"><?= html_escape($fact[2]) ?></dd>
+						</div>
+					</div>
+				<?php endforeach; ?>
 			</dl>
 		</div>
 	</div>
