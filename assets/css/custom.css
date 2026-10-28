@@ -127,6 +127,46 @@ body.workspace {
     font-weight: 600;
 }
 
+/* ---------- Badge contrast ----------
+   Flatly renders .text-dark as grey (#7b8a8b), which is ~1.6:1 on yellow, and
+   white text on its green/blue/red is only 2.4-3.8:1. Force readable pairs
+   (WCAG AA 4.5:1 or better) for every solid badge in the app. */
+.badge.bg-warning,
+.badge.text-bg-warning {
+    background-color: #f5b041 !important;
+    color: #2b1a00 !important;
+}
+.badge.bg-success,
+.badge.text-bg-success {
+    background-color: #0f7a64 !important;
+    color: #ffffff !important;
+}
+.badge.bg-info,
+.badge.text-bg-info {
+    background-color: #1f6fa8 !important;
+    color: #ffffff !important;
+}
+.badge.bg-danger,
+.badge.text-bg-danger {
+    background-color: #c0392b !important;
+    color: #ffffff !important;
+}
+.badge.bg-secondary,
+.badge.text-bg-secondary {
+    background-color: #5f6c6d !important;
+    color: #ffffff !important;
+}
+.badge.text-bg-light {
+    color: #212529 !important;
+}
+
+/* Subtle badges: always use the dark emphasis colour and keep it solid. */
+.badge.bg-warning-subtle { color: #4a2f00 !important; }
+.badge.bg-success-subtle { color: #083d33 !important; }
+.badge.bg-primary-subtle { color: #0d2b25 !important; }
+.badge.bg-info-subtle    { color: #11334a !important; }
+.badge.bg-danger-subtle  { color: #4d1812 !important; }
+
 .pagination {
     --bs-pagination-color: #1f6b5c;
     --bs-pagination-hover-color: #185548;
