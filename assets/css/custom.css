@@ -661,19 +661,139 @@ body.workspace {
 }
 
 /* ---------- Pratinjau cetak (modal) ---------- */
+/* Tampilan ala penampil PDF: toolbar gelap, latar abu-abu gelap, halaman putih di tengah.
+   Warnanya tetap gelap di tema terang maupun gelap, sama seperti penampil PDF browser. */
+.print-preview-content {
+    overflow: hidden;
+    background: #525659;
+    border: 0;
+    border-radius: 0.5rem;
+    color: #f1f3f4;
+}
+.print-preview-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: #323639;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    position: relative;
+    z-index: 1;
+}
+.print-preview-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.print-preview-title .bi {
+    font-size: 1.15rem;
+}
+.print-preview-zoom,
+.print-preview-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.print-preview-zoom {
+    padding: 0 0.5rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+.pp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.6rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: #f1f3f4;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+.pp-btn:hover,
+.pp-btn:focus-visible {
+    background: rgba(255, 255, 255, 0.14);
+    color: #fff;
+}
+.pp-btn:focus-visible {
+    outline: 2px solid #8ab4f8;
+    outline-offset: 1px;
+}
+.pp-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+    background: transparent;
+}
+.pp-btn .bi {
+    font-size: 1.05rem;
+}
+.pp-zoom-value {
+    min-width: 58px;
+    font-variant-numeric: tabular-nums;
+    background: #202124;
+    border-radius: 0.3rem;
+}
+.pp-btn-primary {
+    background: #1f6b5c;
+    padding: 0 0.9rem;
+}
+.pp-btn-primary:hover,
+.pp-btn-primary:focus-visible {
+    background: #26806e;
+}
+.pp-btn-primary:disabled {
+    background: #1f6b5c;
+}
 .print-preview-body {
-    background: #6b7573;
-    min-height: 40vh;
+    position: relative;
+    height: 80vh;
+    background: #525659;
 }
 .print-preview-frame {
     display: block;
     width: 100%;
-    height: 72vh;
+    height: 100%;
     border: 0;
-    background: #fff;
+    background: #525659;
 }
-.print-preview-body .spinner-border {
+.print-preview-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+}
+.print-preview-loading .spinner-border {
     color: #fff;
+}
+.print-preview-error {
+    position: relative;
+    margin: 1rem;
+}
+@media (max-width: 767.98px) {
+    .print-preview-content {
+        border-radius: 0;
+    }
+    .print-preview-body {
+        height: calc(100vh - 53px);
+    }
+    .print-preview-zoom {
+        border: 0;
+        padding: 0;
+    }
+    .print-preview-title span {
+        display: none;
+    }
 }
 
 /* ---------- Dropdown: Flatly menulis warna keras (navy #2c3e50), samakan dengan palet teal ---------- */

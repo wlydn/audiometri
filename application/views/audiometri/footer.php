@@ -58,29 +58,39 @@
 
     <!-- Pratinjau cetak: tampil di halaman yang sama, tanpa tab/jendela baru -->
     <div class="modal fade" id="printPreviewModal" tabindex="-1" aria-labelledby="printPreviewModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="printPreviewModalLabel"><i class="bi bi-printer me-2" aria-hidden="true"></i>Pratinjau Cetak</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                </div>
-                <div class="modal-body p-0 print-preview-body">
-                    <div id="printPreviewLoading" class="text-center py-5">
-                        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Memuat...</span></div>
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-fullscreen-md-down">
+            <div class="modal-content print-preview-content">
+                <div class="print-preview-toolbar">
+                    <div class="print-preview-title">
+                        <i class="bi bi-printer" aria-hidden="true"></i><span id="printPreviewModalLabel">Pratinjau Cetak</span>
                     </div>
-                    <div id="printPreviewError" class="alert alert-danger m-3 d-none" role="alert"></div>
-                    <iframe id="printPreviewFrame" class="print-preview-frame d-none" title="Pratinjau hasil audiometri" sandbox="allow-same-origin allow-modals"></iframe>
-                </div>
-                <div class="modal-footer justify-content-between flex-wrap gap-2">
-                    <a id="printPreviewPdf" href="#" class="btn btn-outline-secondary" target="_blank" rel="noopener" title="Versi sebelumnya: unduh sebagai PDF">
-                        <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF (versi sebelumnya)
-                    </a>
-                    <div class="d-flex gap-2">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-primary" id="printPreviewPrint" disabled>
-                            <i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak
+                    <div class="print-preview-zoom" role="group" aria-label="Zoom tampilan">
+                        <button type="button" class="pp-btn" id="printPreviewZoomOut" aria-label="Perkecil" title="Perkecil" disabled>
+                            <i class="bi bi-dash-lg" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="pp-btn pp-zoom-value" id="printPreviewZoomValue" title="Sesuaikan dengan lebar" aria-label="Sesuaikan dengan lebar" disabled>100%</button>
+                        <button type="button" class="pp-btn" id="printPreviewZoomIn" aria-label="Perbesar" title="Perbesar" disabled>
+                            <i class="bi bi-plus-lg" aria-hidden="true"></i>
                         </button>
                     </div>
+                    <div class="print-preview-actions">
+                        <a id="printPreviewPdf" href="#" class="pp-btn" target="_blank" rel="noopener" title="Unduh PDF (versi sebelumnya)" aria-label="Unduh PDF (versi sebelumnya)">
+                            <i class="bi bi-download" aria-hidden="true"></i><span class="d-none d-lg-inline">PDF versi sebelumnya</span>
+                        </a>
+                        <button type="button" class="pp-btn pp-btn-primary" id="printPreviewPrint" disabled>
+                            <i class="bi bi-printer" aria-hidden="true"></i><span>Cetak</span>
+                        </button>
+                        <button type="button" class="pp-btn" data-bs-dismiss="modal" aria-label="Tutup" title="Tutup">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="print-preview-body">
+                    <div id="printPreviewLoading" class="print-preview-loading">
+                        <div class="spinner-border" role="status"><span class="visually-hidden">Memuat...</span></div>
+                    </div>
+                    <div id="printPreviewError" class="alert alert-danger print-preview-error d-none" role="alert"></div>
+                    <iframe id="printPreviewFrame" class="print-preview-frame d-none" title="Pratinjau hasil audiometri" sandbox="allow-same-origin allow-modals"></iframe>
                 </div>
             </div>
         </div>
@@ -110,6 +120,37 @@
             var errorBox = document.getElementById('printPreviewError');
             var printBtn = document.getElementById('printPreviewPrint');
             var pdfLink = document.getElementById('printPreviewPdf');
+            var zoomIn = document.getElementById('printPreviewZoomIn');
+            var zoomOut = document.getElementById('printPreviewZoomOut');
+            var zoomValue = document.getElementById('printPreviewZoomValue');
+            var ZOOM_STEP = 0.1;
+            var ZOOM_MIN = 0.4;
+            var ZOOM_MAX = 2;
+            var zoom = 1;
+
+            // Skala agar halaman A4 (210 mm = sekitar 794 px) pas dengan lebar jendela, maksimal 100%
+            var PAGE_WIDTH = 794;
+            function fitScale() {
+                return Math.max(ZOOM_MIN, Math.min(1, (frame.clientWidth - 32) / PAGE_WIDTH));
+            }
+
+            function applyZoom(value) {
+                zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, value));
+                var doc = frame.contentDocument;
+                if (doc && doc.documentElement) {
+                    doc.documentElement.style.zoom = zoom;
+                }
+                zoomValue.textContent = Math.round(zoom * 100) + '%';
+                zoomOut.disabled = zoom <= ZOOM_MIN + 0.001;
+                zoomIn.disabled = zoom >= ZOOM_MAX - 0.001;
+            }
+
+            function setControls(enabled) {
+                printBtn.disabled = !enabled;
+                zoomValue.disabled = !enabled;
+                zoomOut.disabled = !enabled;
+                zoomIn.disabled = !enabled;
+            }
 
             function reset() {
                 token++;
@@ -118,7 +159,8 @@
                 errorBox.classList.add('d-none');
                 errorBox.textContent = '';
                 loading.classList.remove('d-none');
-                printBtn.disabled = true;
+                setControls(false);
+                zoomValue.textContent = '100%';
             }
 
             function fail(message) {
@@ -158,7 +200,8 @@
                         }
                         loading.classList.add('d-none');
                         frame.classList.remove('d-none');
-                        printBtn.disabled = false;
+                        setControls(true);
+                        applyZoom(fitScale());
                     });
                     frame.srcdoc = html;
                 })
@@ -168,6 +211,10 @@
                     }
                 });
             };
+
+            zoomIn.addEventListener('click', function() { applyZoom(zoom + ZOOM_STEP); });
+            zoomOut.addEventListener('click', function() { applyZoom(zoom - ZOOM_STEP); });
+            zoomValue.addEventListener('click', function() { applyZoom(fitScale()); });
 
             printBtn.addEventListener('click', function() {
                 if (frame.contentWindow) {

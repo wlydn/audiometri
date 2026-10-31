@@ -466,7 +466,7 @@
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				border: 2px solidrgb(3, 100, 197) !important;
+				border: 2px solid rgb(3, 100, 197) !important;
 			}
 
 			.clinic-name {
@@ -546,9 +546,41 @@
 			}
 		}
 	</style>
+	<?php if (!empty($preview)): ?>
+	<style>
+		/* Pratinjau di layar: satu halaman A4 di atas latar abu-abu seperti penampil PDF.
+		   Hanya @media screen, jadi hasil cetak/PDF tidak terpengaruh. */
+		@media screen {
+			html {
+				background: #525659;
+			}
+
+			body.preview {
+				box-sizing: border-box;
+				width: 210mm;
+				min-height: 297mm;
+				margin: 24px auto;
+				padding: 15mm;
+				background: #fff;
+				box-shadow: 0 2px 14px rgba(0, 0, 0, 0.55);
+			}
+
+			/* Legenda dan footer ikut alur dokumen, tidak lagi menimpa grafik */
+			body.preview .legend {
+				position: static;
+				margin: 16px 0 0 auto;
+			}
+
+			body.preview .footer {
+				position: static;
+				margin-top: 24px;
+			}
+		}
+	</style>
+	<?php endif; ?>
 </head>
 
-<body>
+<body<?= !empty($preview) ? ' class="preview"' : '' ?>>
 	<!-- Header -->
 	<div class="header">
 		<!-- Clinic Header -->

@@ -779,6 +779,7 @@ class Audiometri extends CI_Controller
 
 		$data['test_data'] = $test_data;
 		$data['logo_base64'] = $this->get_logo_for_pdf();
+		$data['preview'] = true; // gaya layar ala penampil PDF; hasil cetak tidak berubah
 		$this->load->view('audiometri/pdf_template', $data);
 	}
 
