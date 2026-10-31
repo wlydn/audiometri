@@ -206,23 +206,7 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 		</div>
 	</div>
 
-	<!-- Action Footer Buttons -->
-	<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 pb-4">
-		<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-secondary">
-			<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali ke Daftar
-		</a>
-		<div class="d-flex gap-2 flex-wrap">
-			<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
-				<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data
-			</a>
-			<button type="button" class="btn btn-outline-secondary" onclick="openPrintPreview(<?= html_escape((int) $test_data['id']) ?>)">
-				<i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak Hasil
-			</button>button
-			<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
-				<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Pemeriksaan Baru
-			</a>
-		</div>
-	</div>
+	<div class="pb-4"></div>
 </div>
 
 <!-- Hidden data for JavaScript -->
