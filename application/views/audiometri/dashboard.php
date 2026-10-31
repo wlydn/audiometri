@@ -95,7 +95,7 @@ $month_query = http_build_query(['tanggal_dari' => date('Y-m-01'), 'tanggal_samp
                     <div class="stat-icon bg-info-subtle text-info-emphasis"><i class="bi bi-clipboard2-pulse" aria-hidden="true"></i></div>
                 </div>
                 <div class="card-footer bg-transparent d-flex justify-content-between small text-body-secondary">
-                    <span>Total <?= html_escape(number_format($overview['total'])) ?> tes</span>
+                    <span>Dari <?= html_escape(number_format($overview['total'])) ?> tes</span>
                     <a href="<?= html_escape(base_url('doctor_view')) ?>" class="fw-bold text-decoration-none">Review <i class="bi bi-arrow-right" aria-hidden="true"></i></a>
                 </div>
             </div>

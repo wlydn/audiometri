@@ -579,8 +579,28 @@ class Audiometri_model extends CI_Model {
     }
 
     /**
-     * ID pasien berikutnya yang belum direview pada tanggal tes yang sama
-     * (urutan sama dengan panel dokter). Null bila sudah habis.
+     * Semua tes yang belum direview (impression NULL/kosong/spasi), semua tanggal.
+     * Urutan: tanggal tes terbaru dulu, lalu waktu input terbaru.
+     */
+    public function get_pending_tests() {
+        try {
+            $this->db->select('*');
+            $this->db->from($this->table);
+            $this->db->where("TRIM(COALESCE(impression, '')) = ''", null, false);
+            $this->db->order_by('tanggal_tes', 'DESC');
+            $this->db->order_by('created_at', 'DESC');
+            $result = $this->db->get()->result_array();
+            return $result ?: [];
+        } catch (Exception $e) {
+            log_message('error', 'Get pending tests error: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * ID tes berikutnya yang belum direview, mengikuti urutan panel dokter
+     * (semua tanggal). Bila tidak ada setelah tes ini, kembali ke yang pertama.
+     * Null bila sudah habis.
      */
     public function get_next_pending_id($id) {
         $current = $this->get_test($id);
@@ -588,24 +608,22 @@ class Audiometri_model extends CI_Model {
             return null;
         }
 
-        $date = substr((string) $current['tanggal_tes'], 0, 10);
-        $rows = $this->get_tests(0, 0, ['tanggal_dari' => $date, 'tanggal_sampai' => $date]);
+        $cur_date = substr((string) $current['tanggal_tes'], 0, 10);
+        $cur_created = (string) (isset($current['created_at']) ? $current['created_at'] : '');
 
-        $seen = false;
         $first = null;
         $after = null;
-        foreach ($rows as $row) {
+        foreach ($this->get_pending_tests() as $row) {
             if ((int) $row['id'] === (int) $id) {
-                $seen = true;
-                continue;
-            }
-            if (trim((string) ($row['impression'] ?? '')) !== '') {
                 continue;
             }
             if ($first === null) {
                 $first = (int) $row['id'];
             }
-            if ($seen && $after === null) {
+            $date = substr((string) $row['tanggal_tes'], 0, 10);
+            $created = (string) (isset($row['created_at']) ? $row['created_at'] : '');
+            $is_after = $date < $cur_date || ($date === $cur_date && $created <= $cur_created);
+            if ($is_after && $after === null) {
                 $after = (int) $row['id'];
             }
         }
@@ -962,10 +980,9 @@ class Audiometri_model extends CI_Model {
 
             $overview['total'] = (int) $this->db->count_all($this->table);
 
-            $this->db->group_start();
-            $this->db->where('impression IS NULL', null, false);
-            $this->db->or_where('impression', '');
-            $this->db->group_end();
+            // Semua tanggal, sama dengan cakupan panel doctor_view.
+            // Impression berisi spasi saja dianggap kosong (konsisten dengan trim di PHP).
+            $this->db->where("TRIM(COALESCE(impression, '')) = ''", null, false);
             $overview['pending'] = (int) $this->db->count_all_results($this->table);
 
             $trend_start = key($overview['trend']) . '-01';

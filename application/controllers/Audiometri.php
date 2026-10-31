@@ -493,10 +493,7 @@ class Audiometri extends CI_Controller
 				'tanggal_tes' => $this->input->post('tanggal_tes')
 			];
 
-			// Only include impression field during edit operations
-			if ($id !== null) {
-				$data['impression'] = trim($this->input->post('impression'));
-			}
+			// Impression tidak diubah dari form edit; hanya lewat panel dokter (update_impression_only)
 
 			// Validate and add audiometric values
 			$frequencies = ['250', '500', '1000', '2000', '3000', '4000', '6000'];
@@ -1082,17 +1079,15 @@ class Audiometri extends CI_Controller
 	}
 
 	/**
-	 * Doctor view - shows today's patients for impression editing
+	 * Doctor view - shows all pending (unreviewed) tests for impression editing
 	 */
 	public function doctor_view()
 	{
 		try {
-			$data['title'] = 'Panel Dokter - Data Pasien Hari Ini';
+			$data['title'] = 'Panel Dokter - Menunggu Review';
 
-			// Get today's tests
-			// Get today's tests with date filter
-			$today = date('Y-m-d');
-			$data['tests'] = $this->Audiometri_model->get_tests(null, 0, ['tanggal_dari' => $today, 'tanggal_sampai' => $today]);
+			// Semua tes yang belum direview, tanpa batasan tanggal
+			$data['tests'] = $this->Audiometri_model->get_pending_tests();
 
 			$this->load->view('audiometri/header', $data);
 			$this->load->view('audiometri/doctor_view', $data);

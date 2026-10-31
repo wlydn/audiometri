@@ -229,6 +229,9 @@ $render_review_table = function ($ear, $header_class, $heading) use ($test_data,
 		<a href="<?= html_escape(base_url('doctor_view')) ?>" class="btn btn-outline-secondary">
 			<i class="bi bi-arrow-left me-1" aria-hidden="true"></i> Kembali ke Daftar
 		</a>
+		<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
+			<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data Pasien &amp; Audiogram
+		</a>
 		<button type="button" class="btn btn-success" onclick="showSimpanModal(false)">
 			<i class="bi bi-floppy me-1" aria-hidden="true"></i> Simpan Impression
 		</button>

@@ -19,15 +19,12 @@ foreach ($tests as $t) {
 	<div class="page-heading">
 		<div>
 			<span class="eyebrow"><i class="bi bi-clipboard2-pulse me-1" aria-hidden="true"></i> Panel Dokter</span>
-			<h1>Review Pemeriksaan Hari Ini</h1>
-			<p>Tinjau grafik audiogram dan verifikasi kesimpulan medis (impression) untuk pasien hari ini.</p>
+			<h1>Menunggu Review</h1>
+			<p>Tinjau grafik audiogram dan verifikasi kesimpulan medis (impression) untuk semua pasien yang belum direview.</p>
 		</div>
 		<div class="d-flex align-items-center gap-2 flex-wrap">
 			<span class="badge bg-primary-subtle text-primary-emphasis border border-primary-subtle fw-semibold px-3 py-2">
 				<i class="bi bi-people me-1" aria-hidden="true"></i> <?= html_escape(number_format(count($tests))) ?> Pasien
-			</span>
-			<span class="badge bg-success-subtle text-success-emphasis border border-success-subtle fw-semibold px-3 py-2">
-				<i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i> <?= html_escape(number_format($reviewed_count)) ?> Selesai
 			</span>
 			<?php if ($pending_count > 0): ?>
 				<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle fw-semibold px-3 py-2">
@@ -42,7 +39,7 @@ foreach ($tests as $t) {
 		<i class="bi bi-info-circle-fill fs-4" aria-hidden="true"></i>
 		<div>
 			<strong class="d-block">Informasi Panel Review:</strong>
-			<span>Daftar di bawah menampilkan pasien yang melakukan tes pada hari ini (<strong><?= html_escape(date('d F Y')) ?></strong>). Anda dapat langsung membuka form review untuk melengkapi kesimpulan medis.</span>
+			<span>Daftar di bawah menampilkan semua pasien yang <strong>belum direview</strong>, dari semua tanggal tes. Pasien hilang dari daftar setelah kesimpulan medis disimpan.</span>
 		</div>
 	</div>
 
@@ -50,10 +47,10 @@ foreach ($tests as $t) {
 	<div class="card">
 		<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
 			<h2 class="h6 card-title mb-0">
-				<i class="bi bi-clipboard-check text-primary me-2" aria-hidden="true"></i>Data Pasien Hari Ini &bull; <?= html_escape(date('d/m/Y')) ?>
+				<i class="bi bi-clipboard-check text-primary me-2" aria-hidden="true"></i>Pasien Belum Direview
 			</h2>
 			<div class="text-body-secondary small">
-				<i class="bi bi-calendar3 me-1" aria-hidden="true"></i> <?= html_escape(date('l, d F Y')) ?>
+				<i class="bi bi-calendar3 me-1" aria-hidden="true"></i> Per <?= html_escape(date('d F Y')) ?>
 			</div>
 		</div>
 		<div class="card-body p-0">
@@ -124,6 +121,11 @@ foreach ($tests as $t) {
 										<?php endif; ?>
 									</td>
 									<td class="text-end text-nowrap">
+										<a href="<?= html_escape(base_url('edit/' . $test['id'])) ?>"
+											class="btn btn-sm btn-outline-secondary me-1"
+											title="Edit data pasien dan audiogram">
+											<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit
+										</a>
 										<a href="<?= html_escape(base_url('review_dokter/' . $test['id'])) ?>"
 											class="btn btn-sm <?= $is_reviewed ? 'btn-outline-secondary' : 'btn-outline-primary' ?>"
 											title="Buka Lembar Review">
@@ -138,8 +140,8 @@ foreach ($tests as $t) {
 			<?php else: ?>
 				<div class="text-center py-5 empty-state">
 					<i class="bi bi-calendar-check display-4 text-body-secondary" aria-hidden="true"></i>
-					<h3 class="h5 mt-3">Tidak Ada Pemeriksaan Hari Ini</h3>
-					<p class="text-body-secondary">Belum ada pasien yang menjalani tes audiometri pada <?= html_escape(date('d F Y')) ?>.</p>
+					<h3 class="h5 mt-3">Semua Pemeriksaan Sudah Direview</h3>
+					<p class="text-body-secondary">Tidak ada pasien yang menunggu review.</p>
 					<a href="<?= html_escape(base_url('list_tests')) ?>" class="btn btn-outline-primary mt-2">
 						<i class="bi bi-folder2-open me-1" aria-hidden="true"></i> Lihat Seluruh Riwayat Tes
 					</a>

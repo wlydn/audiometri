@@ -32,47 +32,53 @@
 			</div>
 			<div class="card-body">
 				<div class="row g-3">
-					<div class="col-md-6 col-xl-4">
-						<label for="perusahaan" class="form-label">Perusahaan: <span class="text-danger">*</span></label>
+					<div class="col-md-6">
+						<label for="perusahaan" class="form-label">Perusahaan <span class="text-danger">*</span></label>
 						<input type="text" class="form-control" id="perusahaan" name="perusahaan"
 							value="<?= set_value('perusahaan', $test_data['perusahaan'] ?? '') ?>"
 							placeholder="Masukkan nama perusahaan" required>
 						<?= form_error('perusahaan', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 
-					<div class="col-md-6 col-xl-4">
-						<label for="jabatan" class="form-label">Jabatan: <span class="text-danger">*</span></label>
+					<div class="col-md-6">
+						<label for="jabatan" class="form-label">Jabatan <span class="text-danger">*</span></label>
 						<input type="text" class="form-control" id="jabatan" name="jabatan"
 							value="<?= set_value('jabatan', $test_data['jabatan'] ?? '') ?>"
 							placeholder="Masukkan jabatan" required>
 						<?= form_error('jabatan', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 
-					<div class="col-md-6 col-xl-4">
-						<label for="nama" class="form-label">Nama: <span class="text-danger">*</span></label>
+					<div class="col-md-6">
+						<label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
 						<input type="text" class="form-control" id="nama" name="nama"
 							value="<?= set_value('nama', $test_data['nama'] ?? '') ?>"
 							placeholder="Masukkan nama lengkap" required>
 						<?= form_error('nama', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 
-					<div class="col-md-6 col-xl-3">
-						<label for="umur" class="form-label">Umur: <span class="text-danger">*</span></label>
-						<input type="text" class="form-control" id="umur" name="umur" min="1" max="150"
+					<div class="col-md-6">
+						<label for="no_rm" class="form-label">No RM <span class="text-danger">*</span></label>
+						<div class="input-group">
+							<input type="text" class="form-control" id="no_rm" name="no_rm"
+								value="<?= set_value('no_rm', $test_data['no_rm'] ?? '') ?>"
+								placeholder="Nomor Rekam Medis" required>
+							<button type="button" class="btn btn-outline-primary" onclick="searchByNoRM()">
+								<i class="bi bi-search me-1" aria-hidden="true"></i>Cari Riwayat
+							</button>
+						</div>
+						<?= form_error('no_rm', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					</div>
+
+					<div class="col-md-4">
+						<label for="umur" class="form-label">Umur <span class="text-danger">*</span></label>
+						<input type="text" class="form-control" id="umur" name="umur"
 							value="<?= set_value('umur', $test_data['umur'] ?? '') ?>"
 							placeholder="Masukkan umur" required>
 						<?= form_error('umur', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 
-					<div class="col-md-6 col-xl-3">
-						<label for="tanggal_tes" class="form-label">Tanggal Tes: <span class="text-danger">*</span></label>
-						<input type="date" class="form-control" id="tanggal_tes" name="tanggal_tes"
-							value="<?= set_value('tanggal_tes', $test_data['tanggal_tes'] ?? date('Y-m-d')) ?>" required>
-						<?= form_error('tanggal_tes', '<small class="text-danger d-block mt-1">', '</small>') ?>
-					</div>
-
-					<div class="col-md-6 col-xl-3">
-						<label for="jenis_kelamin" class="form-label">Jenis Kelamin: <span class="text-danger">*</span></label>
+					<div class="col-md-4">
+						<label for="jenis_kelamin" class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
 						<select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
 							<option value="">Pilih Jenis Kelamin</option>
 							<option value="Laki-laki" <?= set_select('jenis_kelamin', 'Laki-laki', ($test_data['jenis_kelamin'] ?? '') === 'Laki-laki') ?>>Laki-laki</option>
@@ -81,17 +87,11 @@
 						<?= form_error('jenis_kelamin', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 
-					<div class="col-md-6 col-xl-3">
-						<label for="no_rm" class="form-label">No RM: <span class="text-danger">*</span></label>
-						<div class="input-group">
-							<input type="text" class="form-control" id="no_rm" name="no_rm"
-								value="<?= set_value('no_rm', $test_data['no_rm'] ?? '') ?>"
-								placeholder="Nomor Rekam Medis" required>
-							<button type="button" class="btn btn-outline-primary" onclick="searchByNoRM()">
-								Cari Riwayat
-							</button>
-						</div>
-						<?= form_error('no_rm', '<small class="text-danger d-block mt-1">', '</small>') ?>
+					<div class="col-md-4">
+						<label for="tanggal_tes" class="form-label">Tanggal Tes <span class="text-danger">*</span></label>
+						<input type="date" class="form-control" id="tanggal_tes" name="tanggal_tes"
+							value="<?= set_value('tanggal_tes', $test_data['tanggal_tes'] ?? date('Y-m-d')) ?>" required>
+						<?= form_error('tanggal_tes', '<small class="text-danger d-block mt-1">', '</small>') ?>
 					</div>
 				</div>
 			</div>
@@ -216,70 +216,10 @@
 		</div>
 
 		<?php if ($action == 'edit'): ?>
-		<!-- Impression -->
-		<div class="card mb-4 impression">
-			<div class="card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
-				<h2 class="h6 card-title mb-0">
-					<i class="bi bi-clipboard2-pulse text-primary me-2" aria-hidden="true"></i>Impression / Kesimpulan Dokter
-				</h2>
-			</div>
-			<div class="card-body border-bottom pb-3">
-				<div class="small text-body-secondary mb-2">Template otomatis dari angka ambang di atas (berubah saat angka diedit, klik untuk menambahkan ke impression):</div>
-				<div id="impression-templates"></div>
-			</div>
-			<div class="card-body">
-				<label for="impression-text" class="visually-hidden">Impression / Kesimpulan Dokter</label>
-				<textarea id="impression-text" name="impression"
-					class="form-control" rows="4"
-					placeholder="Masukkan hasil analisis audiometri, interpretasi, dan rekomendasi..."><?= set_value('impression', $test_data['impression'] ?? '') ?></textarea>
-				<div class="form-text">
-					Interpretasi hasil audiometri, klasifikasi derajat gangguan pendengaran, dan rekomendasi tindak lanjut.
-				</div>
-				<?= form_error('impression', '<small class="text-danger d-block mt-1">', '</small>') ?>
-			</div>
+		<div class="alert alert-info d-flex align-items-start gap-2" role="note">
+			<i class="bi bi-info-circle-fill" aria-hidden="true"></i>
+			<span>Halaman ini hanya untuk data pasien dan audiogram. Impression / kesimpulan diisi dokter melalui <a href="<?= html_escape(base_url('review_dokter/' . $test_data['id'])) ?>" class="alert-link">Panel Dokter</a>.</span>
 		</div>
-		<script src="<?= html_escape(base_url('assets/js/impression-templates.js')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/js/impression-templates.js')) ?>"></script>
-		<script>
-		function insertImpression(text) {
-			const textarea = document.getElementById('impression-text');
-			if (textarea.value.trim() === '') {
-				textarea.value = text;
-			} else {
-				textarea.value += '\n' + text;
-			}
-			textarea.focus();
-		}
-
-		// Ambil nilai langsung dari input, sehingga template ikut berubah saat angka diedit
-		function readAudiometricInputs() {
-			const data = {};
-			['right', 'left'].forEach(function (ear) {
-				['ac', 'bc'].forEach(function (type) {
-					['250', '500', '1000', '2000', '3000', '4000', '6000'].forEach(function (freq) {
-						const input = document.getElementById(ear + '-' + type + '-' + freq);
-						data[ear + '_' + type + '_' + freq] = input ? input.value : '';
-					});
-				});
-			});
-			return data;
-		}
-
-		let impressionTemplates = null;
-		document.addEventListener('DOMContentLoaded', function () {
-			impressionTemplates = ImpressionTemplates.init({
-				container: document.getElementById('impression-templates'),
-				getData: readAudiometricInputs,
-				onInsert: insertImpression
-			});
-			let templateTimer = null;
-			document.addEventListener('input', function (e) {
-				if (e.target.matches('.freq-input-group input[type="number"]')) {
-					clearTimeout(templateTimer);
-					templateTimer = setTimeout(function () { impressionTemplates.refresh(); }, 400);
-				}
-			});
-		});
-		</script>
 		<?php endif; ?>
 
 		<!-- Actions -->
