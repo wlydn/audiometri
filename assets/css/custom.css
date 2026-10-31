@@ -22,7 +22,39 @@
     --topbar-height: 64px;
     --clinic-bg: #f2f6f5;
     --clinic-border: #dbe6e3;
+    --clinic-surface: #fff;
     --clinic-surface-soft: #f6faf9;
+    --clinic-topbar-bg: rgba(255, 255, 255, 0.92);
+}
+
+/* ---------- Dark theme (data-bs-theme="dark") ----------
+   Harus setelah blok terang di atas: :root dan [data-bs-theme] sama-sama
+   berspesifisitas rendah, jadi urutan yang menentukan. */
+[data-bs-theme="dark"] {
+    --bs-primary: #3fb59c;
+    --bs-primary-rgb: 63, 181, 156;
+    --bs-primary-text-emphasis: #8fd8c8;
+    --bs-primary-bg-subtle: #0e2e28;
+    --bs-primary-border-subtle: #1a5a4d;
+    --bs-link-color: #5cc7b0;
+    --bs-link-color-rgb: 92, 199, 176;
+    --bs-link-hover-color: #8fd8c8;
+    --bs-link-hover-color-rgb: 143, 216, 200;
+    --bs-focus-ring-color: rgba(63, 181, 156, 0.35);
+
+    --bs-body-bg: #121917;
+    --bs-body-bg-rgb: 18, 25, 23;
+    --bs-secondary-bg: #1b2623;
+    --bs-secondary-bg-rgb: 27, 38, 35;
+    --bs-tertiary-bg: #17211e;
+    --bs-tertiary-bg-rgb: 23, 33, 30;
+    --bs-border-color: #2a3a36;
+
+    --clinic-bg: #0e1412;
+    --clinic-border: #2a3a36;
+    --clinic-surface: #1b2623;
+    --clinic-surface-soft: #212e2a;
+    --clinic-topbar-bg: rgba(18, 25, 23, 0.9);
 }
 
 /* ---------- Base ---------- */
@@ -50,7 +82,7 @@ body.workspace {
 }
 
 .workspace :is(a, button, input, select, textarea):focus-visible {
-    outline: 3px solid rgba(31, 107, 92, 0.45);
+    outline: 3px solid rgba(var(--bs-primary-rgb), 0.55);
     outline-offset: 2px;
 }
 
@@ -91,8 +123,8 @@ body.workspace {
 
 /* ---------- Cards, tables, badges, pagination, modal ---------- */
 .card {
-    --bs-card-bg: #fff;
-    --bs-card-cap-bg: #fff;
+    --bs-card-bg: var(--clinic-surface);
+    --bs-card-cap-bg: var(--clinic-surface);
     --bs-card-border-color: var(--clinic-border);
     box-shadow: 0 1px 2px rgba(15, 58, 50, 0.06);
 }
@@ -107,7 +139,7 @@ body.workspace {
 
 .table {
     --bs-table-bg: transparent;
-    --bs-table-hover-bg: rgba(31, 107, 92, 0.05);
+    --bs-table-hover-bg: rgba(var(--bs-primary-rgb), 0.07);
 }
 .table thead th {
     font-size: 0.72rem;
@@ -343,7 +375,7 @@ body.workspace {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--clinic-topbar-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--clinic-border);
@@ -384,10 +416,26 @@ body.workspace {
     padding: 0.35rem 0.85rem;
     border: 1px solid var(--clinic-border);
     border-radius: 50rem;
-    background: #fff;
+    background: var(--clinic-surface);
     color: var(--bs-secondary-color);
     font-size: 0.8rem;
     font-weight: 600;
+}
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--clinic-surface);
+}
+.theme-toggle .bi {
+    font-size: 1rem;
+    line-height: 1;
+}
+.dropdown-item.active .bi:first-child {
+    color: inherit;
 }
 
 .app-footer {
@@ -610,5 +658,72 @@ body.workspace {
     .stat-card:hover {
         transform: none;
     }
+}
+
+/* ---------- Dropdown: Flatly menulis warna keras (navy #2c3e50), samakan dengan palet teal ---------- */
+.dropdown-menu {
+    --bs-dropdown-border-color: var(--clinic-border);
+    --bs-dropdown-divider-bg: var(--clinic-border);
+    --bs-dropdown-bg: var(--clinic-surface);
+    --bs-dropdown-link-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-color: var(--bs-body-color);
+    --bs-dropdown-link-hover-bg: var(--bs-primary-bg-subtle);
+    --bs-dropdown-link-active-color: #fff;
+    --bs-dropdown-link-active-bg: #1f6b5c;
+}
+
+/* ---------- Dark theme: komponen yang warnanya ditulis keras di atas ---------- */
+[data-bs-theme="dark"] .btn-outline-primary {
+    --bs-btn-color: #5cc7b0;
+    --bs-btn-border-color: #3fb59c;
+    --bs-btn-hover-color: #fff;
+    --bs-btn-hover-bg: #1f6b5c;
+    --bs-btn-hover-border-color: #1f6b5c;
+    --bs-btn-active-color: #fff;
+    --bs-btn-active-bg: #185548;
+    --bs-btn-active-border-color: #185548;
+    --bs-btn-disabled-color: #5cc7b0;
+    --bs-btn-disabled-border-color: #3fb59c;
+}
+[data-bs-theme="dark"] .pagination {
+    --bs-pagination-color: #5cc7b0;
+    --bs-pagination-hover-color: #8fd8c8;
+    --bs-pagination-focus-color: #8fd8c8;
+}
+[data-bs-theme="dark"] .form-control:focus,
+[data-bs-theme="dark"] .form-select:focus {
+    border-color: #3fb59c;
+    box-shadow: 0 0 0 0.25rem rgba(63, 181, 156, 0.25);
+}
+[data-bs-theme="dark"] .card {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+[data-bs-theme="dark"] .modal-content {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.6);
+}
+[data-bs-theme="dark"] .stat-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+}
+
+/* Badge subtle: di mode terang dipaksa gelap, di mode gelap pakai warna emphasis */
+[data-bs-theme="dark"] .badge.bg-warning-subtle { color: var(--bs-warning-text-emphasis) !important; }
+[data-bs-theme="dark"] .badge.bg-success-subtle { color: var(--bs-success-text-emphasis) !important; }
+[data-bs-theme="dark"] .badge.bg-primary-subtle { color: var(--bs-primary-text-emphasis) !important; }
+[data-bs-theme="dark"] .badge.bg-info-subtle    { color: var(--bs-info-text-emphasis) !important; }
+[data-bs-theme="dark"] .badge.bg-danger-subtle  { color: var(--bs-danger-text-emphasis) !important; }
+/* Badge terang di konten (No RM dsb); badge "PRO" di sidebar tetap terang */
+[data-bs-theme="dark"] .content-wrapper .badge.text-bg-light {
+    background-color: var(--bs-secondary-bg) !important;
+    color: var(--bs-body-color) !important;
+}
+
+/* SweetAlert2 mengikuti tema */
+[data-bs-theme="dark"] .swal2-popup {
+    background: var(--clinic-surface);
+    color: var(--bs-body-color);
+}
+[data-bs-theme="dark"] .swal2-title,
+[data-bs-theme="dark"] .swal2-html-container {
+    color: var(--bs-body-color);
 }
 

@@ -18,7 +18,7 @@
 .ear-chart-view {
     min-width: 0;
     padding: 1.25rem;
-    background: #fff;
+    background: var(--clinic-surface);
     border: 1px solid var(--bs-border-color);
     border-radius: var(--bs-border-radius-lg);
 }
@@ -99,7 +99,7 @@
     height: 280px;
     margin-bottom: 1rem;
     overflow: hidden;
-    background: #fff;
+    background: var(--clinic-surface);
     border: 1px solid var(--bs-border-color);
     border-radius: var(--bs-border-radius);
 }
@@ -291,4 +291,57 @@
     .patient-dates > div {
         flex: 1;
     }
+}
+
+/* ---------- Dark theme: audiogram & komponen klinis ----------
+   Biru AC dan merah BC diterangkan agar kontras di latar gelap. */
+[data-bs-theme="dark"] .ear-title-right {
+    background: rgba(248, 113, 113, 0.12);
+    color: #fca5a5;
+    border-color: rgba(248, 113, 113, 0.35);
+}
+[data-bs-theme="dark"] .ear-title-left {
+    background: rgba(96, 165, 250, 0.12);
+    color: #93c5fd;
+    border-color: rgba(96, 165, 250, 0.35);
+}
+[data-bs-theme="dark"] .conduction-title {
+    background: rgba(248, 113, 113, 0.18);
+    color: #fca5a5;
+}
+[data-bs-theme="dark"] .conduction-title2 {
+    background: rgba(96, 165, 250, 0.18);
+    color: #93c5fd;
+}
+[data-bs-theme="dark"] .right-ear-header h3 {
+    color: #fca5a5;
+}
+[data-bs-theme="dark"] .left-ear-header h3 {
+    color: #93c5fd;
+}
+[data-bs-theme="dark"] .chart-line {
+    stroke: #2f403b;
+}
+[data-bs-theme="dark"] .axis-label {
+    fill: #9db3ac;
+}
+[data-bs-theme="dark"] .hearing-line:not(.bc) {
+    stroke: #4da3ff;
+}
+[data-bs-theme="dark"] .hearing-line.bc {
+    stroke: #f87171;
+}
+[data-bs-theme="dark"] .hearing-point,
+[data-bs-theme="dark"] .diamond {
+    fill: #4da3ff;
+}
+[data-bs-theme="dark"] .arrow-symbol {
+    fill: #f87171;
+}
+[data-bs-theme="dark"] .legend-symbol,
+[data-bs-theme="dark"] .diamond-symbol {
+    background: #4da3ff;
+}
+[data-bs-theme="dark"] .legend-item svg polygon {
+    fill: #f87171;
 }

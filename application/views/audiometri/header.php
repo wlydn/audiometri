@@ -8,6 +8,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-name" content="<?= html_escape($this->security->get_csrf_token_name()) ?>">
     <meta name="csrf-hash" content="<?= html_escape($this->security->get_csrf_hash()) ?>">
+    <meta name="color-scheme" content="light dark">
+    <script>
+        // Tema: 'light' | 'dark' | 'auto' (ikuti perangkat). Dijalankan sebelum CSS dimuat agar tidak berkedip.
+        (function () {
+            var KEY = 'audiometri-theme';
+            var mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+            var ICONS = { light: 'bi-sun-fill', dark: 'bi-moon-stars-fill', auto: 'bi-circle-half' };
+
+            function stored() {
+                try {
+                    var v = localStorage.getItem(KEY);
+                    return (v === 'light' || v === 'dark') ? v : 'auto';
+                } catch (e) {
+                    return 'auto';
+                }
+            }
+
+            function resolve(pref) {
+                return pref === 'auto' ? (mq && mq.matches ? 'dark' : 'light') : pref;
+            }
+
+            function syncUi(pref) {
+                var icon = document.getElementById('theme-toggle-icon');
+                if (icon) {
+                    icon.className = 'bi ' + ICONS[pref];
+                }
+                var buttons = document.querySelectorAll('[data-theme-choice]');
+                for (var i = 0; i < buttons.length; i++) {
+                    var on = buttons[i].getAttribute('data-theme-choice') === pref;
+                    buttons[i].classList.toggle('active', on);
+                    buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+                    var check = buttons[i].querySelector('.theme-check');
+                    if (check) {
+                        check.classList.toggle('d-none', !on);
+                    }
+                }
+            }
+
+            function apply(pref) {
+                var root = document.documentElement;
+                root.setAttribute('data-bs-theme', resolve(pref));
+                root.setAttribute('data-theme-pref', pref);
+                syncUi(pref);
+            }
+
+            function set(pref) {
+                try {
+                    if (pref === 'auto') {
+                        localStorage.removeItem(KEY);
+                    } else {
+                        localStorage.setItem(KEY, pref);
+                    }
+                } catch (e) { /* penyimpanan diblokir: tema berlaku untuk halaman ini saja */ }
+                apply(pref);
+            }
+
+            apply(stored());
+
+            // Perangkat ganti tema saat pilihan = auto
+            if (mq) {
+                var onChange = function () {
+                    if (stored() === 'auto') {
+                        apply('auto');
+                    }
+                };
+                if (mq.addEventListener) {
+                    mq.addEventListener('change', onChange);
+                } else if (mq.addListener) {
+                    mq.addListener(onChange);
+                }
+            }
+
+            // Sinkron antar tab
+            window.addEventListener('storage', function (e) {
+                if (e.key === KEY || e.key === null) {
+                    apply(stored());
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var buttons = document.querySelectorAll('[data-theme-choice]');
+                for (var i = 0; i < buttons.length; i++) {
+                    buttons[i].addEventListener('click', function () {
+                        set(this.getAttribute('data-theme-choice'));
+                    });
+                }
+                syncUi(stored());
+            });
+
+            window.AudiometriTheme = { set: set, get: stored };
+        })();
+    </script>
     <title><?= isset($title) ? html_escape($title) . ' - ' : '' ?>Audiometri Workstation</title>
     <script>
         // Adds the CodeIgniter CSRF token to a FormData/URLSearchParams body.
@@ -118,6 +210,31 @@
                 <div class="topbar-date d-none d-sm-inline-flex">
                     <i class="bi bi-calendar3" aria-hidden="true"></i>
                     <time datetime="<?= date('Y-m-d') ?>"><?= date('d M Y') ?></time>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary theme-toggle" type="button" id="theme-toggle" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Pilih tema tampilan" title="Tema tampilan">
+                        <i class="bi bi-circle-half" id="theme-toggle-icon" aria-hidden="true"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggle">
+                        <li>
+                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-theme-choice="light" aria-pressed="false">
+                                <i class="bi bi-sun-fill" aria-hidden="true"></i> Terang
+                                <i class="bi bi-check2 ms-auto theme-check d-none" aria-hidden="true"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-theme-choice="dark" aria-pressed="false">
+                                <i class="bi bi-moon-stars-fill" aria-hidden="true"></i> Gelap
+                                <i class="bi bi-check2 ms-auto theme-check d-none" aria-hidden="true"></i>
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item d-flex align-items-center gap-2" data-theme-choice="auto" aria-pressed="false">
+                                <i class="bi bi-circle-half" aria-hidden="true"></i> Ikuti perangkat
+                                <i class="bi bi-check2 ms-auto theme-check d-none" aria-hidden="true"></i>
+                            </button>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </header>
