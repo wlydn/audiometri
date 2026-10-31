@@ -56,6 +56,36 @@
         </div>
     </div>
 
+    <!-- Pratinjau cetak: tampil di halaman yang sama, tanpa tab/jendela baru -->
+    <div class="modal fade" id="printPreviewModal" tabindex="-1" aria-labelledby="printPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="printPreviewModalLabel"><i class="bi bi-printer me-2" aria-hidden="true"></i>Pratinjau Cetak</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+                </div>
+                <div class="modal-body p-0 print-preview-body">
+                    <div id="printPreviewLoading" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Memuat...</span></div>
+                    </div>
+                    <div id="printPreviewError" class="alert alert-danger m-3 d-none" role="alert"></div>
+                    <iframe id="printPreviewFrame" class="print-preview-frame d-none" title="Pratinjau hasil audiometri" sandbox="allow-same-origin allow-modals"></iframe>
+                </div>
+                <div class="modal-footer justify-content-between flex-wrap gap-2">
+                    <a id="printPreviewPdf" href="#" class="btn btn-outline-secondary" target="_blank" rel="noopener" title="Versi sebelumnya: unduh sebagai PDF">
+                        <i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF (versi sebelumnya)
+                    </a>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-primary" id="printPreviewPrint" disabled>
+                            <i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
@@ -64,6 +94,90 @@
         function showReportModal() {
             bootstrap.Modal.getOrCreateInstance(document.getElementById('reportModal')).show();
         }
+
+        // Pratinjau cetak di modal. Dokumen diambil lewat fetch lalu dimasukkan ke iframe srcdoc.
+        (function() {
+            var PREVIEW_URL = <?= json_encode(base_url('print_preview/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            var PDF_URL = <?= json_encode(base_url('export_pdf/'), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+            var token = 0;
+
+            var modalEl = document.getElementById('printPreviewModal');
+            if (!modalEl) {
+                return;
+            }
+            var frame = document.getElementById('printPreviewFrame');
+            var loading = document.getElementById('printPreviewLoading');
+            var errorBox = document.getElementById('printPreviewError');
+            var printBtn = document.getElementById('printPreviewPrint');
+            var pdfLink = document.getElementById('printPreviewPdf');
+
+            function reset() {
+                token++;
+                frame.classList.add('d-none');
+                frame.removeAttribute('srcdoc');
+                errorBox.classList.add('d-none');
+                errorBox.textContent = '';
+                loading.classList.remove('d-none');
+                printBtn.disabled = true;
+            }
+
+            function fail(message) {
+                loading.classList.add('d-none');
+                errorBox.textContent = message;
+                errorBox.classList.remove('d-none');
+            }
+
+            window.openPrintPreview = function(id) {
+                id = parseInt(id, 10);
+                if (!id || id < 1) {
+                    return;
+                }
+                reset();
+                var mine = token;
+                pdfLink.href = PDF_URL + encodeURIComponent(id);
+                bootstrap.Modal.getOrCreateInstance(modalEl).show();
+
+                fetch(PREVIEW_URL + encodeURIComponent(id), {
+                    credentials: 'same-origin',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
+                    return response.text();
+                })
+                .then(function(html) {
+                    if (mine !== token) {
+                        return; // modal sudah ditutup / diganti pasien lain
+                    }
+                    frame.addEventListener('load', function onLoad() {
+                        frame.removeEventListener('load', onLoad);
+                        if (mine !== token) {
+                            return;
+                        }
+                        loading.classList.add('d-none');
+                        frame.classList.remove('d-none');
+                        printBtn.disabled = false;
+                    });
+                    frame.srcdoc = html;
+                })
+                .catch(function() {
+                    if (mine === token) {
+                        fail('Pratinjau tidak dapat dimuat. Gunakan "Unduh PDF (versi sebelumnya)".');
+                    }
+                });
+            };
+
+            printBtn.addEventListener('click', function() {
+                if (frame.contentWindow) {
+                    frame.contentWindow.focus();
+                    frame.contentWindow.print();
+                }
+            });
+
+            modalEl.addEventListener('hidden.bs.modal', reset);
+        })();
 
         // Live clock in topbar, fixed to Asia/Jakarta so it matches server time
         (function() {

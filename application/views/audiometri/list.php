@@ -140,10 +140,10 @@ $has_filter = !empty($filters['nama']) || !empty($filters['perusahaan']) || !emp
 											class="btn btn-outline-secondary btn-sm" title="Edit Data" aria-label="Edit Data">
 											<i class="bi bi-pencil-square" aria-hidden="true"></i>
 										</a>
-										<a href="<?= html_escape(base_url('export_pdf/' . $test['id'])) ?>"
-											class="btn btn-outline-secondary btn-sm" title="Unduh PDF" aria-label="Unduh PDF" target="_blank" rel="noopener">
-											<i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
-										</a>
+										<button type="button" onclick="openPrintPreview(<?= html_escape((int) $test['id']) ?>)"
+											class="btn btn-outline-secondary btn-sm" title="Cetak Hasil" aria-label="Cetak Hasil">
+											<i class="bi bi-printer" aria-hidden="true"></i>
+										</button>
 									</td>
 								</tr>
 							<?php endforeach; ?>

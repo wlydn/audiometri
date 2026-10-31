@@ -660,6 +660,22 @@ body.workspace {
     }
 }
 
+/* ---------- Pratinjau cetak (modal) ---------- */
+.print-preview-body {
+    background: #6b7573;
+    min-height: 40vh;
+}
+.print-preview-frame {
+    display: block;
+    width: 100%;
+    height: 72vh;
+    border: 0;
+    background: #fff;
+}
+.print-preview-body .spinner-border {
+    color: #fff;
+}
+
 /* ---------- Dropdown: Flatly menulis warna keras (navy #2c3e50), samakan dengan palet teal ---------- */
 .dropdown-menu {
     --bs-dropdown-border-color: var(--clinic-border);

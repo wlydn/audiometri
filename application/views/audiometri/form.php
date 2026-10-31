@@ -234,9 +234,9 @@
 				<i class="bi bi-floppy me-1" aria-hidden="true"></i> <?= html_escape($action == 'edit' ? 'Update' : 'Simpan') ?> Data Pemeriksaan
 			</button>
 			<?php if ($action == 'edit'): ?>
-				<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-danger" target="_blank" rel="noopener">
-					<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Cetak / Ekspor PDF
-				</a>
+				<button type="button" class="btn btn-outline-danger" onclick="openPrintPreview(<?= html_escape((int) $test_data['id']) ?>)">
+					<i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak Hasil
+				</button>
 			<?php endif; ?>
 		</div>
 	</form>

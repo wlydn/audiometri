@@ -56,9 +56,9 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 			<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
 				<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data
 			</a>
-			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-secondary" target="_blank" rel="noopener">
-				<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF
-			</a>
+			<button type="button" class="btn btn-outline-secondary" onclick="openPrintPreview(<?= html_escape((int) $test_data['id']) ?>)">
+				<i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak Hasil
+			</button>
 			<button type="button" onclick="showDeleteModal(<?= html_escape((int) $test_data['id']) ?>)" class="btn btn-danger">
 				<i class="bi bi-trash3 me-1" aria-hidden="true"></i> Hapus
 			</button>
@@ -215,9 +215,9 @@ $render_threshold_table = function ($ear, $heading_class) use ($test_data, $freq
 			<a href="<?= html_escape(base_url('edit/' . $test_data['id'])) ?>" class="btn btn-outline-primary">
 				<i class="bi bi-pencil-square me-1" aria-hidden="true"></i> Edit Data
 			</a>
-			<a href="<?= html_escape(base_url('export_pdf/' . $test_data['id'])) ?>" class="btn btn-outline-secondary" target="_blank" rel="noopener">
-				<i class="bi bi-file-earmark-pdf me-1" aria-hidden="true"></i> Unduh PDF
-			</a>
+			<button type="button" class="btn btn-outline-secondary" onclick="openPrintPreview(<?= html_escape((int) $test_data['id']) ?>)">
+				<i class="bi bi-printer me-1" aria-hidden="true"></i> Cetak Hasil
+			</button>button
 			<a href="<?= html_escape(base_url('create')) ?>" class="btn btn-primary">
 				<i class="bi bi-plus-lg me-1" aria-hidden="true"></i> Pemeriksaan Baru
 			</a>

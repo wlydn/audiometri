@@ -760,6 +760,29 @@ class Audiometri extends CI_Controller
 	}
 
 	/**
+	 * Dokumen cetak (HTML) untuk pratinjau di modal. Isinya sama dengan template PDF,
+	 * tetapi tidak diunduh: dimuat lewat fetch lalu ditampilkan di iframe srcdoc
+	 * sehingga header anti-frame (X-Frame-Options/frame-ancestors) tidak perlu dilonggarkan.
+	 */
+	public function print_preview($id = null)
+	{
+		if (!$id || !ctype_digit((string) $id)) {
+			show_404();
+			return;
+		}
+
+		$test_data = $this->Audiometri_model->get_test((int) $id);
+		if (!$test_data) {
+			show_404();
+			return;
+		}
+
+		$data['test_data'] = $test_data;
+		$data['logo_base64'] = $this->get_logo_for_pdf();
+		$this->load->view('audiometri/pdf_template', $data);
+	}
+
+	/**
 	 * Fallback method untuk generate HTML yang bisa di-print
 	 */
 	private function _generate_html_for_print($test_data)

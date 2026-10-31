@@ -73,6 +73,7 @@ $route['list_tests'] = 'audiometri/list_tests';
 $route['search'] = 'audiometri/search_by_no_rm';
 $route['search_by_no_rm'] = 'audiometri/search_by_no_rm';
 $route['export_pdf/(:num)'] = 'audiometri/export_pdf/$1';
+$route['print_preview/(:num)'] = 'audiometri/print_preview/$1';
 $route['export_excel'] = 'audiometri/export_excel';
 $route['laporan'] = 'audiometri/laporan';
 $route['update_chart'] = 'audiometri/update_chart';
@@ -100,6 +101,7 @@ $route['audiometri/search'] = 'audiometri/search_by_no_rm';
 
 // Export routes
 $route['audiometri/export_pdf/(:num)'] = 'audiometri/export_pdf/$1';
+$route['audiometri/print_preview/(:num)'] = 'audiometri/print_preview/$1';
 $route['audiometri/export_excel'] = 'audiometri/export_excel';
 $route['audiometri/laporan'] = 'audiometri/laporan';
 
