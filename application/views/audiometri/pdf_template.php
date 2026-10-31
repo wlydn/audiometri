@@ -19,7 +19,7 @@
 			padding: 0;
 			font-size: 11px;
 			line-height: 1.4;
-			color: #2c3e50;
+			color: #1b2a3a;
 			background: #fff;
 			width: 210mm;
 			min-height: 297mm;
@@ -31,11 +31,10 @@
 		/* Header Section */
 		.header {
 			background: white;
-			padding: 15px 20px;
-			margin: 0 0 20px 0;
-			border-radius: 6px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			border: 2px solid #0066CC;
+			padding: 0 0 12px 0;
+			margin: 0 0 16px 0;
+			border: 0;
+			border-bottom: 4px double #0b3a6f;
 			-webkit-print-color-adjust: exact;
 			color-adjust: exact;
 			print-color-adjust: exact;
@@ -60,7 +59,7 @@
 		.clinic-name {
 			font-size: 24px;
 			font-weight: 700;
-			color: #0066CC;
+			color: #0b3a6f;
 			margin: 0;
 			text-transform: uppercase;
 			letter-spacing: 1px;
@@ -68,32 +67,32 @@
 
 		.clinic-tagline {
 			font-size: 12px;
-			color: #DC2626;
+			color: #1d5fa8;
 			font-style: italic;
 			margin: 2px 0 8px 0;
 		}
 
 		.clinic-address {
 			font-size: 11px;
-			color: #2c3e50;
+			color: #1b2a3a;
 			margin: 0;
 			line-height: 1.3;
 		}
 
 		.clinic-phone {
 			font-size: 11px;
-			color: #2c3e50;
+			color: #1b2a3a;
 			margin: 2px 0 0 0;
 			font-weight: 600;
 		}
 
 		.document-title {
 			text-align: center;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: #0b3a6f;
 			color: white;
-			padding: 5px 10px;
+			padding: 6px 10px;
 			margin: 0;
-			border-radius: 4px;
+			border-radius: 3px 3px 0 0;
 			-webkit-print-color-adjust: exact;
 			color-adjust: exact;
 			print-color-adjust: exact;
@@ -115,17 +114,17 @@
 
 		/* Patient Information */
 		.patient-section {
-			background: #f8fafc;
-			border-radius: 6px;
+			background: #f5f9fd;
+			border-radius: 0 0 3px 3px;
 			padding: 16px;
 			margin: 0 0 20px 0;
-			border-left: 4px solid #667eea;
-			border-right: 4px solid #667eea;
+			border: 1px solid #c9d9ec;
+			border-top: 0;
 		}
 
 		.patient-section h2 {
 			margin: 0 0 15px 0;
-			color: #2c3e50;
+			color: #1b2a3a;
 			font-size: 16px;
 			font-weight: 600;
 		}
@@ -139,18 +138,18 @@
 			padding: 8px 12px;
 			font-size: 11px;
 			vertical-align: top;
-			border-bottom: 1px solid #e2e8f0;
+			border-bottom: 1px solid #d5e2f1;
 		}
 
 		.patient-info .label {
 			font-weight: 600;
-			color: #4a5568;
+			color: #0b3a6f;
 			width: 20%;
-			background: #edf2f7;
+			background: #e6eef8;
 		}
 
 		.patient-info .value {
-			color: #2d3748;
+			color: #1b2a3a;
 			font-weight: 500;
 		}
 
@@ -163,7 +162,7 @@
 			text-align: center;
 			font-size: 16px;
 			font-weight: 700;
-			background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+			background: #1d5fa8;
 			color: white;
 			padding: 12px;
 			margin: 0 0 18px 0;
@@ -198,14 +197,15 @@
 			border-radius: 6px;
 			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 			overflow: hidden;
-			border: 1px solid #e2e8f0;
+			border: 1px solid #c9d9ec;
 		}
 
 		.ear-title {
 			text-align: center;
 			font-weight: 600;
-			background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-			color: #2c3e50;
+			background: #e6eef8;
+			color: #0b3a6f;
+			border-bottom: 2px solid #0b3a6f;
 			padding: 10px;
 			font-size: 12px;
 			text-transform: uppercase;
@@ -221,7 +221,7 @@
 			height: 303px;
 			background: #fff;
 			position: relative;
-			border-bottom: 1px solid #e2e8f0;
+			border-bottom: 1px solid #c9d9ec;
 			margin: 0;
 			padding: 0;
 			overflow: hidden;
@@ -242,7 +242,7 @@
 		}
 
 		.data-table th {
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			background: #0b3a6f;
 			color: white;
 			padding: 8px 2px;
 			text-align: center;
@@ -273,7 +273,7 @@
 		.data-table td {
 			padding: 6px 2px;
 			text-align: center;
-			border-bottom: 1px solid #e2e8f0;
+			border-bottom: 1px solid #d5e2f1;
 			font-weight: 500;
 			width: 11.11%;
 		}
@@ -291,35 +291,35 @@
 		}
 
 		.data-table .row-label {
-			background: #f7fafc;
+			background: #eef4fb;
 			font-weight: 700;
-			color: #4a5568;
+			color: #0b3a6f;
 			text-align: center;
 		}
 
 		.data-table .average-cell {
-			background: #edf2f7;
+			background: #e6eef8;
 			font-weight: 700;
-			color: #2d3748;
+			color: #0b3a6f;
 			text-align: center;
 		}
 
 		/* Impression Section */
 		.impression {
 			margin: 18px 0 0 0;
-			background: #f7fafc;
-			border-radius: 6px;
-			padding: 12px 12px;
+			background: #f5f9fd;
+			border-radius: 3px;
+			padding: 12px 14px;
 			max-width: 550px;
-			border-left: 4px solid #48bb78;
-			border-right: 4px solid #48bb78;
+			border: 1px solid #c9d9ec;
+			border-left: 5px solid #0b3a6f;
 		}
 
 		.impression h3 {
 			margin: 0 0 10px 0;
 			font-size: 14px;
-			font-weight: 600;
-			color: #2c3e50;
+			font-weight: 700;
+			color: #0b3a6f;
 		}
 
 		.impression p {
@@ -327,7 +327,7 @@
 			margin: 0;
 			font-size: 11px;
 			line-height: 1.5;
-			color: #4a5568;
+			color: #1b2a3a;
 		}
 
 		/* Legend */
@@ -336,11 +336,10 @@
 			bottom: 60px;
 			right: 15px;
 			background: white;
-			border-radius: 6px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			border-radius: 3px;
 			padding: 12px;
 			font-size: 9px;
-			border: 1px solid #e2e8f0;
+			border: 1px solid #c9d9ec;
 			width: 140px;
 		}
 
@@ -357,8 +356,8 @@
 		.legend-header {
 			font-weight: 700;
 			text-align: center;
-			color: #2c3e50;
-			border-bottom: 2px solid #667eea;
+			color: #0b3a6f;
+			border-bottom: 2px solid #0b3a6f;
 			padding-bottom: 4px;
 			margin-bottom: 4px;
 		}
@@ -413,26 +412,26 @@
 			right: 15px;
 			text-align: center;
 			font-size: 9px;
-			color: #718096;
-			border-top: 1px solid #e2e8f0;
+			color: #5b6b7d;
+			border-top: 1px solid #0b3a6f;
 			padding-top: 8px;
 			bottom: 0;
 		}
 
 		/* Chart Styles */
 		.grid-line {
-			stroke: #e2e8f0;
+			stroke: #d5e2f1;
 			stroke-width: 0.5;
 		}
 
 		.grid-line-major {
-			stroke: #cbd5e0;
+			stroke: #a9bfd9;
 			stroke-width: 0.8;
 		}
 
 		.axis-label {
 			font-size: 9px;
-			fill: #4a5568;
+			fill: #34495e;
 			font-family: 'Segoe UI', sans-serif;
 			font-weight: 500;
 		}
@@ -466,49 +465,49 @@
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				border: 2px solid rgb(3, 100, 197) !important;
+				border-bottom: 4px double #0b3a6f !important;
 			}
 
 			.clinic-name {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				color: #0066CC !important;
+				color: #0b3a6f !important;
 			}
 
 			.clinic-tagline {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				color: #DC2626 !important;
+				color: #1d5fa8 !important;
 			}
 
 			.document-title {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+				background: #0b3a6f !important;
 			}
 
 			.audiogram-title {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+				background: #1d5fa8 !important;
 			}
 
 			.ear-title {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important;
+				background: #e6eef8 !important;
 			}
 
 			.data-table th {
 				-webkit-print-color-adjust: exact !important;
 				color-adjust: exact !important;
 				print-color-adjust: exact !important;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+				background: #0b3a6f !important;
 			}
 
 			.clinic-header {
@@ -794,7 +793,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td colspan="2" style="font-size: 8px; text-align: left; padding-top: 8px; border-top: 1px solid #e2e8f0; color: #718096;">
+				<td colspan="2" style="font-size: 8px; text-align: left; padding-top: 8px; border-top: 1px solid #c9d9ec; color: #5b6b7d;">
 					AC = Air Conduction <br>
 					BC = Bone Conduction
 				</td>
@@ -834,15 +833,15 @@ function generate_audiogram_chart($ear, $test_data)
 	// Background with subtle gradient
 	$svg .= '<defs>';
 	$svg .= '<linearGradient id="bgGradient' . $ear . '" x1="0%" y1="0%" x2="0%" y2="100%">';
-	$svg .= '<stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />';
+	$svg .= '<stop offset="0%" style="stop-color:#f5f9fd;stop-opacity:1" />';
 	$svg .= '<stop offset="100%" style="stop-color:#ffffff;stop-opacity:1" />';
 	$svg .= '</linearGradient>';
 	$svg .= '</defs>';
 
-	$svg .= '<rect width="' . $viewBox_width . '" height="' . $viewBox_height . '" fill="url(#bgGradient' . $ear . ')" stroke="#e2e8f0" stroke-width="1" rx="3"/>';
+	$svg .= '<rect width="' . $viewBox_width . '" height="' . $viewBox_height . '" fill="url(#bgGradient' . $ear . ')" stroke="#c9d9ec" stroke-width="1" rx="3"/>';
 
 	// Chart area background
-	$svg .= '<rect x="' . $margin_left . '" y="' . $margin_top . '" width="' . $chart_width . '" height="' . $chart_height . '" fill="#ffffff" stroke="#cbd5e0" stroke-width="0.8"/>';
+	$svg .= '<rect x="' . $margin_left . '" y="' . $margin_top . '" width="' . $chart_width . '" height="' . $chart_height . '" fill="#ffffff" stroke="#a9bfd9" stroke-width="0.8"/>';
 
 	// Draw grid
 	// Vertical lines (frequencies)
