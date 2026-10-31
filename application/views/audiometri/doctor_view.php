@@ -4,7 +4,17 @@ $reviewed_count = 0;
 $pending_count = 0;
 $CI =& get_instance();
 $clear_normal = [];
+$suggest_data = [];
+$suggest_fields = [];
+foreach (['right', 'left'] as $suggest_ear) {
+    foreach (['ac', 'bc'] as $suggest_type) {
+        foreach (['250', '500', '1000', '2000', '3000', '4000', '6000'] as $suggest_freq) {
+            $suggest_fields[] = $suggest_ear . '_' . $suggest_type . '_' . $suggest_freq;
+        }
+    }
+}
 foreach ($tests as $t) {
+    $suggest_data[(int) $t['id']] = array_intersect_key($t, array_flip($suggest_fields));
     if (empty($t['impression']) && $CI->Audiometri_model->is_clearly_normal($t)) {
         $clear_normal[(int) $t['id']] = true;
     }
@@ -118,6 +128,7 @@ foreach ($tests as $t) {
 											<?php if (isset($clear_normal[(int) $test['id']])): ?>
 												<span class="badge bg-success-subtle text-success-emphasis fw-semibold ms-1">Jelas normal</span>
 											<?php endif; ?>
+											<div class="js-suggestion small mt-1" data-id="<?= html_escape((int) $test['id']) ?>" style="max-width: 24rem;"></div>
 										<?php endif; ?>
 									</td>
 									<td class="text-end text-nowrap">
@@ -150,6 +161,45 @@ foreach ($tests as $t) {
 		</div>
 	</div>
 </div>
+
+<script src="<?= html_escape(base_url('assets/js/impression-templates.js')) ?>?v=<?= html_escape(@filemtime(FCPATH . 'assets/js/impression-templates.js')) ?>"></script>
+<script>
+(function () {
+	// Satu saran utama per pasien; dokter tetap membuka Review untuk memilih/mengubah teks.
+	const data = <?= json_encode($suggest_data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+	document.querySelectorAll('.js-suggestion').forEach(function (el) {
+		const row = data[el.dataset.id];
+		const built = row ? ImpressionTemplates.build(row) : null;
+		let icon = 'bi-info-circle';
+		let tone = 'text-body-secondary';
+		let text = 'Data audiogram belum lengkap, tidak ada saran.';
+
+		if (built && built.results.length) {
+			if (built.abnormal.length) {
+				text = built.abnormal[0].text;
+				icon = 'bi-exclamation-triangle';
+				tone = 'text-warning-emphasis';
+			} else {
+				// Bila ada penurunan frekuensi tertentu, kalimat itu sudah memuat kalimat normal
+				text = built.normal[built.normal.length - 1].text;
+				icon = 'bi-check-circle';
+				tone = 'text-success-emphasis';
+			}
+		}
+
+		el.className += ' ' + tone;
+		const i = document.createElement('i');
+		i.className = 'bi ' + icon + ' me-1';
+		i.setAttribute('aria-hidden', 'true');
+		el.appendChild(i);
+		const label = document.createElement('strong');
+		label.textContent = 'Saran: ';
+		el.appendChild(label);
+		el.appendChild(document.createTextNode(text));
+	});
+})();
+</script>
 
 <?php if (!empty($clear_normal)): ?>
 <script>
